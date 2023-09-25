@@ -154,7 +154,7 @@ export async function sendPtt(
         });
       })
       .catch((e) => {
-        return WAPI.scope(chat.id, true, 404, 'Error to chat not find');
+        return WAPI.scope(chat.id, true, 404, 'Error to chat not find: ' + e.text);
       });
 
     if (result.erro === false) {
