@@ -203,8 +203,8 @@ export async function sendFile(
             return WAPI.scope(chat.id, true, 404, 'Error to processFiles');
           });
       })
-      .catch(() => {
-        return WAPI.scope(chat.id, true, 404, 'Error to chat not find');
+      .catch((e) => {
+        return WAPI.scope(chat.id, true, 404, 'Error to chat not find: ' + e.text);
       });
 
     if (result.erro === false) {
