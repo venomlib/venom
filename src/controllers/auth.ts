@@ -14,7 +14,7 @@ export const getInterfaceStatus = async (waPage: puppeteer.Page) => {
           return { type: erroHTTP[0].innerText };
         }
         const elLoginWrapper = document.querySelector(
-          'body > div > div > .landing-wrapper'
+          'div.landing-wrapper'
         );
         const elQRCodeCanvas = document.querySelector('canvas');
         if (elLoginWrapper && elQRCodeCanvas) {
