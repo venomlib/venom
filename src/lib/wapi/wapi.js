@@ -605,6 +605,7 @@ if (typeof window.WAPI === 'undefined') {
   addOnStream();
 
   initNewMessagesListener();
+  console.log("Hi there");
 
   addOnNewAcks();
   addOnAddedToGroup();
