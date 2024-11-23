@@ -1,6 +1,6 @@
 # 🕷Venom Bot🕸
 
-> Venom is a high-performance system developed with JavaScript to create a bot for WhatsApp, support for creating any interaction, such as customer service, media sending, sentence recognition based on artificial intelligence and all types of design architecture for WhatsApp.
+Venom is a high-performance system developed with JavaScript to create a bot for WhatsApp, support for creating any interaction, such as customer service, media sending, sentence recognition based on artificial intelligence and all types of design architecture for WhatsApp.
 
 ## 🕷🕷 Functions Venom🕷🕷
 
@@ -20,7 +20,6 @@
 | 📍 Send location!!                                            | ✔   |
 | 🕸🕸 **and much more**                                          | ✔   |
 
-Documentation at https://orkestral.github.io/venom/index.html
 
 ## Installation
 
