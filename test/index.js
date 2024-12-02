@@ -5,8 +5,7 @@ const venom = require('../dist');
 venom.create({
     session: 'sessionname', //name of session
     headless: false,
-    logQR: true,
-    webVersion: '2.3000.1012170943-alpha'
+    logQR: true
   })
   .then((client) => {
     start(client);

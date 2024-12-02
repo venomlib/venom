@@ -352,21 +352,6 @@ export async function create(
           }
 
           if (interFace.mode === InterfaceMode.QR) {
-            const status = await page.evaluate(
-              () => window?.Store?.State?.Socket?.stream
-            );
-            if (status === SocketStream.DISCONNECTED) {
-              spinnies.add(`whatzapp-disconnected-${session}`, {
-                text: 'checking...'
-              });
-
-              spinnies.fail(`whatzapp-disconnected-${session}`, {
-                text: 'Was disconnected!'
-              });
-              document.querySelectorAll('.MLTJU p')[0].textContent;
-              statusFind && statusFind('desconnected', session);
-            }
-
             if (interFace.info === InterfaceState.OPENING) {
               interfaceChange && interfaceChange('qrcodeOpening', session);
               spinnies.add(`whatzapp-mode-qr-${session}`, {
