@@ -9,6 +9,7 @@ import {
   resizeImg
 } from '../helpers';
 import { GroupSettings } from '../model/enum';
+import { Chat } from '../model';
 
 export class GroupLayer extends RetrieverLayer {
   constructor(
@@ -231,9 +232,11 @@ export class GroupLayer extends RetrieverLayer {
    * @returns array of groups
    */
   public async getChatGroupNewMsg() {
-    return await this.page.evaluate(() => {
-      let chats = WAPI.getAllChatsWithNewMsg();
-      return chats.filter((chat) => chat.kind === 'group');
+    return await this.page.evaluate(async () => {
+      // @ts-ignore
+      return (await WAPI.getAllChats()).filter(
+        (chat) => chat.unreadCount > 0 && chat.kind === 'group'
+      );
     });
   }
 

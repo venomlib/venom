@@ -1,6 +1,6 @@
 import { Page, Browser } from 'puppeteer';
 import { CreateConfig } from '../../config/create-config';
-import { WhatsappProfile } from '../model';
+import { Chat, WhatsappProfile } from '../model';
 import { SenderLayer } from './sender.layer';
 import { checkValuesSender } from '../helpers/layers-interface';
 
@@ -122,9 +122,9 @@ export class RetrieverLayer extends SenderLayer {
    * @returns array of [Chat]
    */
   public async getAllChatsNewMsg() {
-    return await this.page.evaluate(() => {
-      let chats = WAPI.getAllChatsWithNewMsg();
-      return chats;
+    return await this.page.evaluate(async () => {
+      let chats = await WAPI.getAllChats();
+      return chats.filter((chat) => chat.unreadCount > 0);
     });
   }
 
@@ -177,7 +177,8 @@ export class RetrieverLayer extends SenderLayer {
    */
   public async getChatContactNewMsg() {
     // prettier-ignore
-    const chats = await this.page.evaluate(() => WAPI.getAllChatsWithNewMsg());
+    // @ts-ignore
+    const chats: Chat[] = await this.page.evaluate(async () => (await WAPI.getAllChats()).filter((chat) => chat.unreadCount > 1));
     return chats.filter((chat) => chat.kind === 'chat');
   }
 

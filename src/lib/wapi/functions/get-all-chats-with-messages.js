@@ -1,15 +1,10 @@
 export async function getAllChatsWithMessages(newOnly) {
-  const x = [];
+  let x = [];
   if (newOnly) {
-    x.push(
-      WAPI.getAllChatsWithNewMsg().map(
-        async (c) => await WAPI.getChat(c.id._serialized)
-      )
-    );
+    x = (await WAPI.getAllChats()).filter((x) => x.unreadCount > 0);
   } else {
-    x.push(WAPI.getAllChatIds().map(async (c) => await WAPI.getChat(c)));
+    x = await WAPI.getAllChats();
   }
-  const _result = (await Promise.all(x)).flatMap((x) => x);
-  const result = JSON.stringify(_result);
+  const result = JSON.stringify(x);
   return JSON.parse(result);
 }
