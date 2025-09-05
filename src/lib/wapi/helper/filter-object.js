@@ -8,7 +8,8 @@ export const filterObjects = [
   },
   {
     type: 'MaybeMeUser',
-    when: (module) => (module.getMaybeMePnUser ? module : null)
+    // getMaybeMeUser can eventually be removed
+    when: (module) => (module.getMaybeMePnUser ||  module.getMaybeMeUser ? module : null)
   },
   {
     type: 'Participants',
