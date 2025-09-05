@@ -102,7 +102,7 @@ export async function sendMessageOptions(chatId, content, options = {}) {
     }
   }
   const newMsgId = await window.WAPI.getNewMessageId(chat.id);
-  const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+  const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
   const message = {
     ...options,
     id: newMsgId,

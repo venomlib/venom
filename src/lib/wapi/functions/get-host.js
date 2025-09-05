@@ -1,5 +1,5 @@
 export async function getHost() {
-  const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+  const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
   if (fromwWid) {
     const idUser = await WAPI.sendExist(fromwWid._serialized);
     if (idUser && idUser.status !== 404) {

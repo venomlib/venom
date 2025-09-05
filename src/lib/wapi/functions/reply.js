@@ -57,7 +57,7 @@ export async function reply(chatId, content, quotedMessageId) {
     }
 
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
     let inChat = await WAPI.getchatId(chat.id).catch(() => {});
     if (inChat) {
       chat.lastReceivedKey._serialized = inChat._serialized;

@@ -16,7 +16,7 @@ export async function sendLocation(
   if (!chat.erro) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
     const inChat = await WAPI.getchatId(chat.id).catch(() => {});
-    const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
 
     if (inChat) {
       chat.lastReceivedKey._serialized = inChat._serialized;

@@ -113,7 +113,7 @@ export async function sendFile(
                 );
               }
 
-              const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+              const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
               const message = {
                 id: newMsgId,
                 ack: 0,

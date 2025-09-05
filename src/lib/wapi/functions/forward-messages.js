@@ -34,7 +34,7 @@ export async function forwardMessages(chatId, messages, skipMyMessages) {
         let tempMsg = await Object.create(
           chat.msgs.filter((msg) => msg.__x_isSentByMe)
         )[0];
-        const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+        const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
         let toFor = await Object.assign(e);
         let extend = {
           id: newMsgId,

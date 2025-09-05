@@ -119,7 +119,7 @@ export async function sendTypeButtons(to, text, title, footer, hButtons) {
   }
   if (chat && chat.status != 404 && chat.id) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
     const buttons = new Store.TemplateButtonCollection();
     const message = {
       from: fromwWid,

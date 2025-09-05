@@ -40,7 +40,7 @@ export async function sendContactVcard(chatId, contact, name) {
       return WAPI.scope(chatId, true, 404, 'Error to newId');
     }
 
-    const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
     const body = await window.Store.Vcard.vcardFromContactModel(
       cont.__x_contact
     );

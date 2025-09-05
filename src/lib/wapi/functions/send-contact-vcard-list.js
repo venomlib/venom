@@ -49,7 +49,7 @@ export async function sendContactVcardList(chatId, contacts) {
     });
 
     var newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMeUser();
+    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
     let inChat = await WAPI.getchatId(chat.id).catch(() => {});
 
     if (inChat) {
