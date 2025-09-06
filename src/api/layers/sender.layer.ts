@@ -11,13 +11,13 @@ import {
 import { filenameFromMimeType } from '../helpers/filename-from-mimetype';
 import { Message, SendFileResult, SendStickerResult } from '../model';
 import { ChatState } from '../model/enum';
-import { AutomateLayer } from './AutomateLayer';
 import { Scope, checkValuesSender } from '../helpers/layers-interface';
+import { ListenerLayer } from './listener.layer';
 import { Mutex } from 'async-mutex';
 
 let obj: Scope;
 
-export class SenderLayer extends AutomateLayer {
+export class SenderLayer extends ListenerLayer {
   constructor(
     public browser: Browser,
     public page: Page,
