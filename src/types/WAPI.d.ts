@@ -39,7 +39,7 @@ interface WAPI {
   getAllChats: () => Promise<Chat[] | object[]>;
   getAllChatIds: () => Promise<string[]>;
   getAllChatsWithMessages: (withNewMessageOnly?: boolean) => Chat[];
-   getAllContacts: () => Contact[];
+  getAllContacts: () => Contact[];
   getAllMessagesInChat: (
     chatId: string,
     includeMe: boolean,

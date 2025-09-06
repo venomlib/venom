@@ -2,13 +2,7 @@ import * as ChromeLauncher from 'chrome-launcher';
 import chromeVersion from 'chrome-version';
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  Browser,
-  BrowserContext,
-  Page,
-  LaunchOptions,
-  PuppeteerLaunchOptions
-} from 'puppeteer';
+import { Browser, BrowserContext, Page, LaunchOptions } from 'puppeteer';
 import puppeteer from 'puppeteer-extra';
 import { options } from '../config';
 import { CreateConfig } from '../config/create-config';
@@ -389,7 +383,37 @@ function downloadBash(): Promise<string | false> {
 }
 
 export async function initBrowser(
-  options: CustomLaunchOptions,
+  options: {
+    session?: string;
+    folderNameToken?: string;
+    mkdirFolderToken?: string;
+    headless?: false | 'new' | 'old';
+    devtools?: boolean;
+    debug?: boolean;
+    browserWS?: string;
+    browserArgs?: string[];
+    addBrowserArgs?: string[];
+    puppeteerOptions?: LaunchOptions;
+    browser?: Browser | BrowserContext;
+    page?: Page;
+    logQR?: boolean;
+    disableSpins?: boolean;
+    disableWelcome?: boolean;
+    updatesLog?: boolean;
+    autoClose?: number;
+    createPathFileToken?: boolean;
+    waitForLogin?: boolean;
+    BrowserFetcher?: boolean;
+    forceConnect?: boolean;
+    attemptsForceConnectLoad?: number;
+    forceConnectTime?: number;
+    addProxy?: string[];
+    userProxy?: string;
+    userPass?: string;
+    browserPathExecutable?: string;
+    forceWebpack?: boolean;
+    webVersion?: boolean | string;
+  },
   spinnies: any
 ): Promise<Browser | false> {
   try {
@@ -402,6 +426,7 @@ export async function initBrowser(
     }
 
     // Check for deprecated headless option
+    // @ts-ignore
     if (options.headless === true) {
       console.warn(
         'Warning: The usage of "headless: true" is deprecated. Please use "headless: \'new\'" or "headless: false" instead. https://developer.chrome.com/articles/new-headless/'
@@ -409,7 +434,9 @@ export async function initBrowser(
     }
 
     if (
+      // @ts-ignore
       options.headless !== 'new' &&
+      // @ts-ignore
       options.headless !== 'old' &&
       options.headless !== false &&
       options.headless !== true
@@ -537,9 +564,12 @@ export async function initBrowser(
       if (executablePath.includes('google-chrome')) {
         chromeVersion = await getGlobalChromeVersion();
       } else {
+        // @ts-ignore
         const browser = await puppeteer.launch({
           executablePath,
+          // @ts-ignore
           headless:
+            // @ts-ignore
             options.headless === true || options.headless === false
               ? options.headless
               : 'new',
@@ -585,7 +615,7 @@ export async function initBrowser(
         }
       });
     }
-
+    // @ts-ignore
     if (options.headless === 'old') {
       puppeteerConfig.chromiumArgs.push(`--headless=old`);
     }
@@ -611,6 +641,7 @@ export async function initBrowser(
         spinnies,
         options
       );
+      // @ts-ignore
       return await puppeteer.launch(launchOptions);
     }
   } catch (e) {
@@ -728,7 +759,7 @@ function isChromeInstalled(executablePath: string): boolean {
 }
 
 function removeStoredSingletonLock(
-  puppeteerOptions: PuppeteerLaunchOptions,
+  puppeteerOptions: LaunchOptions,
   spinnies: any,
   options: options | CreateConfig
 ): Promise<boolean> {
