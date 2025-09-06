@@ -108,7 +108,7 @@
     "release-it": "^16.1.0",
     "shx": "^0.4.0",
     "ts-loader": "^9.5.1",
-    "typedoc": "^0.25.12",
+    "typedoc": "^0.28.0",
     "typedoc-default-themes": "^0.12.10",
     "typescript": "^5.3.3",
     "webpack": "^5.89.0",
