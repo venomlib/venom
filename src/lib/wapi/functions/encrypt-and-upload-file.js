@@ -20,7 +20,8 @@ export async function encryptAndUploadFile(type, blob) {
       uploadhash: encrypted.encFilehash,
       mediaBlob: blob
     };
-  } catch {
+  } catch (e) {
+    console.error(e);
     return false;
   }
 }
