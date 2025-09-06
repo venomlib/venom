@@ -46,7 +46,6 @@
       "node",
       "puppeteer",
       "qrcode-terminal",
-      "is-root",
       "mime-types",
       "qrcode",
       "sharp",

@@ -79,7 +79,6 @@
     "@commitlint/cli": "^19.2.2",
     "@commitlint/config-angular": "^19.2.2",
     "@types/atob": "^2.1.4",
-    "@types/is-root": "^2.1.2",
     "@types/mime-types": "^2.1.0",
     "@types/node": "^20.10.8",
     "@types/puppeteer": "^5.4.7",

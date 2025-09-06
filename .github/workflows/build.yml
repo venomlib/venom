@@ -30,6 +30,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
 
       - name: Build source code
         run: npm run build
