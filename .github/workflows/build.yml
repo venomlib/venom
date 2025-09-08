@@ -37,4 +37,4 @@ jobs:
         run: npm run build
 
       - name: Dependency check
-        run: npm run knip
+        run: npm run knip --include dependencies
