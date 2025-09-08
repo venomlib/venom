@@ -35,3 +35,6 @@ jobs:
 
       - name: Build source code
         run: npm run build
+
+      - name: Dependency check
+        run: npm run knip
