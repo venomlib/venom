@@ -65,7 +65,7 @@
   ],
   "homepage": "https://github.com/orkestral/venom#readme",
   "overrides": {
-    "strip-ansi": "=7.1.0",
+    "strip-ansi": "=7.1.2",
     "simple-swizzle": "0.2.2"
   },
   "devDependencies": {
