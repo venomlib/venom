@@ -28,13 +28,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Install dependencies
+      - name: Install dependencies and build
         run: npm install
         env:
           PUPPETEER_SKIP_DOWNLOAD: 'true'
-
-      - name: Build source code
-        run: npm run build
 
       - name: Dependency check
         run: npm run knip
