@@ -82,7 +82,7 @@ function isVersionAtLeast(v1, v2) {
 
   // Lexicographic comparison on the numeric parts
   for (let i = 0; i < maxLen; i++) {
-    if (parts1[i] > parts2[i]) return true;
+    if (parts1[i] >= parts2[i]) return true;
     if (parts1[i] < parts2[i]) return false;
   }
   return true; // They are equal
