@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function copy() {
-  return src('./Counter.js').pipe(
+  return src(path.resolve(__dirname, './Counter.js')).pipe(
     dest(path.resolve(__dirname, '../../../dist/lib/counter'))
   );
 }
