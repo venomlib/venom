@@ -15,8 +15,8 @@ export const _serializeMessageObj = async (obj) => {
     chatId: obj?.id?.remote
       ? obj?.id?.remote
       : obj?.chatId?._serialized
-      ? obj?.chatId?._serialized
-      : undefined,
+        ? obj?.chatId?._serialized
+        : undefined,
     to: obj?.to?._serialized ? obj?.to?._serialized : undefined,
     fromMe: obj?.id?.fromMe,
     sender: obj?.senderObj

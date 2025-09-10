@@ -93,7 +93,7 @@ export class HostLayer {
       !this.autoCloseInterval &&
       !this.page.isClosed()
     ) {
-      this.statusFind && this.statusFind('autocloseCalled', this.session);
+      if (this.statusFind) this.statusFind('autocloseCalled', this.session);
       this.page.close().catch(() => {});
       this.browser.close().catch(() => {});
     }
@@ -217,7 +217,7 @@ export class HostLayer {
 
     if (authenticated === false) {
       this.spin('Waiting for QRCode Scan...');
-      statusFind && statusFind('notLogged', this.session);
+      if (this.statusFind) statusFind('notLogged', this.session);
 
       await this.waitForQrCodeScan(catchQR).catch(() => undefined);
 
@@ -229,20 +229,20 @@ export class HostLayer {
 
       if (authenticated === null || JSON.stringify(authenticated) === '{}') {
         this.spin('Failed to authenticate');
-        statusFind && statusFind('qrReadFail', this.session);
+        if (this.statusFind) statusFind('qrReadFail', this.session);
       } else if (authenticated) {
         this.spin('QRCode Success');
-        statusFind && statusFind('qrReadSuccess', this.session);
+        if (this.statusFind) statusFind('qrReadSuccess', this.session);
       } else {
         this.spin('QRCode Fail', 'fail');
-        statusFind && statusFind('qrReadFail', this.session);
+        if (this.statusFind) statusFind('qrReadFail', this.session);
         this.cancelAutoClose();
         this.tryAutoClose();
         throw 'Failed to read the QRCode';
       }
     } else if (authenticated === true) {
       this.spin('Authenticated');
-      statusFind && statusFind('isLogged', this.session);
+      if (this.statusFind) statusFind('isLogged', this.session);
     }
 
     if (authenticated === true) {
@@ -256,7 +256,7 @@ export class HostLayer {
 
       if (!inChat) {
         this.spin('Phone not connected', 'fail');
-        statusFind && statusFind('phoneNotConnected', this.session);
+        if (this.statusFind) statusFind('phoneNotConnected', this.session);
         this.cancelAutoClose();
         this.tryAutoClose();
         throw new Error('Phone not connected');
@@ -312,7 +312,7 @@ export class HostLayer {
   /**
    * @returns Current host device details
    */
-  public async getHostDevice(): Promise<Object> {
+  public async getHostDevice(): Promise<object> {
     return await this.page.evaluate(() => WAPI.getHost());
   }
 

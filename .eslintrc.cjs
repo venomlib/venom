@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-module.exports = {
+export default {
   root: true,
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
@@ -60,7 +60,7 @@ module.exports = {
       }
     },
     {
-      files: ['src/lib/**/webpack.*.js', 'src/lib/**/gulpfile.js'],
+      files: ['src/lib/**/webpack.*.js', 'src/lib/**/gulpfile.mjs'],
       env: {
         browser: false,
         node: true

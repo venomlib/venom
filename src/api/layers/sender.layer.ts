@@ -52,7 +52,7 @@ export class SenderLayer extends ListenerLayer {
     description: string,
     buttonText: string,
     menu: Array<any>
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const result = await this.page.evaluate(
         ({ to, title, subTitle, description, buttonText, menu }) => {
@@ -288,7 +288,7 @@ export class SenderLayer extends ListenerLayer {
     title: string,
     subtitle: string,
     buttons: any
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'sendButtons';
       const type = 'string';
@@ -348,7 +348,7 @@ export class SenderLayer extends ListenerLayer {
     subtitle: string,
     footer: string,
     buttons: any
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const result = await this.page.evaluate(
         ({ to, title, subtitle, footer, buttons }) => {
@@ -379,7 +379,7 @@ export class SenderLayer extends ListenerLayer {
     checkNumber?: boolean,
     forcingReturn?: boolean,
     delSend?: boolean
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'sendText';
       const type = 'string';

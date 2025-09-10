@@ -1,10 +1,10 @@
 import { AckType } from '../../api/model/enum/ack-type';
 export class callbackWile {
-  obj: Object;
+  obj: object;
   constructor() {
     this.obj = [];
   }
-  addObjects(ids: AckType | String, serializeds: string) {
+  addObjects(ids: AckType | string, serializeds: string) {
     let checkFilter = this.obj['filter'](
       (order: any) => order.serialized === serializeds
     );
@@ -29,7 +29,7 @@ export class callbackWile {
     return false;
   }
 
-  checkObj(id: AckType | String, serialized: string) {
+  checkObj(id: AckType | string, serialized: string) {
     let checkFilter = this.obj['filter'](
       (order: any) => order.id === id && order.serialized === serialized
     );

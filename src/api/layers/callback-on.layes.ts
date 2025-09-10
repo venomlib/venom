@@ -19,7 +19,7 @@ export class CallbackOnStatus {
     while (true) {
       if (this.statusFind !== change) {
         change = this.statusFind;
-        event && event(change);
+        if (event) event(change);
       }
       await sleep(50);
     }
