@@ -176,7 +176,6 @@ export async function create(
       text: `Node.js version verified successfully!`
     });
 
-
     const mergedOptions = { ...defaultOptions, ...options };
 
     if (!mergedOptions.disableWelcome) {

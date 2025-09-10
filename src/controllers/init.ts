@@ -19,9 +19,6 @@ export async function connect(options?: options) {
     }
   }
 
-  if (mergeOptionsDefault.updatesLog) {
-  }
-
   // const wpage: Browser | boolean = await initBrowser(mergeOptionsDefault);
   // if (typeof wpage !== 'boolean') {
   //   const page: boolean | Page = await initWhatsapp(mergeOptionsDefault, wpage);
