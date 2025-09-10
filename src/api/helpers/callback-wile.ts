@@ -1,6 +1,6 @@
-import { AckType } from '../../api/model/enum/ack-type';
+import { AckType } from '../model/enum';
 export class callbackWile {
-  obj: object;
+  obj: Array<{ id: AckType | string; serialized: string }>;
   constructor() {
     this.obj = [];
   }
