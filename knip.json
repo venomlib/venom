@@ -1,4 +1,4 @@
 {
   "include": ["dependencies"],
-  "ignoreDependencies": ["webpack-cli", "ts-loader", "typescript-eslint"]
+  "ignoreDependencies": ["webpack-cli", "ts-loader", "typescript-eslint", "eslint-config-prettier", "eslint-plugin-prettier", "prettier"]
 }
