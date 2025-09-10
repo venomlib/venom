@@ -28,12 +28,12 @@ export async function sendContactVcard(chatId, contact, name) {
     });
 
     if (inChat) {
-      chat.lastReceivedKey && chat.lastReceivedKey._serialized
-        ? (chat.lastReceivedKey._serialized = inChat._serialized)
-        : '';
-      chat.lastReceivedKey && chat.lastReceivedKey.id
-        ? (chat.lastReceivedKey.id = inChat.id)
-        : '';
+      if (chat.lastReceivedKey?.hasOwnProperty('_serialized')) {
+        chat.lastReceivedKey._serialized = inChat._serialized;
+      }
+      if (chat.lastReceivedKey?.hasOwnProperty('id')) {
+        chat.lastReceivedKey.id = inChat.id;
+      }
     }
 
     if (!newMsgId) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 'use strict';
 (function (aa) {
   function C(e, b, a) {
@@ -25,13 +26,13 @@
     if (t !== parseInt(t, 10) || 1 > t)
       throw Error('numRounds must a integer >= 1');
     if ('SHA-1' === e)
-      (n = 512),
+      ((n = 512),
         (q = K),
         (u = ba),
         (f = 160),
         (r = function (b) {
           return b.slice();
-        });
+        }));
     else if (0 === e.lastIndexOf('SHA-', 0))
       if (
         ((q = function (b, k) {
@@ -40,9 +41,9 @@
         (u = function (b, k, h, a) {
           var d, f;
           if ('SHA-224' === e || 'SHA-256' === e)
-            (d = (((k + 65) >>> 9) << 4) + 15), (f = 16);
+            ((d = (((k + 65) >>> 9) << 4) + 15), (f = 16));
           else if ('SHA-384' === e || 'SHA-512' === e)
-            (d = (((k + 129) >>> 10) << 5) + 31), (f = 32);
+            ((d = (((k + 129) >>> 10) << 5) + 31), (f = 32));
           else throw Error('Unexpected error in SHA-2 implementation');
           for (; b.length <= d; ) b.push(0);
           b[k >>> 5] |= 128 << (24 - (k % 32));
@@ -95,10 +96,10 @@
         }),
         'SHA-224' === e)
       )
-        (n = 512), (f = 224);
-      else if ('SHA-256' === e) (n = 512), (f = 256);
-      else if ('SHA-384' === e) (n = 1024), (f = 384);
-      else if ('SHA-512' === e) (n = 1024), (f = 512);
+        ((n = 512), (f = 224));
+      else if ('SHA-256' === e) ((n = 512), (f = 256));
+      else if ('SHA-384' === e) ((n = 1024), (f = 384));
+      else if ('SHA-512' === e) ((n = 1024), (f = 512));
       else throw Error('Chosen SHA variant is not supported');
     else if (
       0 === e.lastIndexOf('SHA3-', 0) ||
@@ -113,12 +114,12 @@
         return e;
       };
       w = 1;
-      if ('SHA3-224' === e) (n = 1152), (f = 224);
-      else if ('SHA3-256' === e) (n = 1088), (f = 256);
-      else if ('SHA3-384' === e) (n = 832), (f = 384);
-      else if ('SHA3-512' === e) (n = 576), (f = 512);
-      else if ('SHAKE128' === e) (n = 1344), (f = -1), (F = 31), (z = !0);
-      else if ('SHAKE256' === e) (n = 1088), (f = -1), (F = 31), (z = !0);
+      if ('SHA3-224' === e) ((n = 1152), (f = 224));
+      else if ('SHA3-256' === e) ((n = 1088), (f = 256));
+      else if ('SHA3-384' === e) ((n = 832), (f = 384));
+      else if ('SHA3-512' === e) ((n = 576), (f = 512));
+      else if ('SHAKE128' === e) ((n = 1344), (f = -1), (F = 31), (z = !0));
+      else if ('SHAKE256' === e) ((n = 1088), (f = -1), (F = 31), (z = !0));
       else throw Error('Chosen SHA variant is not supported');
       u = function (b, e, a, k, h) {
         a = n;
@@ -129,7 +130,7 @@
           m = 0,
           c = e >>> 5;
         for (f = 0; f < c && e >= a; f += l)
-          (k = D(b.slice(f, f + l), k)), (e -= a);
+          ((k = D(b.slice(f, f + l), k)), (e -= a));
         b = b.slice(f);
         for (e %= a; b.length < l; ) b.push(0);
         f = e >>> 3;
@@ -167,7 +168,7 @@
         a[h] &= 4294967040;
       }
       for (b = 0; b <= h; b += 1)
-        (v[b] = a[b] ^ 909522486), (x[b] = a[b] ^ 1549556828);
+        ((v[b] = a[b] ^ 909522486), (x[b] = a[b] ^ 1549556828));
       m = q(v, m);
       k = n;
       I = !0;
@@ -241,10 +242,10 @@
       }
       n = u(h.slice(), l, k, r(m), f);
       for (g = 1; g < t; g += 1)
-        !0 === z &&
+        (!0 === z &&
           0 !== f % 32 &&
           (n[n.length - 1] &= 16777215 >>> (24 - (f % 32))),
-          (n = u(n, f, 0, A(e), f));
+          (n = u(n, f, 0, A(e), f)));
       return d(n);
     };
     this.getHMAC = function (b, a) {
@@ -310,10 +311,10 @@
     l = d >>> 3;
     p = -1 === k ? 3 : 0;
     for (h = 0; h < a.length; h += 1)
-      (c = h + l),
+      ((c = h + l),
         (g = c >>> 2),
         b.length <= g && b.push(0),
-        (b[g] |= a[h] << (8 * (p + (c % 4) * k)));
+        (b[g] |= a[h] << (8 * (p + (c % 4) * k))));
     return { value: b, binLen: 8 * a.length + d };
   }
   function O(a, b, d, k) {
@@ -322,10 +323,10 @@
     var l, g, c;
     c = -1 === d ? 3 : 0;
     for (l = 0; l < b; l += 1)
-      (g = a[l >>> 2] >>> (8 * (c + (l % 4) * d))),
+      ((g = a[l >>> 2] >>> (8 * (c + (l % 4) * d))),
         (h +=
           '0123456789abcdef'.charAt((g >>> 4) & 15) +
-          '0123456789abcdef'.charAt(g & 15));
+          '0123456789abcdef'.charAt(g & 15)));
     return k.outputUpper ? h.toUpperCase() : h;
   }
   function P(a, b, d, k) {
@@ -362,8 +363,8 @@
     var h, c, g;
     g = -1 === d ? 3 : 0;
     for (h = 0; h < b; h += 1)
-      (c = (a[h >>> 2] >>> (8 * (g + (h % 4) * d))) & 255),
-        (k += String.fromCharCode(c));
+      ((c = (a[h >>> 2] >>> (8 * (g + (h % 4) * d))) & 255),
+        (k += String.fromCharCode(c)));
     return k;
   }
   function R(a, b, d) {
@@ -461,23 +462,23 @@
                   128 > g
                     ? m.push(g)
                     : 2048 > g
-                    ? (m.push(192 | (g >>> 6)), m.push(128 | (g & 63)))
-                    : 55296 > g || 57344 <= g
-                    ? m.push(
-                        224 | (g >>> 12),
-                        128 | ((g >>> 6) & 63),
-                        128 | (g & 63)
-                      )
-                    : ((f += 1),
-                      (g =
-                        65536 +
-                        (((g & 1023) << 10) | (a.charCodeAt(f) & 1023))),
-                      m.push(
-                        240 | (g >>> 18),
-                        128 | ((g >>> 12) & 63),
-                        128 | ((g >>> 6) & 63),
-                        128 | (g & 63)
-                      )),
+                      ? (m.push(192 | (g >>> 6)), m.push(128 | (g & 63)))
+                      : 55296 > g || 57344 <= g
+                        ? m.push(
+                            224 | (g >>> 12),
+                            128 | ((g >>> 6) & 63),
+                            128 | (g & 63)
+                          )
+                        : ((f += 1),
+                          (g =
+                            65536 +
+                            (((g & 1023) << 10) | (a.charCodeAt(f) & 1023))),
+                          m.push(
+                            240 | (g >>> 18),
+                            128 | ((g >>> 12) & 63),
+                            128 | ((g >>> 6) & 63),
+                            128 | (g & 63)
+                          )),
                   n = 0;
                 n < m.length;
                 n += 1
@@ -530,11 +531,11 @@
           for (p = 0; p < b.length; p += 4) {
             q = b.substr(p, 4);
             for (f = n = 0; f < q.length; f += 1)
-              (m =
+              ((m =
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.indexOf(
                   q.charAt(f)
                 )),
-                (n |= m << (18 - 6 * f));
+                (n |= m << (18 - 6 * f)));
             for (f = 0; f < q.length - 1; f += 1) {
               r = c + u;
               for (m = r >>> 2; a.length <= m; ) a.push(0);
@@ -553,11 +554,11 @@
           p = e >>> 3;
           q = -1 === d ? 3 : 0;
           for (m = 0; m < b.length; m += 1)
-            (c = b.charCodeAt(m)),
+            ((c = b.charCodeAt(m)),
               (n = m + p),
               (f = n >>> 2),
               a.length <= f && a.push(0),
-              (a[f] |= c << (8 * (q + (n % 4) * d)));
+              (a[f] |= c << (8 * (q + (n % 4) * d))));
           return { value: a, binLen: 8 * b.length + e };
         };
         break;
@@ -596,8 +597,11 @@
       ? ((b -= 32),
         new a((e.b << b) | (e.a >>> (32 - b)), (e.a << b) | (e.b >>> (32 - b))))
       : 0 !== b
-      ? new a((e.a << b) | (e.b >>> (32 - b)), (e.b << b) | (e.a >>> (32 - b)))
-      : e;
+        ? new a(
+            (e.a << b) | (e.b >>> (32 - b)),
+            (e.b << b) | (e.a >>> (32 - b))
+          )
+        : e;
   }
   function x(a, b) {
     return (a >>> b) | (a << (32 - b));
@@ -837,21 +841,21 @@
     g = b[3];
     m = b[4];
     for (f = 0; 80 > f; f += 1)
-      (d[f] =
+      ((d[f] =
         16 > f ? a[f] : y(d[f - 3] ^ d[f - 8] ^ d[f - 14] ^ d[f - 16], 1)),
         (p =
           20 > f
             ? H(y(k, 5), (c & l) ^ (~c & g), m, 1518500249, d[f])
             : 40 > f
-            ? H(y(k, 5), c ^ l ^ g, m, 1859775393, d[f])
-            : 60 > f
-            ? H(y(k, 5), W(c, l, g), m, 2400959708, d[f])
-            : H(y(k, 5), c ^ l ^ g, m, 3395469782, d[f])),
+              ? H(y(k, 5), c ^ l ^ g, m, 1859775393, d[f])
+              : 60 > f
+                ? H(y(k, 5), W(c, l, g), m, 2400959708, d[f])
+                : H(y(k, 5), c ^ l ^ g, m, 3395469782, d[f])),
         (m = g),
         (g = l),
         (l = y(c, 30)),
         (c = k),
-        (k = p);
+        (k = p));
     b[0] = G(k, b[0]);
     b[1] = G(c, b[1]);
     b[2] = G(l, b[2]);
@@ -896,7 +900,7 @@
       E = [],
       J;
     if ('SHA-224' === d || 'SHA-256' === d)
-      (u = 64),
+      ((u = 64),
         (t = 1),
         (D = Number),
         (v = G),
@@ -908,9 +912,9 @@
         (F = ha),
         (C = W),
         (B = ca),
-        (J = c);
+        (J = c));
     else if ('SHA-384' === d || 'SHA-512' === d)
-      (u = 80),
+      ((u = 80),
         (t = 2),
         (D = a),
         (v = oa),
@@ -922,7 +926,7 @@
         (F = ia),
         (C = ea),
         (B = da),
-        (J = X);
+        (J = X));
     else throw Error('Unexpected error in SHA-2 implementation');
     d = b[0];
     k = b[1];
@@ -933,7 +937,7 @@
     p = b[6];
     f = b[7];
     for (r = 0; r < u; r += 1)
-      16 > r
+      (16 > r
         ? ((q = r * t),
           (n = e.length <= q ? 0 : e[q]),
           (q = e.length <= q + 1 ? 0 : e[q + 1]),
@@ -948,7 +952,7 @@
         (l = h),
         (h = k),
         (k = d),
-        (d = v(n, q));
+        (d = v(n, q)));
     b[0] = v(d, b[0]);
     b[1] = v(k, b[1]);
     b[2] = v(h, b[2]);
@@ -1135,7 +1139,9 @@
         return C;
       })
     : 'undefined' !== typeof exports
-    ? ('undefined' !== typeof module && module.exports && (module.exports = C),
-      (exports = C))
-    : (aa.jsSHA = C);
+      ? ('undefined' !== typeof module &&
+          module.exports &&
+          (module.exports = C),
+        (exports = C))
+      : (aa.jsSHA = C);
 })(this);

@@ -122,7 +122,7 @@ import {
   onlySendAdmin,
   createCommunity,
   pollCreation
-} from './functions';
+} from './functions/index.js';
 import {
   base64ToFile,
   generateMediaKey,
@@ -130,7 +130,7 @@ import {
   arrayBufferToBase64,
   sleep,
   injectConfig
-} from './helper';
+} from './helper/index.js';
 import {
   addNewMessagesListener,
   addOnAddedToGroup,
@@ -145,7 +145,7 @@ import {
   addonUnreadMessage,
   addonChatState,
   addOnStream
-} from './listeners';
+} from './listeners/index.js';
 import {
   _serializeChatObj,
   _serializeContactObj,
@@ -154,8 +154,8 @@ import {
   _serializeRawObj,
   _serializeMeObj,
   _serializeForcing
-} from './serializers';
-import { getStore } from './store/get-store';
+} from './serializers/index.js';
+import { getStore } from './store/get-store.js';
 
 window.Store = {};
 

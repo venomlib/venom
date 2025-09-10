@@ -23,8 +23,8 @@ export const serializeMessageObj = (obj) => {
       obj.id && obj.id.remote
         ? obj.id.remote
         : obj.chatId && obj.chatId._serialized
-        ? obj.chatId._serialized
-        : undefined,
+          ? obj.chatId._serialized
+          : undefined,
     to: obj.to
       ? obj.to._serialized
         ? obj.to._serialized

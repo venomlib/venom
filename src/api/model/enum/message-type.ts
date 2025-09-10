@@ -17,7 +17,9 @@ export enum MediaType {
   IMAGE = 'Image',
   VIDEO = 'Video',
   AUDIO = 'Audio',
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   PTT = 'Audio',
   DOCUMENT = 'Document',
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   STICKER = 'Image'
 }

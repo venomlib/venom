@@ -13,7 +13,7 @@ export async function demoteParticipant(groupId, contactsId, done) {
     .map((c) => c.id);
 
   if (!contactsId.length) {
-    typeof done === 'function' && done(false);
+    if (typeof done === 'function') done(false);
     return false;
   }
 
@@ -25,6 +25,6 @@ export async function demoteParticipant(groupId, contactsId, done) {
 
   await window.Store.Participants.demoteParticipants(chat, participants);
 
-  typeof done === 'function' && done(true);
+  if (typeof done === 'function') done(false);
   return true;
 }

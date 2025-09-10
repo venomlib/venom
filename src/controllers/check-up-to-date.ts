@@ -1,7 +1,7 @@
 import { upToDate } from '../utils/semver';
 import boxen from 'boxen';
 import chalk from 'chalk';
-const { version } = require('../../package.json');
+import { version } from '../../package.json';
 import npmCheckUpdates from 'npm-check-updates';
 
 let updatesChecked = false;

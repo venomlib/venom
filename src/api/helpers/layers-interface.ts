@@ -15,8 +15,8 @@ export function checkValuesSender(data: any) {
           data[i].type && data[i].value && infoType(data[i].value, data[i].type)
             ? true
             : !data[i].value && data[i].isUser === false
-            ? true
-            : false;
+              ? true
+              : false;
         if (!result) {
           return {
             erro: true,

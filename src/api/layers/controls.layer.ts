@@ -178,7 +178,7 @@ export class ControlsLayer extends UILayer {
   public async deleteMessage(
     chatId: string,
     messageId: string[]
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'deleteMessage';
       const type = 'string';

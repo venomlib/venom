@@ -61,17 +61,17 @@ interface WAPI {
   getChatIsOnline: (chatId: string) => Promise<boolean>;
   getLastSeen: (chatId: string) => Promise<number | boolean>;
   getContact: (contactId: string) => Contact;
-  getGroupAdmins: (groupId: string) => Object;
+  getGroupAdmins: (groupId: string) => object;
   getGroupInfoFromInviteLink: (inviteCode: string) => Promise<string | boolean>;
   getGroupInviteLink: (chatId: string) => Promise<string>;
   revokeGroupInviteLink: (chatId: string) => Promise<boolean>;
-  getGroupParticipant: (groupId: string, time: string) => Object;
+  getGroupParticipant: (groupId: string, time: string) => object;
   getHost: () => any; //HostDevice;
   getListMute: (type?: string) => object;
-  getStateConnection: () => String;
-  getNewMessageId: (chatId: string) => Object;
+  getStateConnection: () => string;
+  getNewMessageId: (chatId: string) => object;
   getMessageById: (messageId: string) => Promise<Message>;
-  getNumberProfile: (contactId: string) => Object;
+  getNumberProfile: (contactId: string) => object;
   getProfilePicFromServer: (chatId: string) => string;
   getStatus: (contactId: string) => ContactStatus;
   getTheme: () => string;
@@ -131,7 +131,7 @@ interface WAPI {
     caption: string,
     type?: string,
     status?: boolean,
-    passId?: Object,
+    passId?: object,
     checkNumber?: boolean,
     forcingReturn?: boolean,
     delSend?: boolean
@@ -143,7 +143,7 @@ interface WAPI {
     caption?: string,
     type?: string | boolean,
     status?: boolean,
-    passId?: Object
+    passId?: object
   ) => Promise<SendFileResult>;
   sendImageAsSticker: (
     webpBase64: string,
@@ -183,16 +183,16 @@ interface WAPI {
     description: string,
     buttonText: string,
     menu: Array<any>
-  ) => Promise<Object>;
+  ) => Promise<object>;
   sendMessage: (
     to: string,
     content: string,
     status?: boolean,
-    passId?: Object,
+    passId?: object,
     checkNumber?: boolean,
     forcingReturn?: boolean,
     delSend?: boolean
-  ) => Promise<Object>;
+  ) => Promise<object>;
   sendButtons: (
     to: string,
     title: string,
@@ -263,7 +263,7 @@ interface WAPI {
   onChatState: (callback: Function) => void;
   onUnreadMessage: (callback: Function) => void;
   setGroupDescription: (groupId: string, description: string) => object;
-  sendReactions: (IdMessage: string, emoji: String) => void;
+  sendReactions: (IdMessage: string, emoji: string) => void;
   addChatWapi: () => void;
   processMessageObj: (a: any, b: any, c: any) => any;
   createCommunity: (name: string, description: string) => void;

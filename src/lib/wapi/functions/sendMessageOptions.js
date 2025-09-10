@@ -79,9 +79,8 @@ export async function sendMessageOptions(chatId, content, options = {}) {
       if (parsed) {
         vcardOptions = {
           type: 'vcard',
-          vcardFormattedName: await window.Store.VCard.vcardGetNameFromParsed(
-            parsed
-          )
+          vcardFormattedName:
+            await window.Store.VCard.vcardGetNameFromParsed(parsed)
         };
       }
     } catch (_) {

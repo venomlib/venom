@@ -1,9 +1,9 @@
 import { Page, Browser } from 'puppeteer';
 import { HostLayer } from './host.layer';
 import * as path from 'path';
-const { exec } = require('child_process');
+import { exec } from 'child_process';
 
-const fs = require('fs');
+import fs from 'fs';
 import {
   base64MimeType,
   fileToBase64,
@@ -146,7 +146,7 @@ export class ProfileLayer extends HostLayer {
             force: true
           });
         } catch {
-          exec(`rm -Rf ${folderSession}`).catch(() => {});
+          exec(`rm -Rf ${folderSession}`);
         }
       }
     }
