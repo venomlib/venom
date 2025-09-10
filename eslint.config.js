@@ -63,9 +63,8 @@ export default defineConfig([
     files: ['src/lib/**/*.{js,mjs}'],
 
     languageOptions: {
-      ecmaVersion: 6,
+      ecmaVersion: 'latest',
       sourceType: 'module',
-      parserOptions: {},
 
       globals: {
         ...globals.amd,
@@ -81,7 +80,7 @@ export default defineConfig([
     },
 
     rules: {
-      '@typescript-eslint/no-array-constructor': 'off',
+      'no-array-constructor': 'off',
       'no-prototype-builtins': 'off',
       'no-redeclare': 'off',
       'no-console': 0

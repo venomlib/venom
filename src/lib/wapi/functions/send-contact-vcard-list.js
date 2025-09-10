@@ -34,7 +34,7 @@ export async function sendContactVcardList(chatId, contacts) {
     });
 
     var ar = await Promise.all(conta);
-    var cont = new Array();
+    var cont = [];
 
     for (var key in ar) {
       if (typeof ar[key] === 'object') {

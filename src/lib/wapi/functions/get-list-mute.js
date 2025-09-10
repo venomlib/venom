@@ -1,7 +1,7 @@
 export async function getListMute(type = 'all') {
   var muteList = (await window.Store.Mute)._models,
-    noMute = new Array(),
-    toMute = new Array();
+    noMute = [],
+    toMute = [];
   for (var i in muteList)
     if (muteList[i].__x_isMuted) {
       toMute.push(WAPI.interfaceMute(muteList[i]));
