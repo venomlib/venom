@@ -60,7 +60,7 @@ export default defineConfig([
     }
   },
   {
-    files: ['src/lib/**/*.js'],
+    files: ['src/lib/**/*.{js,mjs}'],
 
     languageOptions: {
       ecmaVersion: 6,
@@ -88,7 +88,7 @@ export default defineConfig([
     }
   },
   {
-    files: ['src/lib/**/webpack.*.js', 'src/lib/**/gulpfile.mjs'],
+    files: ['src/lib/**/webpack.*.{js,mjs}', 'src/lib/**/gulpfile.mjs'],
 
     languageOptions: {
       globals: {
