@@ -1,18 +1,18 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig, defaultOptions } from '../../config/create-config';
-import { SocketState } from '../model/enum';
+import { CreateConfig, defaultOptions } from '../../config/create-config.js';
+import { SocketState } from '../model/enum/index.js';
 //import { injectApi } from '../../controllers/browser';
-import { ScrapQrcode } from '../model/qrcode';
-import { scrapeImg } from '../helpers';
+import { ScrapQrcode } from '../model/qrcode.js';
+import { scrapeImg } from '../helpers/index.js';
 import {
   asciiQr,
   isAuthenticated,
   isInsideChats,
   needsToScan,
   retrieveQR
-} from '../../controllers/auth';
-import { sleep } from '../../utils/sleep';
-import { getSpinnies } from '../../utils/spinnies';
+} from '../../controllers/auth.js';
+import { sleep } from '../../utils/sleep.js';
+import { getSpinnies } from '../../utils/spinnies.js';
 import * as Spinnies from 'spinnies';
 
 export class HostLayer {

@@ -1,5 +1,5 @@
 import { Page, Browser } from 'puppeteer';
-import { HostLayer } from './host.layer';
+import { HostLayer } from './host.layer.js';
 import * as path from 'path';
 import { exec } from 'child_process';
 
@@ -9,8 +9,8 @@ import {
   fileToBase64,
   downloadFileToBase64,
   resizeImg
-} from '../helpers';
-import { CreateConfig } from '../../config/create-config';
+} from '../helpers/index.js';
+import { CreateConfig } from '../../config/create-config.js';
 
 export class ProfileLayer extends HostLayer {
   constructor(

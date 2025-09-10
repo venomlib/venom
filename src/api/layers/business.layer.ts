@@ -1,5 +1,5 @@
 import { Browser, Page } from 'puppeteer';
-import { ControlsLayer } from './controls.layer';
+import { ControlsLayer } from './controls.layer.js';
 
 export class BusinessLayer extends ControlsLayer {
   constructor(

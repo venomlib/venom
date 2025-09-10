@@ -1,4 +1,4 @@
-import { AckType } from '../model/enum';
+import { AckType } from '../model/enum/index.js';
 export class callbackWile {
   obj: Array<{ id: AckType | string; serialized: string }>;
   constructor() {

@@ -1,15 +1,15 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { RetrieverLayer } from './retriever.layer';
-import { checkValuesSender } from '../helpers/layers-interface';
+import { CreateConfig } from '../../config/create-config.js';
+import { RetrieverLayer } from './retriever.layer.js';
+import { checkValuesSender } from '../helpers/layers-interface.js';
 import {
   base64MimeType,
   fileToBase64,
   downloadFileToBase64,
   resizeImg
-} from '../helpers';
-import { GroupSettings } from '../model/enum';
-import { Chat } from '../model';
+} from '../helpers/index.js';
+import { GroupSettings } from '../model/enum/index.js';
+import { Chat } from '../model/index.js';
 
 export class GroupLayer extends RetrieverLayer {
   constructor(

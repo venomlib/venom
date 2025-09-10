@@ -1,18 +1,18 @@
 import * as path from 'path';
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
+import { CreateConfig } from '../../config/create-config.js';
 import {
   base64MimeType,
   downloadFileToBase64,
   fileToBase64,
   stickerSelect,
   dowloadMetaFileBase64
-} from '../helpers';
-import { filenameFromMimeType } from '../helpers/filename-from-mimetype';
-import { Message, SendFileResult, SendStickerResult } from '../model';
-import { ChatState } from '../model/enum';
-import { Scope, checkValuesSender } from '../helpers/layers-interface';
-import { ListenerLayer } from './listener.layer';
+} from '../helpers/index.js';
+import { filenameFromMimeType } from '../helpers/filename-from-mimetype.js';
+import { Message, SendFileResult, SendStickerResult } from '../model/index.js';
+import { ChatState } from '../model/enum/index.js';
+import { Scope, checkValuesSender } from '../helpers/layers-interface.js';
+import { ListenerLayer } from './listener.layer.js';
 import { Mutex } from 'async-mutex';
 
 let obj: Scope;

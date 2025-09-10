@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { ScrapQrcode } from '../model/qrcode';
+import { ScrapQrcode } from '../model/qrcode.js';
 
 export async function scrapeImg(page: Page): Promise<ScrapQrcode | undefined> {
   let click = await page.evaluate(async () => {

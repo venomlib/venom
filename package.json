@@ -44,6 +44,7 @@
     "release": "release-it",
     "start": "npm run build:venom & tsc app.ts && node app.js",
     "test": "node ./test/index.js",
+    "test:cjs": "node ./test/test-cjs.js",
     "test:app": "node ./app.js",
     "watch": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
     "knip": "knip"
