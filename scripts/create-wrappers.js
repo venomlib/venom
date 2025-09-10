@@ -1,5 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 // Create dist directory if it doesn't exist
 const distDir = path.join(__dirname, '..', 'dist');
@@ -15,10 +22,12 @@ module.exports = require('./cjs/index.js');
 
 // Create ESM wrapper
 const esmWrapper = `export * from './esm/index.js';
+export { default } from './esm/index.js';
 `;
 
 // Create TypeScript definitions wrapper
 const dtsWrapper = `export * from './esm/index';
+export { default } from './esm/index';
 `;
 
 // Write wrapper files
