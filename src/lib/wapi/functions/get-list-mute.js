@@ -1,11 +1,13 @@
 export async function getListMute(type = 'all') {
   var muteList = (await window.Store.Mute)._models,
-    noMute = new Array(),
-    toMute = new Array();
+    noMute = [],
+    toMute = [];
   for (var i in muteList)
-    muteList[i].__x_isMuted
-      ? toMute.push(WAPI.interfaceMute(muteList[i]))
-      : noMute.push(WAPI.interfaceMute(muteList[i]));
+    if (muteList[i].__x_isMuted) {
+      toMute.push(WAPI.interfaceMute(muteList[i]));
+    } else {
+      noMute.push(WAPI.interfaceMute(muteList[i]));
+    }
   var r = null;
   console.log(0, type);
   switch (type) {

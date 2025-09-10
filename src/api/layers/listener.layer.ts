@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { ExposedFn } from '../helpers/exposed.enum';
+import { CreateConfig } from '../../config/create-config.js';
+import { ExposedFn } from '../helpers/exposed.enum.js';
 import {
   Ack,
   Chat,
@@ -11,13 +11,13 @@ import {
   ParticipantEvent,
   PicTumb,
   ChatStatus
-} from '../model';
-import { SocketState, SocketStream } from '../model/enum';
-import { InterfaceChangeMode } from '../model';
-import { InterfaceMode } from '../model/enum/interface-mode';
-import { InterfaceState } from '../model/enum/interface-state';
-import { ProfileLayer } from './profile.layer';
-import { callbackWile } from '../helpers';
+} from '../model/index.js';
+import { SocketState, SocketStream } from '../model/enum/index.js';
+import { InterfaceChangeMode } from '../model/index.js';
+import { InterfaceMode } from '../model/enum/interface-mode.js';
+import { InterfaceState } from '../model/enum/interface-state.js';
+import { ProfileLayer } from './profile.layer.js';
+import { callbackWile } from '../helpers/index.js';
 
 declare global {
   interface Window {

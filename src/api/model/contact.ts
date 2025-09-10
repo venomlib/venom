@@ -1,4 +1,4 @@
-import { Id } from './id';
+import { Id } from './id.js';
 
 export interface Contact {
   formattedName: string;

@@ -1,9 +1,9 @@
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import * as qrcode from 'qrcode-terminal';
-import { ScrapQrcode } from '../api/model/qrcode';
-import { sleep } from '../utils/sleep';
-import { Whatsapp } from '../api/whatsapp';
+import { ScrapQrcode } from '../api/model/qrcode.js';
+import { sleep } from '../utils/sleep.js';
+import { Whatsapp } from '../api/whatsapp.js';
 
 export const getInterfaceStatus = async (waPage: puppeteer.Page) => {
   return await waPage

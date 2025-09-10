@@ -3,7 +3,7 @@ import { existsSync, unlink } from 'fs';
 import * as Spinnies from 'spinnies';
 export async function deleteFiles(
   mergedOptions: any,
-  Session: String,
+  Session: string,
   spinnies: Spinnies
 ) {
   try {

@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { sleep } from '../../utils/sleep';
+import { sleep } from '../../utils/sleep.js';
 export async function loadForceConnect(
   page: Page,
   callback: (infoLog: string | true) => void,

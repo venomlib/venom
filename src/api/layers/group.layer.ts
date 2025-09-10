@@ -1,15 +1,15 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { RetrieverLayer } from './retriever.layer';
-import { checkValuesSender } from '../helpers/layers-interface';
+import { CreateConfig } from '../../config/create-config.js';
+import { RetrieverLayer } from './retriever.layer.js';
+import { checkValuesSender } from '../helpers/layers-interface.js';
 import {
   base64MimeType,
   fileToBase64,
   downloadFileToBase64,
   resizeImg
-} from '../helpers';
-import { GroupSettings } from '../model/enum';
-import { Chat } from '../model';
+} from '../helpers/index.js';
+import { GroupSettings } from '../model/enum/index.js';
+import { Chat } from '../model/index.js';
 
 export class GroupLayer extends RetrieverLayer {
   constructor(
@@ -31,7 +31,7 @@ export class GroupLayer extends RetrieverLayer {
     groupId: string,
     settings: GroupSettings,
     value: boolean
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'setGroupSettings';
       const type = 'string';
@@ -126,7 +126,7 @@ export class GroupLayer extends RetrieverLayer {
    * @param {string} groupId group number
    * @param {string} title group title
    */
-  public async setGroupTitle(groupId: string, title: string): Promise<Object> {
+  public async setGroupTitle(groupId: string, title: string): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'setGroupTitle';
       const type = 'string';
@@ -175,7 +175,7 @@ export class GroupLayer extends RetrieverLayer {
   public async setGroupDescription(
     groupId: string,
     description: string
-  ): Promise<Object> {
+  ): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'setGroupDescription';
       const type = 'string';
@@ -252,7 +252,7 @@ export class GroupLayer extends RetrieverLayer {
    * Retrieves group members as [Id] objects
    * @param groupId group id
    */
-  public async getGroupMembers(groupId: string, time: string): Promise<Object> {
+  public async getGroupMembers(groupId: string, time: string): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'getGroupMembers';
       const type = 'string';
@@ -414,7 +414,7 @@ export class GroupLayer extends RetrieverLayer {
    * Retrieves group admins
    * @param groupId Group/Chat id ('0000000000-00000000@g.us')
    */
-  public async getGroupAdmins(groupId: string): Promise<Object> {
+  public async getGroupAdmins(groupId: string): Promise<object> {
     return new Promise(async (resolve, reject) => {
       const typeFunction = 'getGroupAdmins';
       const type = 'string';

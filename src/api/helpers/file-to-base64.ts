@@ -1,4 +1,4 @@
-const mimeTypes = require('mime-types');
+import mimeTypes from 'mime-types';
 import * as fs from 'fs';
 
 /**
@@ -6,14 +6,13 @@ import * as fs from 'fs';
  * @param path file path
  * @param mime Optional, will retrieve file mime automatically if not defined (Example: 'image/png')
  */
-export async function fileToBase64(path: string, mime?: string) {
+export async function fileToBase64(path: string, mime?: string | false) {
   if (fs.existsSync(path)) {
     const base64 = fs.readFileSync(path, { encoding: 'base64' });
     if (mime === undefined) {
-      mime = await mimeTypes.lookup(path);
+      mime = mimeTypes.lookup(path);
     }
-    const data = `data:${mime};base64,${base64}`;
-    return data;
+    return `data:${mime};base64,${base64}`;
   } else {
     return false;
   }
@@ -21,8 +20,7 @@ export async function fileToBase64(path: string, mime?: string) {
 
 export async function Mine(path: string) {
   if (fs.existsSync(path)) {
-    const mime = await mimeTypes.lookup(path);
-    return mime;
+    return mimeTypes.lookup(path);
   } else {
     return false;
   }

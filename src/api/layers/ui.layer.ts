@@ -1,7 +1,7 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { GroupLayer } from './group.layer';
-import { checkValuesSender } from '../helpers/layers-interface';
+import { CreateConfig } from '../../config/create-config.js';
+import { GroupLayer } from './group.layer.js';
+import { checkValuesSender } from '../helpers/layers-interface.js';
 
 export class UILayer extends GroupLayer {
   constructor(

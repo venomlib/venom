@@ -1,7 +1,7 @@
-const path = require('path');
+import path from 'path';
 import { existsSync } from 'fs';
 
-export function checkFileJson(mergedOptions: any, Session: String) {
+export function checkFileJson(mergedOptions: any, Session: string) {
   const pathTokens: string = path.join(
     path.resolve(
       process.cwd() + mergedOptions.mkdirFolderToken,

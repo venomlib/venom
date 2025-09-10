@@ -1,6 +1,6 @@
-import { Contact } from './contact';
-import { GroupMetadata } from './group-metadata';
-import { Id } from './id';
+import { Contact } from './contact.js';
+import { GroupMetadata } from './group-metadata.js';
+import { Id } from './id.js';
 
 export interface Chat {
   archive: boolean;
