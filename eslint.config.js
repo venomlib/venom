@@ -91,6 +91,8 @@ export default defineConfig([
     files: ['src/lib/**/webpack.*.{js,mjs}', 'src/lib/**/gulpfile.mjs'],
 
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...Object.fromEntries(
           Object.entries(globals.browser).map(([key]) => [key, 'off'])
