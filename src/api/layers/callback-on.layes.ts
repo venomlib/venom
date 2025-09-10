@@ -1,5 +1,5 @@
-import { onMode } from '../model/enum';
-import { sleep } from '../helpers';
+import { onMode } from '../model/enum/index.js';
+import { sleep } from '../helpers/index.js';
 
 /**
  * attribution and behavior change of a given event

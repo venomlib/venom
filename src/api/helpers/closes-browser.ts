@@ -1,5 +1,5 @@
 import { Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
+import { CreateConfig } from '../../config/create-config.js';
 
 export async function checkingCloses(
   browser: Browser | string,

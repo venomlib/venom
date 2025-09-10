@@ -1,7 +1,7 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { UILayer } from './ui.layer';
-import { checkValuesSender } from '../helpers/layers-interface';
+import { CreateConfig } from '../../config/create-config.js';
+import { UILayer } from './ui.layer.js';
+import { checkValuesSender } from '../helpers/layers-interface.js';
 
 export class ControlsLayer extends UILayer {
   constructor(

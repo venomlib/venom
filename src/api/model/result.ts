@@ -1,5 +1,5 @@
-import { LastReceivedKey } from './chat';
-import { HostDevice } from './host-device';
+import { LastReceivedKey } from './chat.js';
+import { HostDevice } from './host-device.js';
 
 export interface ScopeResult {
   me: HostDevice;

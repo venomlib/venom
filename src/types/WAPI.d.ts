@@ -9,7 +9,7 @@ import {
   SendLinkResult,
   SendStickerResult,
   WhatsappProfile
-} from '../api/model';
+} from '../api/model/index.js';
 
 interface WAPI {
   addParticipant: (groupId: string, contactId: string | string[]) => boolean;

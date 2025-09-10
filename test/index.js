@@ -1,8 +1,7 @@
-const { tree } = require('gulp');
-const venom = require('../dist');
+import venom from '../dist/index.mjs';
 
-
-venom.create({
+venom
+  .create({
     session: 'sessionname', //name of session
     headless: false,
     logQR: true,
@@ -21,12 +20,6 @@ async function start(client) {
   console.log(f);
   client.onMessage(async (message) => {
     console.log(message);
-    await client.sendImage(
-      message.from,
-      'C:\\Users\\Edwin\\Pictures\\Screenshots\\Screenshot 2025-08-08 130054.png',
-      'test.png',
-      'test'
-    );
   });
   // const allMessages = await client.getAllUnreadMessages();
   // console.log(allMessages);

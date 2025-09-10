@@ -1,9 +1,9 @@
 import { Page, Browser } from 'puppeteer';
-import { ControlsLayer } from './layers/controls.layer';
-import { Message } from './model';
-import { magix, timeout, makeOptions } from './helpers/decrypt';
-import { useragentOverride } from '../config/WAuserAgente';
-import { CreateConfig } from '../config/create-config';
+import { ControlsLayer } from './layers/controls.layer.js';
+import { Message } from './model/index.js';
+import { magix, timeout, makeOptions } from './helpers/decrypt.js';
+import { useragentOverride } from '../config/WAuserAgente.js';
+import { CreateConfig } from '../config/create-config.js';
 import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
@@ -57,7 +57,7 @@ export class Whatsapp extends ControlsLayer {
       }
 
       let js = await fs.readFile(
-        require.resolve(path.join(__dirname, '../lib/wapi/', 'wapi.js')),
+        path.join(process.cwd(), 'dist/lib/wapi/', 'wapi.js'),
         'utf-8'
       );
       await this.page.evaluate(js);
@@ -65,9 +65,7 @@ export class Whatsapp extends ControlsLayer {
       await this.initialize();
 
       let middleware_script = await fs.readFile(
-        require.resolve(
-          path.join(__dirname, '../lib/middleware', 'middleware.js')
-        ),
+        path.join(process.cwd(), 'dist/lib/middleware', 'middleware.js'),
         'utf-8'
       );
       await this.page.evaluate(middleware_script);

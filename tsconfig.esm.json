@@ -1,10 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
+    "module": "es2022",
+    "target": "es2022",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist/esm",
     "declaration": true,
-    "declarationDir": "./dist/esm"
+    "declarationDir": "./dist/esm",
+    "sourceMap": true
   }
 }

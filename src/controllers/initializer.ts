@@ -1,18 +1,17 @@
-import { Whatsapp } from '../api/whatsapp';
-import { CreateConfig, defaultOptions } from '../config/create-config';
-import { initWhatsapp, initBrowser, statusLog } from './browser';
-import { welcomeScreen } from './welcome';
-import { getSpinnies } from '../utils/spinnies';
+import { Whatsapp } from '../api/whatsapp.js';
+import { CreateConfig, defaultOptions } from '../config/create-config.js';
+import { initWhatsapp, initBrowser, statusLog } from './browser.js';
+import { welcomeScreen } from './welcome.js';
+import { getSpinnies } from '../utils/spinnies.js';
 import {
   SocketState,
   SocketStream,
   InterfaceMode,
   InterfaceState
-} from '../api/model/enum';
-import { InterfaceChangeMode } from '../api/model';
-import { checkingCloses } from '../api/helpers';
+} from '../api/model/enum/index.js';
+import { InterfaceChangeMode } from '../api/model/index.js';
+import { checkingCloses } from '../api/helpers/index.js';
 import { Browser, Page } from 'puppeteer';
-import { checkUpdates } from './check-up-to-date';
 
 declare global {
   interface Window {
@@ -177,7 +176,6 @@ export async function create(
       text: `Node.js version verified successfully!`
     });
 
-    await checkUpdates();
 
     const mergedOptions = { ...defaultOptions, ...options };
 

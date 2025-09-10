@@ -1,5 +1,5 @@
 import { Browser, BrowserContext, LaunchOptions, Page } from 'puppeteer';
-import { puppeteerConfig } from './puppeteer.config';
+import { puppeteerConfig } from './puppeteer.config.js';
 
 // Server config
 export interface CreateConfig {

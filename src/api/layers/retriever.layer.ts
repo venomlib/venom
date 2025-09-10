@@ -1,8 +1,8 @@
 import { Page, Browser } from 'puppeteer';
-import { CreateConfig } from '../../config/create-config';
-import { Chat, WhatsappProfile } from '../model';
-import { SenderLayer } from './sender.layer';
-import { checkValuesSender } from '../helpers/layers-interface';
+import { CreateConfig } from '../../config/create-config.js';
+import { Chat, WhatsappProfile } from '../model/index.js';
+import { SenderLayer } from './sender.layer.js';
+import { checkValuesSender } from '../helpers/layers-interface.js';
 
 export class RetrieverLayer extends SenderLayer {
   constructor(

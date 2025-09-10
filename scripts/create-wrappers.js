@@ -32,7 +32,7 @@ export { default } from './esm/index';
 
 // Write wrapper files
 fs.writeFileSync(path.join(distDir, 'index.cjs'), cjsWrapper);
-fs.writeFileSync(path.join(distDir, 'index.js'), esmWrapper);
+fs.writeFileSync(path.join(distDir, 'index.mjs'), esmWrapper);
 fs.writeFileSync(path.join(distDir, 'index.d.ts'), dtsWrapper);
 
 console.log('✅ Wrapper files created successfully');

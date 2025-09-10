@@ -1,4 +1,4 @@
-import { InterfaceState, InterfaceMode } from '../model/enum';
+import { InterfaceState, InterfaceMode } from './enum/index.js';
 export interface InterfaceChangeMode {
   displayInfo: InterfaceState;
   mode: InterfaceMode;
