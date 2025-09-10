@@ -33,10 +33,7 @@ export class callbackWile {
     let checkFilter = this.obj['filter'](
       (order: any) => order.id === id && order.serialized === serialized
     );
-    if (checkFilter.length) {
-      return true;
-    }
-    return false;
+    return !!checkFilter.length;
   }
 
   get module() {
