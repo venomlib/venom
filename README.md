@@ -24,7 +24,7 @@ Venom is a high-performance system developed with JavaScript to create a bot for
 ## Installation
 
 ```bash
-> npm i --save github:venomlib/venom#v6.2.0
+> npm i --save github:venomlib/venom#v6.4.0
 ```
 
 ## Getting started
