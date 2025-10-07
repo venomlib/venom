@@ -92,7 +92,11 @@ export class Whatsapp extends ControlsLayer {
         );
       } else {
         js = await fs.readFile(
-          path.join(getDirname(), '/lib/wapi/', 'wapi.js'),
+          path.join(
+            process.cwd(),
+            'node_modules/venom-bot/dist/lib/wapi',
+            'wapi.js'
+          ),
           'utf-8'
         );
       }
@@ -113,7 +117,11 @@ export class Whatsapp extends ControlsLayer {
         );
       } else {
         middleware_script = await fs.readFile(
-          path.join(getDirname(), 'lib/middleware', 'middleware.js'),
+          path.join(
+            process.cwd(),
+            'node_modules/venom-bot/dist/lib/middleware',
+            'middleware.js'
+          ),
           'utf-8'
         );
       }
