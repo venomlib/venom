@@ -8,6 +8,19 @@ import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
 
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+// Cross-platform __dirname
+const getDirname = () => {
+  try {
+    return __dirname;
+  } catch (e) {
+    // @ts-ignore
+    return dirname(fileURLToPath(import.meta.url));
+  }
+};
+
 export class Whatsapp extends ControlsLayer {
   constructor(
     public browser: Browser,
@@ -57,7 +70,7 @@ export class Whatsapp extends ControlsLayer {
       }
 
       let js = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/wapi/', 'wapi.js'),
+        path.join(getDirname(), '../../lib/wapi/', 'wapi.js'),
         'utf-8'
       );
       await this.page.evaluate(js);
@@ -65,7 +78,7 @@ export class Whatsapp extends ControlsLayer {
       await this.initialize();
 
       let middleware_script = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/middleware', 'middleware.js'),
+        path.join(getDirname(), '../../lib/middleware', 'middleware.js'),
         'utf-8'
       );
       await this.page.evaluate(middleware_script);
