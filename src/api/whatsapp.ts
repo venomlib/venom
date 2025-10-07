@@ -57,7 +57,11 @@ export class Whatsapp extends ControlsLayer {
       }
 
       let js = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/wapi/', 'wapi.js'),
+        path.join(
+          process.cwd(),
+          'node_modules/venom-bot/dist/lib/wapi/',
+          'wapi.js'
+        ),
         'utf-8'
       );
       await this.page.evaluate(js);
@@ -65,7 +69,11 @@ export class Whatsapp extends ControlsLayer {
       await this.initialize();
 
       let middleware_script = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/middleware', 'middleware.js'),
+        path.join(
+          process.cwd(),
+          'node_modules/venom-bot/dist/lib/middleware',
+          'middleware.js'
+        ),
         'utf-8'
       );
       await this.page.evaluate(middleware_script);
