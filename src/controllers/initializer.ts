@@ -161,7 +161,7 @@ export async function create(
       text: `check nodeJs version...`
     });
 
-    const requiredNodeVersion = 16;
+    const requiredNodeVersion = 22;
     const currentNodeVersion = Number(process.versions.node.split('.')[0]);
     if (currentNodeVersion < requiredNodeVersion) {
       spinnies.fail(`node-version-${session}`, {
@@ -251,15 +251,11 @@ export async function create(
         });
         return reject('The client has been closed');
       });
-
-      spinnies.add(`whatzapp-${session}`, {
-        text: 'Checking page to whatzapp...'
-      });
-
+      console.log('Calling initWhatsapp');
       if (statusFind) statusFind('initWhatsapp', session);
       // Initialize whatsapp
       const page: false | Page = await initWhatsapp(mergedOptions, browser);
-
+      console.log('initWhatsApp returned');
       if (page === false) {
         spinnies.fail(`whatzapp-${session}`, {
           text: 'Error accessing the page: "https://web.whatsapp.com"'
@@ -270,17 +266,10 @@ export async function create(
         );
       }
 
+      console.log('Calling statusFind');
       if (statusFind) statusFind('successPageWhatsapp', session);
-
-      spinnies.succeed(`whatzapp-${session}`, {
-        text: 'Page successfully accessed'
-      });
-
-      try {
-        spinnies.add(`whatzapp-intro-${session}`, {
-          text: 'waiting for introduction'
-        });
-      } catch {}
+      console.log('Page successfully accessed');
+      console.log('Waiting for introduction');
 
       statusLog(page, spinnies, session, (event) => {
         try {
@@ -291,12 +280,14 @@ export async function create(
         if (statusFind) statusFind('introductionHistory', session, event);
       });
 
+      console.log('Creating WhatsApp Object');
       const client = new Whatsapp(browser, page, session, mergedOptions);
 
       if (browserInstance) {
         browserInstance(browser, page, client);
       }
 
+      console.log('Setting onInterfaceChange');
       client.onInterfaceChange(async (interFace: InterfaceChangeMode) => {
         try {
           if (interFace.mode === InterfaceMode.MAIN) {
@@ -343,23 +334,17 @@ export async function create(
           if (interFace.mode === InterfaceMode.QR) {
             if (interFace.info === InterfaceState.OPENING) {
               if (interfaceChange) interfaceChange('qrcodeOpening', session);
-              spinnies.add(`whatzapp-mode-qr-${session}`, {
-                text: 'Opening QR Code page...'
-              });
+              console.log('Opening QR Code page...');
             }
 
             if (interFace.info === InterfaceState.PAIRING) {
               if (interfaceChange) interfaceChange('qrcodeLoading', session);
-              spinnies.add(`whatzapp-mode-qr-${session}`, {
-                text: 'Loading QR Code...'
-              });
+              console.log('Loading QR Code...');
             }
 
             if (interFace.info === InterfaceState.NORMAL) {
               if (interfaceChange) interfaceChange('qrcodeNormal', session);
-              spinnies.succeed(`whatzapp-mode-qr-${session}`, {
-                text: 'Successfully loaded QR Code!'
-              });
+              console.log('Successfully loaded QR Code!');
             }
           }
         } catch {}

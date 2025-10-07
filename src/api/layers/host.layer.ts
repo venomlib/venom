@@ -144,6 +144,7 @@ export class HostLayer {
   ) {
     let urlCode = null;
     let attempt = 0;
+    console.log('waitForQrCodeScan: started');
 
     while (true) {
       let needsScan = await needsToScan(this.page).catch(() => null);
@@ -151,25 +152,26 @@ export class HostLayer {
         break;
       }
       const result = await this.getQrCode().catch(() => null);
-
       if (!result.urlCode) {
         break;
       }
-
       if (urlCode !== result.urlCode) {
+        console.log('waitForQrCodeScan: new QR code detected');
         urlCode = result.urlCode;
         attempt++;
 
         let qr = '';
 
         if (this.options.logQR || catchQR) {
-          qr = await asciiQr(urlCode).catch(() => undefined);
+          console.log('waitForQrCodeScan: new QR code: create ASCII');
+          qr = await asciiQr(urlCode);
+          console.log('qr code: ' + qr);
         }
-
+        console.log('waitForQrCodeScan: logQR: ' + this.options.logQR);
         if (this.options.logQR) {
           console.log(qr);
         } else {
-          this.spin(`Waiting for QRCode Scan: Attempt ${attempt}`);
+          console.log(`Waiting for QRCode Scan: Attempt ${attempt}`);
         }
 
         if (catchQR) {

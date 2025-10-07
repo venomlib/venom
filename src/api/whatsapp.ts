@@ -7,6 +7,17 @@ import { CreateConfig } from '../config/create-config.js';
 import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+function getDirectory() {
+  // @ts-ignore
+  return typeof __dirname !== 'undefined'
+    ? // @ts-ignore
+      __dirname
+    : // @ts-ignore
+      dirname(fileURLToPath(import.meta.url));
+}
 
 export class Whatsapp extends ControlsLayer {
   constructor(
@@ -57,11 +68,7 @@ export class Whatsapp extends ControlsLayer {
       }
 
       let js = await fs.readFile(
-        path.join(
-          process.cwd(),
-          'node_modules/venom-bot/dist/lib/wapi/',
-          'wapi.js'
-        ),
+        path.join(getDirectory(), '../../lib/wapi/', 'wapi.js'),
         'utf-8'
       );
       await this.page.evaluate(js);
@@ -69,11 +76,7 @@ export class Whatsapp extends ControlsLayer {
       await this.initialize();
 
       let middleware_script = await fs.readFile(
-        path.join(
-          process.cwd(),
-          'node_modules/venom-bot/dist/lib/middleware',
-          'middleware.js'
-        ),
+        path.join(getDirectory(), '../../lib/middleware/', 'middleware.js'),
         'utf-8'
       );
       await this.page.evaluate(middleware_script);
