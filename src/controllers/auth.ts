@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
-import * as qrcode from 'qrcode-terminal';
+import { generateASCIIQR } from '../utils/qr-generator';
 import { ScrapQrcode } from '../api/model/qrcode';
 import { sleep } from '../utils/sleep';
 import { Whatsapp } from '../api/whatsapp';
@@ -13,22 +13,8 @@ export const getInterfaceStatus = async (waPage: puppeteer.Page) => {
         if (erroHTTP && erroHTTP[0].innerText.includes('HTTP ERROR 429')) {
           return { type: erroHTTP[0].innerText };
         }
-        const elLoginWrapper1 = document.querySelector(
-          'body > div > div > .landing-wrapper'
-        );
-        const elLoginWrapper2 = document.querySelector(
-          'body > div > div > div > .landing-wrapper'
-        );
-        const elLoginWrapper3 = document.querySelector(
-          'body > div > div > div > div > div > .x1lliihq'
-        );
-
         const elQRCodeCanvas = document.querySelector('canvas');
-        if (
-          (elLoginWrapper1 && elQRCodeCanvas) ||
-          (elLoginWrapper2 && elQRCodeCanvas) ||
-          (elLoginWrapper3 && elQRCodeCanvas)
-        ) {
+        if (document.querySelector('canvas')) {
           return 'UNPAIRED';
         }
 
@@ -106,13 +92,14 @@ export const isConnectingToPhone = async (waPage: puppeteer.Page) => {
 };
 
 export async function asciiQr(code: string): Promise<string> {
-  return new Promise((resolve) => {
-    try {
-      qrcode.generate(code, { small: true }, (qrcode) => {
-        resolve(qrcode);
-      });
-    } catch (e) {}
-  });
+  try {
+    console.log(code);
+    const qrcode = generateASCIIQR(code, { small: true });
+    return qrcode;
+  } catch (e) {
+    console.error(e);
+    return '';
+  }
 }
 
 export async function retrieveQR(

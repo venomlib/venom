@@ -45,9 +45,7 @@
     "types": [
       "node",
       "puppeteer",
-      "qrcode-terminal",
       "mime-types",
-      "qrcode",
       "sharp",
       "unzipper",
     ] /* Type declaration files to be included in compilation. */,
