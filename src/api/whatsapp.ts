@@ -8,6 +8,31 @@ import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
 
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+// Cross-platform __dirname
+const getDirname = () => {
+  try {
+    return __dirname;
+  } catch (e) {
+    // @ts-ignore
+    return dirname(fileURLToPath(import.meta.url));
+  }
+};
+
+async function checkFileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath, fs.constants.F_OK); // F_OK checks existence
+    console.log('File exists!');
+    return true;
+  } catch (error: unknown) {
+    // Type the error as NodeJS.ErrnoException if needed for more specifics
+    console.log('File does not exist or is not accessible.');
+    return false;
+  }
+}
+
 export class Whatsapp extends ControlsLayer {
   constructor(
     public browser: Browser,
@@ -56,18 +81,51 @@ export class Whatsapp extends ControlsLayer {
           .catch();
       }
 
-      let js = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/wapi/', 'wapi.js'),
-        'utf-8'
-      );
+      let js = '';
+      //works differently in dev or production
+      if (
+        checkFileExists(path.join(getDirname(), '../../lib/wapi/', 'wapi.js'))
+      ) {
+        js = await fs.readFile(
+          path.join(getDirname(), '../../lib/wapi/', 'wapi.js'),
+          'utf-8'
+        );
+      } else {
+        js = await fs.readFile(
+          path.join(
+            process.cwd(),
+            'node_modules/venom-bot/dist/lib/wapi',
+            'wapi.js'
+          ),
+          'utf-8'
+        );
+      }
+
       await this.page.evaluate(js);
 
       await this.initialize();
 
-      let middleware_script = await fs.readFile(
-        path.join(process.cwd(), 'dist/lib/middleware', 'middleware.js'),
-        'utf-8'
-      );
+      let middleware_script = '';
+      if (
+        checkFileExists(
+          path.join(getDirname(), '../../lib/middleware/', 'middleware.js')
+        )
+      ) {
+        middleware_script = await fs.readFile(
+          path.join(getDirname(), '../../lib/middleware', 'middleware.js'),
+          'utf-8'
+        );
+      } else {
+        middleware_script = await fs.readFile(
+          path.join(
+            process.cwd(),
+            'node_modules/venom-bot/dist/lib/middleware',
+            'middleware.js'
+          ),
+          'utf-8'
+        );
+      }
+
       await this.page.evaluate(middleware_script);
     } catch (e) {
       console.log(e);
