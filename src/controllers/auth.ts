@@ -92,9 +92,7 @@ export const isConnectingToPhone = async (waPage: puppeteer.Page) => {
 
 export async function asciiQr(code: string): Promise<string> {
   try {
-    console.log(code);
-    const qrcode = await generateASCIIQR(code, { small: true });
-    return qrcode;
+    return await generateASCIIQR(code, { small: true });
   } catch (e) {
     console.error(e);
     return '';
