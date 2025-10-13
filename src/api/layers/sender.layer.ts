@@ -811,7 +811,8 @@ export class SenderLayer extends ListenerLayer {
       if (
         !mimeType ||
         mimeType.includes('audio/mpeg') ||
-        mimeType.includes('audio/mp3')
+        mimeType.includes('audio/mp3') ||
+        mimeType.includes('audio/ogg')
       ) {
         const result = await this.page.evaluate(
           ({ to, base64, passId }) => {
