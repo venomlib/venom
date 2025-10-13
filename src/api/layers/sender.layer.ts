@@ -855,7 +855,8 @@ export class SenderLayer extends ListenerLayer {
       try {
         let base64: string | false = await downloadFileToBase64(filePath, [
           'audio/mpeg',
-          'audio/mp3'
+          'audio/mp3',
+          'audio/ogg'
         ]);
 
         if (!base64) {
@@ -876,7 +877,8 @@ export class SenderLayer extends ListenerLayer {
         if (
           !mimeInfo ||
           mimeInfo.includes('audio/mpeg') ||
-          mimeInfo.includes('audio/mp3')
+          mimeInfo.includes('audio/mp3') ||
+          mimeInfo.includes('audio/ogg')
         ) {
           const result: any = await this.page.evaluate(
             ({ to, base64, passId, checkNumber, forcingReturn, delSend }) => {
