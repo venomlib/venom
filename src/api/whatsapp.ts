@@ -84,7 +84,9 @@ export class Whatsapp extends ControlsLayer {
       let js = '';
       //works differently in dev or production
       if (
-        checkFileExists(path.join(getDirname(), '../../lib/wapi/', 'wapi.js'))
+        await checkFileExists(
+          path.join(getDirname(), '../../lib/wapi/', 'wapi.js')
+        )
       ) {
         js = await fs.readFile(
           path.join(getDirname(), '../../lib/wapi/', 'wapi.js'),
@@ -107,7 +109,7 @@ export class Whatsapp extends ControlsLayer {
 
       let middleware_script = '';
       if (
-        checkFileExists(
+        await checkFileExists(
           path.join(getDirname(), '../../lib/middleware/', 'middleware.js')
         )
       ) {
