@@ -1,4 +1,3 @@
-import { fixLidMigration } from './fix-lid-migration';
 export async function setNewMessageId(info, checkNumber = true) {
   if (
     info &&
@@ -7,7 +6,6 @@ export async function setNewMessageId(info, checkNumber = true) {
     info._serialized &&
     info.id
   ) {
-    info = fixLidMigration(info);
     const chat = checkNumber
       ? await WAPI.sendExist(info.number)
       : await WAPI.returnChat(info.number);

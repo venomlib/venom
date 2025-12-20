@@ -1,3 +1,5 @@
+import { fixLidMigration } from '../helper/index.js';
+
 export async function sendMessage(
   to,
   content,
@@ -27,6 +29,7 @@ export async function sendMessage(
     return WAPI.scope(to, true, 404, 'It is necessary to number');
   }
 
+  to = fixLidMigration(to);
   const chat = checkNumber
     ? await WAPI.sendExist(to)
     : await WAPI.returnChat(to);

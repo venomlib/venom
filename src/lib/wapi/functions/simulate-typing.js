@@ -1,4 +1,4 @@
-import {fixLidMigration} from './fix-lid-migration';
+import { fixLidMigration } from '../helper/index.js';
 export async function startTyping(chatId) {
   const chat = window.Store.WidFactory.createWid(fixLidMigration(chatId));
   if (!chat) {
