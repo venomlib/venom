@@ -219,6 +219,16 @@ export const storeObjects = [
       module.storeMessages && module.appendMessage ? module : null,
   },
   {
+    id: 'ChannelUtils',
+    conditions: (module) =>
+      module.loadNewsletterPreviewChat ? module : null,
+  },
+  {
+    id: 'FindOrCreateChat',
+    conditions: (module) =>
+      module.findOrCreateLatestChat ? module : null,
+  },
+  {
     id: 'createMessageKey',
     conditions: (module) =>
       module.createMessageKey && module.createDeviceSentMessage

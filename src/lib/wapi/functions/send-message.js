@@ -1,4 +1,4 @@
-import { fixLidMigration } from '../helper/index.js';
+import { createWidWrapper } from '../helper/index.js';
 
 export async function sendMessage(
   to,
@@ -29,7 +29,7 @@ export async function sendMessage(
     return WAPI.scope(to, true, 404, 'It is necessary to number');
   }
 
-  to = fixLidMigration(to);
+  createWidWrapper(to);
   const chat = checkNumber
     ? await WAPI.sendExist(to)
     : await WAPI.returnChat(to);

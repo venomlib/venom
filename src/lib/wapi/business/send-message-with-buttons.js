@@ -1,3 +1,5 @@
+import { createWidWrapper } from '../helper';
+
 window.WAPI.sendButtons = async function (chatId) {
   var chat = Store.Chat.get(chatId);
   var tempMsg = Object.create(chat.msgs.filter((msg) => msg.__x_isSentByMe)[0]);
@@ -103,12 +105,12 @@ window.WAPI.sendButtons = async function (chatId) {
         .then((t) => chat.msgs.add(t))
         .catch((e) => console.log(e))
     )
-    .then((t) => {
+    .then(async (t) => {
       var e = t[0];
       const s = Store.Base2;
       if (!s.BinaryProtocol)
         window.Store.Base2.BinaryProtocol = new window.Store.bp(11);
-      var idUser = new Store.WidFactory.createWid(chatId);
+      var idUser = await createWidWrapper(chatId);
       var k = Store.createMessageKey({
         ...e,
         to: idUser,

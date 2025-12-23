@@ -54,7 +54,6 @@ export { sendMessage } from './send-message';
 export { sendMessageOptions } from './sendMessageOptions';
 export { sendMessageWithTags } from './send-message-with-tags';
 export { sendMessageWithThumb } from './send-message-with-thumb';
-export { sendMessage2 } from './send-message2';
 export { sendSticker } from './send-sticker';
 export { sendVideoAsGif } from './send-video-as-gif';
 export { setMyName } from './set-my-name';

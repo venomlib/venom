@@ -1,5 +1,5 @@
 import { processFiles } from './process-files';
-import { base64ToFile } from '../helper';
+import { base64ToFile, createWidWrapper } from '../helper';
 
 /**
  * Sends product with product image to given chat id
@@ -38,7 +38,7 @@ export function sendImageWithProduct(
         caption
       };
 
-      const idUser = new Store.WidFactory.createWid(chatid);
+      const idUser = createWidWrapper(chatid);
       await Store.Chat.add(
         {
           createdLocally: true,

@@ -63,7 +63,6 @@ import {
   sendImageWithProduct,
   sendLocation,
   sendMessage,
-  sendMessage2,
   sendMessageWithTags,
   sendMessageWithThumb,
   sendSticker,
@@ -324,7 +323,6 @@ if (typeof window.WAPI === 'undefined') {
   window.WAPI.processMessageObj = processMessageObj;
   window.WAPI.sendMessageWithTags = sendMessageWithTags;
   window.WAPI.sendMessage = sendMessage;
-  window.WAPI.sendMessage2 = sendMessage2;
   window.WAPI.deleteConversation = deleteConversation;
   window.WAPI.deleteMessages = deleteMessages;
   window.WAPI.clearChatMessages = clearChatMessages;
