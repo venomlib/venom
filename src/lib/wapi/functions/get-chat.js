@@ -13,7 +13,7 @@ export async function getChat(id) {
   if (gate) {
     console.info('Lid migration found');
     let chatWid = await createWidWrapper(id);
-    found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(chatWid);
+    found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(chatWid).chat;
   } else {
     console.info('Lid migration not found');
     found = Store.Chat.get(id);

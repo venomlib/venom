@@ -3,7 +3,7 @@ export async function createWidWrapper(chatId) {
     .require('WAWebLid1X1MigrationGating')
     .Lid1X1MigrationUtils.isLidMigrated();
 
-  const chatWid = window.Store.WidFactory.createWid(chatId);
+  let chatWid = window.Store.WidFactory.createWid(chatId);
   if (gate) {
     const isChannel = /@\w*newsletter\b/.test(chatId);
 
@@ -34,7 +34,7 @@ export async function createWidWrapper(chatId) {
             .require('WAWebContactSyncUtils')
             .constructUsyncDeltaQuery(actions);
           let result = await query.execute();
-          chat = window.Store.WidFactory.createWid(result.list[0].lid);
+          chatWid = window.Store.WidFactory.createWid(result.list[0].lid);
         });
     }
   }

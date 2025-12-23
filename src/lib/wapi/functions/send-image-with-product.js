@@ -38,7 +38,7 @@ export function sendImageWithProduct(
         caption
       };
 
-      const idUser = createWidWrapper(chatid);
+      const idUser = await createWidWrapper(chatid);
       await Store.Chat.add(
         {
           createdLocally: true,
