@@ -1,3 +1,5 @@
+import { createWidWrapper } from '../helper/index.js';
+
 export async function sendMessage(
   to,
   content,
@@ -27,6 +29,7 @@ export async function sendMessage(
     return WAPI.scope(to, true, 404, 'It is necessary to number');
   }
 
+  createWidWrapper(to);
   const chat = checkNumber
     ? await WAPI.sendExist(to)
     : await WAPI.returnChat(to);

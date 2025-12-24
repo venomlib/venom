@@ -1,5 +1,7 @@
+import { createWidWrapper } from '../helper/index.js';
 export async function startTyping(chatId) {
-  const chat = window.Store.WidFactory.createWid(chatId);
+  console.log(`startTyping: chatId ${chatId}`);
+  const chat = createWidWrapper(chatId);
   if (!chat) {
     throw {
       error: true,
