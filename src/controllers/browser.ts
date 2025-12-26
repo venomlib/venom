@@ -10,7 +10,7 @@ import { puppeteerConfig } from '../config/puppeteer.config.js';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { useragentOverride } from '../config/WAuserAgente.js';
 import { sleep } from '../utils/sleep.js';
-import * as Spinnies from 'spinnies';
+import { logInfo, logSuccess, logFail } from '../utils/logger.js';
 import * as os from 'os';
 import axios from 'axios';
 import { defaultOptions } from '../config/create-config.js';
@@ -382,40 +382,36 @@ function downloadBash(): Promise<string | false> {
   });
 }
 
-export async function initBrowser(
-  options: {
-    session?: string;
-    folderNameToken?: string;
-    mkdirFolderToken?: string;
-    headless?: false | 'new' | 'old';
-    devtools?: boolean;
-    debug?: boolean;
-    browserWS?: string;
-    browserArgs?: string[];
-    addBrowserArgs?: string[];
-    puppeteerOptions?: LaunchOptions;
-    browser?: Browser | BrowserContext;
-    page?: Page;
-    logQR?: boolean;
-    disableSpins?: boolean;
-    disableWelcome?: boolean;
-    updatesLog?: boolean;
-    autoClose?: number;
-    createPathFileToken?: boolean;
-    waitForLogin?: boolean;
-    BrowserFetcher?: boolean;
-    forceConnect?: boolean;
-    attemptsForceConnectLoad?: number;
-    forceConnectTime?: number;
-    addProxy?: string[];
-    userProxy?: string;
-    userPass?: string;
-    browserPathExecutable?: string;
-    forceWebpack?: boolean;
-    webVersion?: boolean | string;
-  },
-  spinnies: any
-): Promise<Browser | false> {
+export async function initBrowser(options: {
+  session?: string;
+  folderNameToken?: string;
+  mkdirFolderToken?: string;
+  headless?: false | 'new' | 'old';
+  devtools?: boolean;
+  debug?: boolean;
+  browserWS?: string;
+  browserArgs?: string[];
+  addBrowserArgs?: string[];
+  puppeteerOptions?: LaunchOptions;
+  browser?: Browser | BrowserContext;
+  page?: Page;
+  logQR?: boolean;
+  disableWelcome?: boolean;
+  updatesLog?: boolean;
+  autoClose?: number;
+  createPathFileToken?: boolean;
+  waitForLogin?: boolean;
+  BrowserFetcher?: boolean;
+  forceConnect?: boolean;
+  attemptsForceConnectLoad?: number;
+  forceConnectTime?: number;
+  addProxy?: string[];
+  userProxy?: string;
+  userPass?: string;
+  browserPathExecutable?: string;
+  forceWebpack?: boolean;
+  webVersion?: boolean | string;
+}): Promise<Browser | false> {
   try {
     // Use stealth plugin to avoid being detected as a bot
     puppeteer.use(StealthPlugin());
@@ -452,32 +448,19 @@ export async function initBrowser(
       puppeteer.executablePath() ??
       chromePath;
 
-    spinnies.add(`executable-path-${options.session}`, {
-      text: `...`
-    });
-
-    spinnies.succeed(`executable-path-${options.session}`, {
-      text: `Executable path browser: ${executablePath}`
-    });
+    logSuccess(`Executable path browser: ${executablePath}`);
 
     const extractPath = path.join(process.cwd(), 'chrome');
     const checkPath = await checkPathDowload(extractPath);
     const platform = os.platform();
 
     if (!executablePath || !isChromeInstalled(executablePath)) {
-      spinnies.add(`browser-info-${options.session}`, {
-        text: `...`
-      });
-      spinnies.fail(`browser-info-${options.session}`, {
-        text: `Could not find the google-chrome browser on the machine!`
-      });
+      logFail('Could not find the google-chrome browser on the machine!');
       const resultBash = await downloadBash();
       if (resultBash) {
         executablePath = resultBash;
       } else if (!checkPath) {
-        spinnies.add(`browser-status-${options.session}`, {
-          text: `Downloading browser...`
-        });
+        logInfo('Downloading browser...');
 
         // Download the latest version of Chrome
         const downloadUrl = `https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Win_x64%2F1000027%2Fchrome-win.zip?generation=1651780728332948&alt=media`;
@@ -493,12 +476,7 @@ export async function initBrowser(
 
         fs.chmodSync(extractPath, '777');
 
-        spinnies.add(`browser-path-${options.session}`, {
-          text: `...`
-        });
-        spinnies.succeed(`browser-path-${options.session}`, {
-          text: `Path download Chrome: ${zipFilePath}`
-        });
+        logSuccess(`Path download Chrome: ${zipFilePath}`);
 
         const response = await axios.get(downloadUrl, {
           responseType: 'arraybuffer'
@@ -507,19 +485,13 @@ export async function initBrowser(
         // Verifica se o status da resposta é 200 (OK)
         if (response.status === 200) {
           await fs.promises.writeFile(zipFilePath, response.data);
-          spinnies.succeed(`browser-status-${options.session}`, {
-            text: `Download completed.`
-          });
+          logSuccess('Download completed.');
 
-          spinnies.add(`browser-status-${options.session}`, {
-            text: `Extracting Chrome: ${extractPath}`
-          });
+          logInfo(`Extracting Chrome: ${extractPath}`);
 
           const zip = await unzipper.Open.file(zipFilePath);
           await zip.extract({ path: extractPath });
-          spinnies.succeed(`browser-status-${options.session}`, {
-            text: `Chrome extracted successfully.`
-          });
+          logSuccess('Chrome extracted successfully.');
           const pathChrome = path.join(extractPath, 'chrome-win', 'chrome.exe');
           if (!fs.existsSync(pathChrome)) {
             throw new Error(`Error no Path download Chrome`);
@@ -533,12 +505,7 @@ export async function initBrowser(
           fs.chmodSync(folderChrom, '777');
 
           executablePath = pathChrome;
-          spinnies.add(`browser-path-${options.session}`, {
-            text: `...`
-          });
-          spinnies.succeed(`browser-path-${options.session}`, {
-            text: `Execute Path Chrome: ${executablePath}`
-          });
+          logSuccess(`Execute Path Chrome: ${executablePath}`);
         } else {
           throw new Error('Error download file Chrome.');
         }
@@ -550,13 +517,7 @@ export async function initBrowser(
     let chromeVersion = '';
     let versionTimeout: string | number | NodeJS.Timeout;
 
-    spinnies.add(`browser-Platform-${options.session}`, {
-      text: `...`
-    });
-
-    spinnies.succeed(`browser-Platform-${options.session}`, {
-      text: `Platform: ${platform}`
-    });
+    logSuccess(`Platform: ${platform}`);
 
     if (platform === 'darwin' || platform === 'linux') {
       chromeVersion = await getChromeVersionBash(executablePath);
@@ -587,13 +548,7 @@ export async function initBrowser(
     }
 
     if (chromeVersion) {
-      spinnies.add(`browser-Version-${options.session}`, {
-        text: `...`
-      });
-
-      spinnies.succeed(`browser-Version-${options.session}`, {
-        text: `Browser Version: ${chromeVersion}`
-      });
+      logSuccess(`Browser Version: ${chromeVersion}`);
     }
 
     const extras = { executablePath };
@@ -636,11 +591,7 @@ export async function initBrowser(
     if (options.browserWS && options.browserWS !== '') {
       return await puppeteer.connect({ browserWSEndpoint: options.browserWS });
     } else {
-      await removeStoredSingletonLock(
-        options.puppeteerOptions,
-        spinnies,
-        options
-      );
+      await removeStoredSingletonLock(options.puppeteerOptions, options);
       // @ts-ignore
       return await puppeteer.launch(launchOptions);
     }
@@ -702,17 +653,12 @@ function getWindowsChromeExecutablePath() {
 
 export async function statusLog(
   page: Page,
-  spinnies: Spinnies,
   session: string,
   callback: (infoLog: string) => void
 ) {
   while (true) {
     if (page.isClosed()) {
-      try {
-        spinnies.fail(`whatzapp-intro-${session}`, {
-          text: 'Erro intro'
-        });
-      } catch {}
+      logFail('Error intro');
       break;
     }
 
@@ -760,7 +706,6 @@ function isChromeInstalled(executablePath: string): boolean {
 
 function removeStoredSingletonLock(
   puppeteerOptions: LaunchOptions,
-  spinnies: any,
   options: options | CreateConfig
 ): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -775,57 +720,31 @@ function removeStoredSingletonLock(
         // No need to remove the lock on Windows, so resolve with true directly.
         resolve(true);
       } else {
-        spinnies.add(`stored-singleton-lock-${options.session}`, {
-          text: `...`
-        });
+        logSuccess(`Path Stored "SingletonLock": ${singletonLockPath}`);
 
-        spinnies.succeed(`stored-singleton-lock-${options.session}`, {
-          text: `Path Stored "SingletonLock": ${singletonLockPath}`
-        });
-
-        spinnies.add(`path-stored-singleton-lock-${options.session}`, {
-          text: `checking SingletonLock file`
-        });
+        logInfo('Checking SingletonLock file');
 
         if (fs.existsSync(singletonLockPath)) {
-          spinnies.add(`path-stored-singleton-lock-${options.session}`, {
-            text: `The file was found "SingletonLock"`
-          });
+          logInfo('The file was found "SingletonLock"');
 
           fs.unlink(singletonLockPath, (error) => {
             if (error && error.code !== 'ENOENT') {
-              spinnies.fail(`path-stored-singleton-lock-${options.session}`, {
-                text: `Error removing "SingletonLock": ${error}`
-              });
+              logFail(`Error removing "SingletonLock": ${error}`);
               reject(false);
             } else {
-              spinnies.succeed(
-                `path-stored-singleton-lock-${options.session}`,
-                {
-                  text: `Removing SingletonLock path: ${singletonLockPath}`
-                }
-              );
-              spinnies.add(
-                `path-stored-singleton-lock-write-file-${options.session}`,
-                {
-                  text: `re-adding the file "SingletonLock": ${singletonLockPath}`
-                }
+              logSuccess(`Removing SingletonLock path: ${singletonLockPath}`);
+              logInfo(
+                `Re-adding the file "SingletonLock": ${singletonLockPath}`
               );
               fs.writeFile(singletonLockPath, '', (error) => {
                 if (error && error.code !== 'ENOENT') {
-                  spinnies.fail(
-                    `path-stored-singleton-lock-write-file-${options.session}`,
-                    {
-                      text: `could not add the file "SingletonLock": ${singletonLockPath}`
-                    }
+                  logFail(
+                    `Could not add the file "SingletonLock": ${singletonLockPath}`
                   );
                   reject(false);
                 } else {
-                  spinnies.succeed(
-                    `path-stored-singleton-lock-write-file-${options.session}`,
-                    {
-                      text: `file created successfully "SingletonLock": ${singletonLockPath}`
-                    }
+                  logSuccess(
+                    `File created successfully "SingletonLock": ${singletonLockPath}`
                   );
                   resolve(true);
                 }
@@ -833,9 +752,7 @@ function removeStoredSingletonLock(
             }
           });
         } else {
-          spinnies.succeed(`path-stored-singleton-lock-${options.session}`, {
-            text: `The file "SingletonLock" was not found`
-          });
+          logSuccess('The file "SingletonLock" was not found');
           resolve(true);
         }
       }

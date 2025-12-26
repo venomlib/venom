@@ -1,13 +1,10 @@
 import path from 'path';
 import { existsSync, unlink } from 'fs';
-import * as Spinnies from 'spinnies';
-export async function deleteFiles(
-  mergedOptions: any,
-  Session: string,
-  spinnies: Spinnies
-) {
+import { logInfo, logSuccess, logFail } from '../../utils/logger.js';
+
+export async function deleteFiles(mergedOptions: any, Session: string) {
   try {
-    spinnies.add(`removeFile`, { text: '....' });
+    logInfo('Removing file...');
     const pathTokens: string = path.join(
       path.resolve(
         process.cwd() + mergedOptions.mkdirFolderToken,
@@ -18,16 +15,12 @@ export async function deleteFiles(
     if (existsSync(pathTokens)) {
       unlink(pathTokens, (err) => {
         if (err) {
-          spinnies.fail(`removeFile`, {
-            text: `Not removed file: ${pathTokens}`
-          });
+          logFail(`Not removed file: ${pathTokens}`);
         }
-        spinnies.succeed(`removeFile`, {
-          text: `Removed file: ${pathTokens}`
-        });
+        logSuccess(`Removed file: ${pathTokens}`);
       });
     } else {
-      spinnies.fail(`removeFile`, { text: `Not Files: ${pathTokens}` });
+      logFail(`Not Files: ${pathTokens}`);
     }
   } catch (e) {}
 }
