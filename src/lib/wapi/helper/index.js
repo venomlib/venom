@@ -7,3 +7,4 @@ export { sleep } from './sleep';
 export { injectConfig } from './inject-config';
 export { filterObjects } from './filter-object';
 export { filterModule } from './filter-module';
+export { createWidWrapper } from './fix-lid-migration';
