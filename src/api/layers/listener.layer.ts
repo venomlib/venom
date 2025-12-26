@@ -58,7 +58,7 @@ export class ListenerLayer extends ProfileLayer {
 
     this.page.on('close', () => {
       this.cancelAutoClose();
-      this.spin('Page Closed', 'fail');
+      this.log('Page Closed', 'fail');
     });
   }
 

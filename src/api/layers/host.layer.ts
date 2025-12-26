@@ -12,19 +12,15 @@ import {
   retrieveQR
 } from '../../controllers/auth.js';
 import { sleep } from '../../utils/sleep.js';
-import { getSpinnies } from '../../utils/spinnies.js';
-import * as Spinnies from 'spinnies';
+import { logInfo, logSuccess, logFail } from '../../utils/logger.js';
 
 export class HostLayer {
   readonly session: string;
   readonly options: CreateConfig;
 
-  protected spinnies: Spinnies = getSpinnies();
   protected spinStatus = {
     apiInject: '',
     autoCloseRemain: 0,
-    previousText: '',
-    previousStatus: null,
     state: ''
   };
 
@@ -44,35 +40,15 @@ export class HostLayer {
     //this._initialize(this.page);
   }
 
-  protected spin(text?: string, status?: Spinnies.SpinnerStatus) {
-    const name = `session-${this.session}`;
+  protected log(text: string, status: 'info' | 'success' | 'fail' = 'info') {
+    const fullText = `[instance: ${this.session}]: ${text}`;
 
-    text = text || this.spinStatus.previousText;
-    this.spinStatus.previousText = text;
-
-    status =
-      status || (this.spinStatus.previousStatus as Spinnies.SpinnerStatus);
-    this.spinStatus.previousStatus = status;
-
-    let fullText = `[instance: ${this.session}`;
-    // if (this.spinStatus.state) {
-    //   fullText += `, ${this.spinStatus.state}`;
-    // }
-    fullText += `]: ${text}`;
-
-    let prevText = '';
-
-    try {
-      prevText = this.spinnies.pick(name).text;
-    } catch (error) {
-      this.spinnies.add(name, { text: fullText, status });
-      prevText = fullText;
-    }
-    if (prevText !== fullText) {
-      this.spinnies.update(name, {
-        text: fullText,
-        status
-      });
+    if (status === 'success') {
+      logSuccess(fullText);
+    } else if (status === 'fail') {
+      logFail(fullText);
+    } else {
+      logInfo(fullText);
     }
   }
 
@@ -169,7 +145,7 @@ export class HostLayer {
         if (this.options.logQR) {
           console.log(qr);
         } else {
-          this.spin(`Waiting for QRCode Scan: Attempt ${attempt}`);
+          this.log(`Waiting for QRCode Scan: Attempt ${attempt}`);
         }
 
         if (catchQR) {
@@ -201,13 +177,13 @@ export class HostLayer {
   ) {
     this.statusFind = statusFind;
 
-    this.spin('Waiting page load', 'spinning');
+    this.log('Waiting page load');
 
-    this.spin('Checking is logged...');
+    this.log('Checking is logged...');
     let authenticated = await isAuthenticated(this.page).catch(() => null);
 
     if (typeof authenticated === 'object' && authenticated.type) {
-      this.spin(`Error http: ${authenticated.type}`, 'fail');
+      this.log(`Error http: ${authenticated.type}`, 'fail');
       this.page.close().catch(() => {});
       this.browser.close().catch(() => {});
       throw `Error http: ${authenticated.type}`;
@@ -216,32 +192,32 @@ export class HostLayer {
     this.startAutoClose();
 
     if (authenticated === false) {
-      this.spin('Waiting for QRCode Scan...');
+      this.log('Waiting for QRCode Scan...');
       if (this.statusFind) statusFind('notLogged', this.session);
 
       await this.waitForQrCodeScan(catchQR).catch(() => undefined);
 
-      this.spin('Checking QRCode status...');
+      this.log('Checking QRCode status...');
 
       // Wait for interface update
       await sleep(200);
       authenticated = await isAuthenticated(this.page).catch(() => null);
 
       if (authenticated === null || JSON.stringify(authenticated) === '{}') {
-        this.spin('Failed to authenticate');
+        this.log('Failed to authenticate');
         if (this.statusFind) statusFind('qrReadFail', this.session);
       } else if (authenticated) {
-        this.spin('QRCode Success');
+        this.log('QRCode Success', 'success');
         if (this.statusFind) statusFind('qrReadSuccess', this.session);
       } else {
-        this.spin('QRCode Fail', 'fail');
+        this.log('QRCode Fail', 'fail');
         if (this.statusFind) statusFind('qrReadFail', this.session);
         this.cancelAutoClose();
         this.tryAutoClose();
         throw 'Failed to read the QRCode';
       }
     } else if (authenticated === true) {
-      this.spin('Authenticated');
+      this.log('Authenticated', 'success');
       if (this.statusFind) statusFind('isLogged', this.session);
     }
 
@@ -251,18 +227,18 @@ export class HostLayer {
       this.startAutoClose();
       // Wait for interface update
       await sleep(200);
-      this.spin('Checking phone is connected...');
+      this.log('Checking phone is connected...');
       const inChat = await this.waitForInChat();
 
       if (!inChat) {
-        this.spin('Phone not connected', 'fail');
+        this.log('Phone not connected', 'fail');
         if (this.statusFind) statusFind('phoneNotConnected', this.session);
         this.cancelAutoClose();
         this.tryAutoClose();
         throw new Error('Phone not connected');
       }
       this.cancelAutoClose();
-      this.spin('Connected', 'succeed');
+      this.log('Connected', 'success');
       //   statusFind && statusFind('inChat', this.session);
       return true;
     }
@@ -270,13 +246,13 @@ export class HostLayer {
     if (authenticated === false) {
       this.cancelAutoClose();
       this.tryAutoClose();
-      this.spin('Not logged', 'fail');
+      this.log('Not logged', 'fail');
       throw new Error('Not logged');
     }
 
     this.cancelAutoClose();
     this.tryAutoClose();
-    this.spin('Unknow error', 'fail');
+    this.log('Unknown error', 'fail');
   }
 
   //Pro

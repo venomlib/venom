@@ -127,7 +127,6 @@
     "qrcode": "^1.5.1",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.0",
-    "spinnies": "^0.5.1",
     "ts-loader": "^9.5.4",
     "unzipper": "^0.12.0",
     "yoo-hoo": "^1.2.0"
