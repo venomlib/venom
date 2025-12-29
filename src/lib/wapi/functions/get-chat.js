@@ -11,13 +11,12 @@ export async function getChat(id) {
     .Lid1X1MigrationUtils.isLidMigrated();
   let found = false;
   if (gate) {
-    console.info('Lid migration found');
+    window.OnLog('Lid migration found');
     let chatWid = await createWidWrapper(id);
     found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
       chatWid
     ).then((result) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      result.chat;
+      return result.chat;
     });
   } else {
     window.OnLog('Lid migration not found');
