@@ -13,21 +13,25 @@ export async function getChat(id) {
   if (gate) {
     console.info('Lid migration found');
     let chatWid = await createWidWrapper(id);
-    found =
-      await window.Store.FindOrCreateChat.findOrCreateLatestChat(chatWid).chat;
+    found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
+      chatWid
+    ).then((result) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      result.chat;
+    });
   } else {
-    console.info('Lid migration not found');
+    window.OnLog('Lid migration not found');
     found = Store.Chat.get(id);
   }
 
   if (!found) {
-    console.info('Validating Wid');
+    window.OnLog('Validating Wid');
     if (Store.CheckWid.validateWid(id)) {
       const ConstructChat = new window.Store.UserConstructor(id, {
         intentionallyUsePrivateConstructor: !0
       });
       const chatWid = new Store.WidFactory.createWid(id);
-      console.log('Adding chat');
+      window.OnLog('Adding chat');
       await Store.Chat.add(
         {
           createdLocally: true,

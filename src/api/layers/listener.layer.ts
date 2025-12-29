@@ -39,6 +39,7 @@ declare global {
     onLiveLocation: any;
     waitNewMessages: any;
     onPoll: any;
+    onLog: any;
   }
 }
 
@@ -122,6 +123,10 @@ export class ListenerLayer extends ProfileLayer {
         });
       })
       .catch(() => {});
+
+    this.listenerEmitter.on(ExposedFn.onLog, (msg: string) => {
+      this.log(msg);
+    });
   }
 
   public async addMsg() {
