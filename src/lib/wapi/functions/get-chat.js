@@ -11,7 +11,7 @@ export async function getChat(id) {
     .Lid1X1MigrationUtils.isLidMigrated();
   let found = false;
   if (gate) {
-    window.OnLog('Lid migration found');
+    window.onLog('Lid migration found');
     let chatWid = await createWidWrapper(id);
     found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
       chatWid
@@ -19,18 +19,18 @@ export async function getChat(id) {
       return result.chat;
     });
   } else {
-    window.OnLog('Lid migration not found');
+    window.onLog('Lid migration not found');
     found = Store.Chat.get(id);
   }
 
   if (!found) {
-    window.OnLog('Validating Wid');
+    window.onLog('Validating Wid');
     if (Store.CheckWid.validateWid(id)) {
       const ConstructChat = new window.Store.UserConstructor(id, {
         intentionallyUsePrivateConstructor: !0
       });
       const chatWid = new Store.WidFactory.createWid(id);
-      window.OnLog('Adding chat');
+      window.onLog('Adding chat');
       await Store.Chat.add(
         {
           createdLocally: true,
