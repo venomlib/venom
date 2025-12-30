@@ -24,19 +24,17 @@ export async function sendMessage(
   }
 
   if (status == false && (typeof to != 'string' || to.length === 0)) {
-    return WAPI.scope(to, true, 404, 'To number needed');
+    return WAPI.scope(to, true, 404, 'Recipient number is required');
   }
 
   let wid = window.Store.WidFactory.createWid(to);
   let chat = null;
-  if (checkNumber) {
-    try {
-      chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
-        .chat;
-    } catch (err) {
-      window.onLog(`Invalid number : ${to.toString()}`);
-      return WAPI.scope(to, true, null, `Invalid number : ${to.toString()}`);
-    }
+  try {
+    chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${to.toString()}`);
+    return WAPI.scope(to, true, null, `Invalid number : ${to.toString()}`);
   }
 
   if (chat && chat.status != 404 && chat.id) {

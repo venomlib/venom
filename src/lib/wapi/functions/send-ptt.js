@@ -19,19 +19,18 @@ export async function sendPtt(
   }
   let wid = window.Store.WidFactory.createWid(chatid);
   let chat = null;
-  if (checkNumber) {
-    try {
-      chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
-        .chat;
-    } catch (err) {
-      window.onLog(`Invalid number : ${chatid.toString()}`);
-      return WAPI.scope(
-        chatid,
-        true,
-        null,
-        `Invalid number : ${chatid.toString()}`
-      );
-    }
+
+  try {
+    chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${chatid.toString()}`);
+    return WAPI.scope(
+      chatid,
+      true,
+      null,
+      `Invalid number : ${chatid.toString()}`
+    );
   }
 
   if (chat && chat.status != 404 && chat.id) {
