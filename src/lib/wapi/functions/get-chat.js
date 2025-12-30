@@ -1,5 +1,3 @@
-import { createWidWrapper } from '../helper';
-
 export async function getChat(id) {
   if (!id) {
     return false;
@@ -12,7 +10,7 @@ export async function getChat(id) {
   let found = false;
   if (gate) {
     window.onLog('Lid migration found');
-    let chatWid = await createWidWrapper(id);
+    let chatWid = await window.Store.WidFactory.createWid(id);
     found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
       chatWid
     ).then((result) => {

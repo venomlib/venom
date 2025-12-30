@@ -10,6 +10,6 @@ export async function startTyping(chatId) {
       chatId: chatId
     };
   }
-  await Store.ChatState.sendChatStateComposing(chat);
+  await Store.ChatStates.sendChatStateComposing(chat);
   return { status: 200 };
 }
