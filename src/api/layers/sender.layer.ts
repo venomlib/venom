@@ -1336,6 +1336,7 @@ export class SenderLayer extends ListenerLayer {
       if (typeof validating === 'object') {
         return reject(validating);
       }
+
       const result = await this.page.evaluate(
         ({ chatId, checkNumber }) => WAPI.startTyping(chatId, checkNumber),
         { chatId, checkNumber }
