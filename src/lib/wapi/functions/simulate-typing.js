@@ -14,7 +14,11 @@ export async function startTyping(chatId) {
   } catch (e) {
     window.onLog(`Error in startTyping: ${e}`);
     window.onLog(`ChatId ${chatId}`);
-    return { status: 400, text: `Not found ${chatId}`, erro: true };
+    return {
+      status: 400,
+      text: `Phone number not found ${chatId}`,
+      erro: true
+    };
   }
 
   return { status: 200, erro: false };
