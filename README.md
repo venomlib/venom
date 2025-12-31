@@ -1,1040 +1,836 @@
-# 🕷Venom Bot🕸
+# Venom Bot
 
-Venom is a high-performance system developed with JavaScript to create a bot for WhatsApp, support for creating any interaction, such as customer service, media sending, sentence recognition based on artificial intelligence and all types of design architecture for WhatsApp.
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-## 🕷🕷 Functions Venom🕷🕷
+A high-performance WhatsApp bot library for Node.js using Puppeteer to automate WhatsApp Web.
 
-|                                                               |     |
-| ------------------------------------------------------------- | --- |
-| 🚻 Automatic QR Refresh                                       | ✔   |
-| 📁 Send **text, image, video, audio and docs**                | ✔   |
-| 👥 Get **contacts, chats, groups, group members, Block List** | ✔   |
-| 📞 Send contacts                                              | ✔   |
-| Send Buttons                                                  | ✔   |
-| Send stickers                                                 | ✔   |
-| Send stickers GIF                                             | ✔   |
-| Multiple Sessions                                             | ✔   |
-| ⏩ Forward Messages                                           | ✔   |
-| 📥 Receive message                                            | ✔   |
-| 👤 insert user section                                        | ✔   |
-| 📍 Send location!!                                            | ✔   |
-| 🕸🕸 **and much more**                                          | ✔   |
+**Key Features:**
+- Send and receive messages, media, files, locations, and contacts
+- Group management (create, join, manage members and settings)
+- Multiple concurrent sessions with session persistence
+- Event-driven architecture with comprehensive listeners
+- Full TypeScript support with ES Modules and CommonJS
 
+---
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [API Reference](#api-reference)
+  - [Sending Messages](#sending-messages)
+  - [Receiving Messages & Events](#receiving-messages--events)
+  - [Chat Management](#chat-management)
+  - [Group Management](#group-management)
+  - [Profile & Device](#profile--device)
+- [Advanced Usage](#advanced-usage)
+- [Architecture](#architecture)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Requirements
+
+- **Node.js** 18.0.0 or higher
+- **Chrome/Chromium** browser (automatically managed by Puppeteer, or provide your own)
+- **FFmpeg** (optional, for audio/video processing)
+
+---
 
 ## Installation
 
 ```bash
-> npm i --save github:venomlib/venom#v6.7.0
+npm install venom-bot
 ```
 
-## Getting started
+### Import
 
+**ES Modules (recommended):**
+```typescript
+import { create, Whatsapp } from 'venom-bot';
+```
+
+**CommonJS:**
 ```javascript
-// Supports ES6
-// import { create, Whatsapp } from 'venom-bot';
 const venom = require('venom-bot');
+```
 
-venom
-  .create({
-    session: 'session-name' //name of session
-  })
-  .then((client) => start(client))
-  .catch((erro) => {
-    console.log(erro);
-  });
+---
 
-function start(client) {
-  client.onMessage((message) => {
-    if (message.body === 'Hi' && message.isGroupMsg === false) {
-      client
-        .sendText(message.from, 'Welcome Venom 🕷')
-        .then((result) => {
-          console.log('Result: ', result); //return object success
-        })
-        .catch((erro) => {
-          console.error('Error when sending: ', erro); //return object error
-        });
+## Quick Start
+
+### TypeScript
+
+```typescript
+import { create, Whatsapp, Message } from 'venom-bot';
+
+create({ session: 'my-session' })
+  .then((client: Whatsapp) => start(client))
+  .catch((error) => console.error('Failed to create client:', error));
+
+function start(client: Whatsapp): void {
+  client.onMessage(async (message: Message) => {
+    if (message.body === 'Hi' && !message.isGroupMsg) {
+      await client.sendText(message.from, 'Hello from Venom Bot!');
     }
   });
 }
 ```
 
-##### After executing `create()` function, **venom** will create an instance of whatsapp web. If you are not logged in, it will print a QR code in the terminal. Scan it with your phone and you are ready to go!
-
-##### Venom will remember the session so there is no need to authenticate everytime.
-
-##### Multiples sessions can be created at the same time by pasing a session name to `create()` function:
-
-```javascript
-// Init sales whatsapp bot
-venom.create('sales').then((salesClient) => {...});
-
-// Init support whatsapp bot
-venom.create('support').then((supportClient) => {...});
-```
-
-<br>
-
-## Optional create parameters
-
-Venom `create()` method third parameter can have the following optional parameters:
-
-If you are using the `Linux` server do not forget to pass the args `--user-agent`
-[Original parameters in browserArgs](https://github.com/orkestral/venom/blob/master/src/config/puppeteer.config.ts)
+### JavaScript
 
 ```javascript
 const venom = require('venom-bot');
 
 venom
-  .create(
-    //session
-    'sessionName', //Pass the name of the client you want to start the bot
-    //catchQR
-    (base64Qrimg, asciiQR, attempts, urlCode) => {
-      console.log('Number of attempts to read the qrcode: ', attempts);
-      console.log('Terminal qrcode: ', asciiQR);
-      console.log('base64 image string qrcode: ', base64Qrimg);
-      console.log('urlCode (data-ref): ', urlCode);
-    },
-    // statusFind
-    (statusSession, session) => {
-      console.log('Status Session: ', statusSession); //return isLogged || notLogged || browserClose || qrReadSuccess || qrReadFail || autocloseCalled || desconnectedMobile || deleteToken || chatsAvailable || deviceNotConnected || serverWssNotConnected || noOpenBrowser || initBrowser || openBrowser || connectBrowserWs || initWhatsapp || erroPageWhatsapp || successPageWhatsapp || waitForLogin || waitChat || successChat
-      //Create session wss return "serverClose" case server for close
-      console.log('Session name: ', session);
-    },
-    // options
-    {
-      browserPathExecutable: '', // browser executable path
-      folderNameToken: 'tokens', //folder name when saving tokens
-      mkdirFolderToken: '', //folder directory tokens, just inside the venom folder, example:  { mkdirFolderToken: '/node_modules', } //will save the tokens folder in the node_modules directory
-      headless: 'new', // you should no longer use boolean false or true, now use false, true or 'new' learn more https://developer.chrome.com/articles/new-headless/
-      devtools: false, // Open devtools by default
-      debug: false, // Opens a debug session
-      logQR: true, // Logs QR automatically in terminal
-      browserWS: '', // If u want to use browserWSEndpoint
-      browserArgs: [''], // Original parameters  ---Parameters to be added into the chrome browser instance
-      addBrowserArgs: [''], // Add broserArgs without overwriting the project's original
-      puppeteerOptions: {}, // Will be passed to puppeteer.launch
-      disableSpins: true, // Will disable Spinnies animation, useful for containers (docker) for a better log
-      disableWelcome: true, // Will disable the welcoming message which appears in the beginning
-      updatesLog: true, // Logs info updates automatically in terminal
-      autoClose: 60000, // Automatically closes the venom-bot only when scanning the QR code (default 60 seconds, if you want to turn it off, assign 0 or false)
-      createPathFileToken: false, // creates a folder when inserting an object in the client's browser, to work it is necessary to pass the parameters in the function create browserSessionToken
-      addProxy: [''], // Add proxy server exemple : [e1.p.webshare.io:01, e1.p.webshare.io:01]
-      userProxy: '', // Proxy login username
-      userPass: '' // Proxy password
-    },
+  .create({ session: 'my-session' })
+  .then((client) => start(client))
+  .catch((error) => console.error('Failed to create client:', error));
 
-    // BrowserInstance
-    (browser, waPage) => {
-      console.log('Browser PID:', browser.process().pid);
-      waPage.screenshot({ path: 'screenshot.png' });
+function start(client) {
+  client.onMessage(async (message) => {
+    if (message.body === 'Hi' && !message.isGroupMsg) {
+      await client.sendText(message.from, 'Hello from Venom Bot!');
     }
-  )
-  .then((client) => {
-    start(client);
-  })
-  .catch((erro) => {
-    console.log(erro);
   });
+}
 ```
 
-## Callback Status Session
+After running, a QR code will appear in the terminal. Scan it with WhatsApp on your phone to authenticate. The session is saved automatically for future use.
 
-Gets the return if the session is `isLogged` or `notLogged` or `browserClose` or `qrReadSuccess` or `qrReadFail` or `autocloseCalled` or `desconnectedMobile` or `deleteToken` or `chatsAvailable` or `deviceNotConnected` or `serverWssNotConnected` or `noOpenBrowser` or `initBrowser` or `openBrowser` or `connectBrowserWs` or `initWhatsapp` or `erroPageWhatsapp` or `successPageWhatsapp` or `waitForLogin` or `waitChat` or `successChat` or `Create session wss return "serverClose" case server for close`
-
-| Status                  | Condition                                                                                                                                                      |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `isLogged`              | When the user is already logged in to the browser                                                                                                              |
-| `notLogged`             | When the user is not connected to the browser, it is necessary to scan the QR code through the cell phone in the option WhatsApp Web                           |
-| `browserClose`          | If the browser is closed this parameter is returned                                                                                                            |
-| `qrReadSuccess`         | If the user is not logged in, the QR code is passed on the terminal a callback is returned. After the correct reading by cell phone this parameter is returned |
-| `qrReadFail`            | If the browser stops when the QR code scan is in progress, this parameter is returned                                                                          |
-| `autocloseCalled`       | The browser was closed using the autoClose command                                                                                                             |
-| `desconnectedMobile`    | Client has desconnected in to mobile                                                                                                                           |
-| `serverClose`           | Client has desconnected in to wss                                                                                                                              |
-| `deleteToken`           | If you pass true within the function                                                                                                                           |
-| `chatsAvailable`        | When Venom is connected to the chat list                                                                                                                       |
-| `deviceNotConnected`    | Chat not available because the phone is disconnected `(Trying to connect to the phone)`                                                                        |
-| `serverWssNotConnected` | The address wss was not found!                                                                                                                                 |
-| `noOpenBrowser`         | It was not found in the browser, or some command is missing in args                                                                                            |
-| `initBrowser`           | Starting the browser                                                                                                                                           |
-| `openBrowser`           | The browser has been successfully opened!                                                                                                                      |
-| `connectBrowserWs`      | Connection with BrowserWs successfully done!                                                                                                                   |
-| `initWhatsapp`          | Starting whatsapp!                                                                                                                                             |
-| `erroPageWhatsapp`      | Error accessing whatsapp page                                                                                                                                  |
-| `successPageWhatsapp`   | Page Whatsapp successfully accessed                                                                                                                            |
-| `waitForLogin`          | Waiting for login verification!                                                                                                                                |
-| `waitChat`              | Waiting for the chat to load                                                                                                                                   |
-| `successChat`           | Chat successfully loaded!                                                                                                                                      |
+### Multiple Sessions
 
 ```javascript
-const venom = require('venom-bot');
-venom
-  .create('sessionName', undefined, (statusSession, session) => {
-    console.log('Status Session: ', statusSession);
-    //return isLogged || notLogged || browserClose || qrReadSuccess || qrReadFail || autocloseCalled || desconnectedMobile || deleteToken || chatsAvailable || deviceNotConnected || serverWssNotConnected || noOpenBrowser || initBrowser || openBrowser || connectBrowserWs || initWhatsapp || erroPageWhatsapp || successPageWhatsapp || waitForLogin || waitChat || successChat
-    //Create session wss return "serverClose" case server for close
-    console.log('Session name: ', session);
-  })
-  .then((client) => {
-    start(client);
-  })
-  .catch((erro) => {
-    console.log(erro);
-  });
+// Run multiple bots simultaneously
+venom.create({ session: 'sales' }).then((client) => handleSales(client));
+venom.create({ session: 'support' }).then((client) => handleSupport(client));
 ```
 
-## Exporting QR Code
+---
 
-By default QR code will appear on the terminal. If you need to pass the QR
-somewhere else heres how:
+## Configuration
+
+Pass configuration options to `create()`:
 
 ```javascript
-const fs = require('fs');
-const venom = require('venom-bot');
-
-venom
-  .create(
-    'sessionName',
-    (base64Qr, asciiQR, attempts, urlCode) => {
-      console.log(asciiQR); // Optional to log the QR in the terminal
-      var matches = base64Qr.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-        response = {};
-
-      if (matches.length !== 3) {
-        return new Error('Invalid input string');
-      }
-      response.type = matches[1];
-      response.data = new Buffer.from(matches[2], 'base64');
-
-      var imageBuffer = response;
-      require('fs').writeFile(
-        'out.png',
-        imageBuffer['data'],
-        'binary',
-        function (err) {
-          if (err != null) {
-            console.log(err);
-          }
-        }
-      );
-    },
-    undefined,
-    { logQR: false }
-  )
-  .then((client) => {
-    start(client);
-  })
-  .catch((erro) => {
-    console.log(erro);
-  });
+venom.create({
+  session: 'session-name',
+  // ... options
+})
 ```
 
-## Downloading Files
+### Session Options
 
-Puppeteer takes care of the file downloading. The decryption is being done as
-fast as possible (outruns native methods). Supports big files!
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `session` | `string` | `'session'` | Session identifier name |
+| `folderNameToken` | `string` | `'tokens'` | Folder name for storing session tokens |
+| `mkdirFolderToken` | `string` | `''` | Custom directory path for tokens folder |
+| `createPathFileToken` | `boolean` | `false` | Create folder structure for browser session |
+
+### Browser Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `headless` | `boolean \| 'new'` | `'new'` | Run browser in headless mode |
+| `devtools` | `boolean` | `false` | Open Chrome DevTools |
+| `browserPathExecutable` | `string` | `''` | Custom browser executable path |
+| `browserWS` | `string` | `''` | Connect to existing browser via WebSocket |
+| `browserArgs` | `string[]` | `[]` | Chrome launch arguments (replaces defaults) |
+| `addBrowserArgs` | `string[]` | `[]` | Additional Chrome arguments (adds to defaults) |
+| `puppeteerOptions` | `object` | `{}` | Options passed directly to `puppeteer.launch()` |
+
+### QR Code Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `logQR` | `boolean` | `true` | Display QR code in terminal |
+| `autoClose` | `number \| false` | `60000` | Auto-close timeout (ms) when waiting for QR scan |
+
+### Display Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `debug` | `boolean` | `false` | Enable debug logging |
+| `disableSpins` | `boolean` | `false` | Disable spinner animations (useful for Docker) |
+| `disableWelcome` | `boolean` | `false` | Disable welcome message |
+| `updatesLog` | `boolean` | `true` | Log update information |
+
+### Proxy Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `addProxy` | `string[]` | `[]` | Proxy servers (e.g., `['proxy.example.com:8080']`) |
+| `userProxy` | `string` | `''` | Proxy username |
+| `userPass` | `string` | `''` | Proxy password |
+
+### Full Configuration Example
 
 ```javascript
-import fs = require('fs');
-import mime = require('mime-types');
+venom.create(
+  'session-name',
+  // QR code callback
+  (base64Qr, asciiQR, attempts, urlCode) => {
+    console.log('QR Code attempt:', attempts);
+    console.log(asciiQR);
+  },
+  // Status callback
+  (status, session) => {
+    console.log('Status:', status);
+  },
+  // Options
+  {
+    headless: 'new',
+    logQR: true,
+    autoClose: 60000,
+    folderNameToken: 'tokens',
+    disableSpins: true
+  },
+  // Browser instance callback
+  (browser, page) => {
+    console.log('Browser PID:', browser.process().pid);
+  }
+)
+```
 
-client.onMessage( async (message) => {
-  if (message.isMedia === true || message.isMMS === true) {
+### Session Status Values
+
+| Status | Description |
+|--------|-------------|
+| `isLogged` | User is already authenticated |
+| `notLogged` | QR code scan required |
+| `qrReadSuccess` | QR code scanned successfully |
+| `qrReadFail` | QR code scan failed |
+| `browserClose` | Browser was closed |
+| `autocloseCalled` | Auto-close timeout triggered |
+| `desconnectedMobile` | Phone disconnected |
+| `chatsAvailable` | Connected and chats loaded |
+| `deviceNotConnected` | Phone not connected to internet |
+
+---
+
+## API Reference
+
+### Chat ID Formats
+
+- **Contact:** `'1234567890@c.us'` (phone number with country code)
+- **Group:** `'1234567890-9876543210@g.us'`
+- **Status/Broadcast:** `'status@broadcast'`
+
+### Sending Messages
+
+#### Text Messages
+
+```javascript
+// Simple text
+await client.sendText('1234567890@c.us', 'Hello!');
+
+// Reply to a message
+await client.reply('1234567890@c.us', 'This is a reply', messageId);
+
+// Mention users in a group
+await client.sendMentioned(
+  '1234567890-9876543210@g.us',
+  'Hello @1111111111 and @2222222222!',
+  ['1111111111', '2222222222']
+);
+```
+
+#### Media Messages
+
+```javascript
+// Send image (from file path or URL)
+await client.sendImage(
+  '1234567890@c.us',
+  './photo.jpg',        // or 'https://example.com/photo.jpg'
+  'photo',
+  'Check this out!'
+);
+
+// Send image from base64
+await client.sendImageFromBase64('1234567890@c.us', base64Data, 'image.jpg');
+
+// Send file/document
+await client.sendFile(
+  '1234567890@c.us',
+  './document.pdf',
+  'document.pdf',
+  'Here is the document'
+);
+
+// Send voice message
+await client.sendVoice('1234567890@c.us', './audio.mp3');
+
+// Send video as GIF
+await client.sendVideoAsGif('1234567890@c.us', './video.mp4', 'video.gif', 'Funny clip');
+```
+
+#### Stickers
+
+```javascript
+// Send image as sticker
+await client.sendImageAsSticker('1234567890@c.us', './sticker.png');
+
+// Send animated sticker (from GIF)
+await client.sendImageAsStickerGif('1234567890@c.us', './animated.gif');
+```
+
+#### Interactive Messages
+
+```javascript
+// Send buttons
+const buttons = [
+  { buttonText: { displayText: 'Option 1' } },
+  { buttonText: { displayText: 'Option 2' } }
+];
+await client.sendButtons('1234567890@c.us', 'Title', 'Description', buttons);
+
+// Send list menu
+const menu = [
+  {
+    title: 'Category 1',
+    rows: [
+      { title: 'Item 1', description: 'Description 1' },
+      { title: 'Item 2', description: 'Description 2' }
+    ]
+  }
+];
+await client.sendListMenu('1234567890@c.us', 'Title', 'Subtitle', 'Description', 'Menu', menu);
+
+// Send poll
+await client.sendPollCreation('1234567890@c.us', {
+  name: 'What do you prefer?',
+  options: [{ name: 'Option A' }, { name: 'Option B' }],
+  selectableOptionsCount: 1
+});
+```
+
+#### Location & Contacts
+
+```javascript
+// Send location
+await client.sendLocation('1234567890@c.us', '-23.5505', '-46.6333', 'São Paulo');
+
+// Send contact card
+await client.sendContactVcard('1234567890@c.us', '9876543210@c.us', 'John Doe');
+
+// Send multiple contacts
+await client.sendContactVcardList('1234567890@c.us', ['111@c.us', '222@c.us']);
+```
+
+#### Other
+
+```javascript
+// Forward messages
+await client.forwardMessages('1234567890@c.us', [messageId1, messageId2]);
+
+// Send link with preview
+await client.sendLinkPreview('1234567890@c.us', 'https://github.com', 'GitHub');
+
+// React to message
+await client.sendReactions(messageId, '👍');
+
+// Post to status/story
+await client.sendStatusText('Hello everyone!');
+await client.sendImageStatus('./photo.jpg', 'Status update');
+```
+
+### Receiving Messages & Events
+
+#### Message Listeners
+
+```javascript
+// Listen to incoming messages
+client.onMessage((message) => {
+  console.log('From:', message.from);
+  console.log('Body:', message.body);
+  console.log('Type:', message.type);
+});
+
+// Listen to ALL messages (including sent by you)
+client.onAnyMessage((message) => {
+  console.log('Message:', message.body);
+});
+
+// Listen to message edits
+client.onMessageEdit((message) => {
+  console.log('Edited:', message.body);
+});
+
+// Listen to message deletions
+client.onMessageDelete((message) => {
+  console.log('Deleted:', message.id);
+});
+
+// Listen to reactions
+client.onMessageReaction((reaction) => {
+  console.log('Reaction:', reaction.emoji);
+});
+```
+
+#### State & Connection Events
+
+```javascript
+// Connection state changes
+client.onStateChange((state) => {
+  console.log('State:', state);
+  // States: CONFLICT, CONNECTED, DEPRECATED_VERSION, OPENING, PAIRING, etc.
+  if (state === 'CONFLICT') client.useHere();
+});
+
+// Stream state changes
+client.onStreamChange((state) => {
+  console.log('Stream:', state);
+  // States: CONNECTED, DISCONNECTED, SYNCING, RESUMING
+});
+
+// Message acknowledgements
+client.onAck((ack) => {
+  console.log('Ack status:', ack.ack);
+  // -1: FAILED, 0: CLOCK, 1: SENT, 2: RECEIVED, 3: READ, 4: PLAYED
+});
+```
+
+#### Group & Call Events
+
+```javascript
+// Added to group
+client.onAddedToGroup((event) => {
+  console.log('Added to group:', event.chat.name);
+});
+
+// Group participant changes
+client.onParticipantsChanged('group-id@g.us', (event) => {
+  console.log('Action:', event.action); // 'add', 'remove', 'promote', 'demote'
+  console.log('Participant:', event.who);
+});
+
+// Incoming calls
+client.onIncomingCall((call) => {
+  console.log('Call from:', call.peerJid);
+  client.sendText(call.peerJid, "Sorry, I can't answer calls");
+});
+```
+
+### Chat Management
+
+#### Retrieve Chats & Messages
+
+```javascript
+// Get all chats
+const chats = await client.getAllChats();
+
+// Get chats with unread messages
+const unreadChats = await client.getAllChatsNewMsg();
+
+// Get all contacts
+const contacts = await client.getAllContacts();
+
+// Get messages in a chat
+const messages = await client.getAllMessagesInChat('1234567890@c.us', true, false);
+
+// Load and get all messages (from server)
+const allMessages = await client.loadAndGetAllMessagesInChat('1234567890@c.us');
+
+// Get unread messages
+const unread = await client.getUnreadMessages();
+```
+
+#### Chat Actions
+
+```javascript
+// Mark as read
+await client.markMarkSeenMessage('1234567890@c.us');
+
+// Mark as unread
+await client.markUnseenMessage('1234567890@c.us');
+
+// Archive/unarchive
+await client.archiveChat('1234567890@c.us', true);  // archive
+await client.archiveChat('1234567890@c.us', false); // unarchive
+
+// Pin/unpin
+await client.pinChat('1234567890@c.us', true);  // pin
+await client.pinChat('1234567890@c.us', false); // unpin
+
+// Delete chat
+await client.deleteChat('1234567890@c.us');
+
+// Clear messages
+await client.clearChatMessages('1234567890@c.us');
+
+// Delete specific messages
+await client.deleteMessage('1234567890@c.us', [messageId1, messageId2]);
+```
+
+#### Contact Actions
+
+```javascript
+// Block contact
+await client.blockContact('1234567890@c.us');
+
+// Unblock contact
+await client.unblockContact('1234567890@c.us');
+
+// Get block list
+const blocked = await client.getBlockList();
+
+// Check if number exists on WhatsApp
+const result = await client.checkNumberStatus('1234567890@c.us');
+```
+
+### Group Management
+
+#### Create & Join
+
+```javascript
+// Create group
+await client.createGroup('Group Name', ['111@c.us', '222@c.us']);
+
+// Join via invite link
+await client.joinGroup('ABCdef123456');
+
+// Get group info from invite link
+const info = await client.getGroupInfoFromInviteLink('ABCdef123456');
+
+// Leave group
+await client.leaveGroup('group-id@g.us');
+```
+
+#### Members
+
+```javascript
+// Get members
+const members = await client.getGroupMembers('group-id@g.us');
+
+// Get admins
+const admins = await client.getGroupAdmins('group-id@g.us');
+
+// Add participant
+await client.addParticipant('group-id@g.us', '1234567890@c.us');
+
+// Remove participant
+await client.removeParticipant('group-id@g.us', '1234567890@c.us');
+
+// Promote to admin
+await client.promoteParticipant('group-id@g.us', '1234567890@c.us');
+
+// Demote from admin
+await client.demoteParticipant('group-id@g.us', '1234567890@c.us');
+```
+
+#### Settings
+
+```javascript
+// Set group title
+await client.setGroupTitle('group-id@g.us', 'New Group Name');
+
+// Set group description
+await client.setGroupDescription('group-id@g.us', 'Group description');
+
+// Set group image
+await client.setGroupImage('group-id@g.us', './group-photo.jpg');
+
+// Get/revoke invite link
+const link = await client.getGroupInviteLink('group-id@g.us');
+await client.revokeGroupInviteLink('group-id@g.us');
+
+// Restrict messages to admins only
+await client.setMessagesAdminsOnly('group-id@g.us', true);
+```
+
+### Profile & Device
+
+#### Profile
+
+```javascript
+// Set profile name
+await client.setProfileName('Bot Name');
+
+// Set status
+await client.setProfileStatus('Available');
+
+// Set profile picture
+await client.setProfilePic('./profile.jpg');
+
+// Get profile picture
+const picUrl = await client.getProfilePicFromServer('1234567890@c.us');
+```
+
+#### Device & Connection
+
+```javascript
+// Get device info
+const device = await client.getHostDevice();
+
+// Check connection
+const connected = await client.isConnected();
+const state = await client.getConnectionState();
+
+// Get WhatsApp version
+const version = await client.getWAVersion();
+
+// Get battery level
+const battery = await client.getBatteryLevel();
+
+// Logout
+await client.logout();
+```
+
+#### Typing Indicators
+
+```javascript
+// Show typing
+await client.startTyping('1234567890@c.us');
+
+// Show recording
+await client.startRecording('1234567890@c.us');
+
+// Clear indicators
+await client.clearPresence('1234567890@c.us');
+```
+
+---
+
+## Advanced Usage
+
+### Downloading Media
+
+```javascript
+import fs from 'fs';
+import mime from 'mime-types';
+
+client.onMessage(async (message) => {
+  if (message.isMedia || message.isMMS) {
     const buffer = await client.decryptFile(message);
-    // At this point you can do whatever you want with the buffer
-    // Most likely you want to write it into a file
-    const fileName = `some-file-name.${mime.extension(message.mimetype)}`;
-    fs.writeFile(fileName, buffer, (err) => {
-      ...
-    });
+    const extension = mime.extension(message.mimetype);
+    fs.writeFileSync(`./downloads/file.${extension}`, buffer);
   }
 });
 ```
 
-## Basic Functions (usage)
+### Session Persistence
 
-Not every available function is listed, for further look, every function
-available can be found in [here](/src/api/layers) and
-[here](/src/lib/wapi/functions)
-
-### Chatting
-
-##### Here, `chatId` could be `<phoneNumber>@c.us` or `<phoneNumber>-<groupId>@g.us`
+Sessions are automatically saved in the `tokens` folder. To ensure clean shutdown:
 
 ```javascript
-
-// Send Poll
-const poll = {
-  name: 'new poll',
-  options: [
-    {
-      name: 'option 1'
-    },
-    {
-      name: 'option 2'
-    }
-  ],
-  selectableOptionsCount: 1
-};
-await client.sendPollCreation('000000000000@c.us', poll)
-.then((result) => {
-    console.log('Result: ', result); //return object success
-})
-.catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
+// Handle Ctrl+C
+process.on('SIGINT', async () => {
+  await client.close();
+  process.exit(0);
 });
 
-// Send List menu
-const list = [
-    {
-      title: "Pasta",
-      rows: [
-        {
-          title: "Ravioli Lasagna",
-          description: "Made with layers of frozen cheese",
-        }
-      ]
-    },
-    {
-      title: "Dessert",
-      rows: [
-        {
-          title: "Baked Ricotta Cake",
-          description: "Sweets pecan baklava rolls",
-        },
-        {
-          title: "Lemon Meringue Pie",
-          description: "Pastry filled with lemonand meringue.",
-        }
-      ]
-    }
-  ];
-
-await client.sendListMenu('000000000000@c.us', 'Title', 'subTitle', 'Description', 'menu', list)
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send Messages with Buttons Reply
-const buttons = [
-  {
-    "buttonText": {
-      "displayText": "Text of Button 1"
-      }
-    },
-  {
-    "buttonText": {
-      "displayText": "Text of Button 2"
-      }
-    }
-  ]
-await client.sendButtons('000000000000@c.us', 'Title', 'Description', buttons)
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-// Send audio file MP3
-await client.sendVoice('000000000000@c.us', './audio.mp3').then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send audio file base64
-await client.sendVoiceBase64('000000000000@c.us', base64MP3)
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send contact
-await client
-  .sendContactVcard('000000000000@c.us', '111111111111@c.us', 'Name of contact')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send a list of contact cards
-await client
-  .sendContactVcardList('000000000000@c.us', [
-    '111111111111@c.us',
-    '222222222222@c.us',
-  ])
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send basic text
-await client
-  .sendText('000000000000@c.us', '👋 Hello from venom!')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-
-// Send text message by injecting keystrokes into WhatsApp, thus maintaining the typing indicator
-let success = await client.sendTextViaTyping('000000000000@c.us', '👋 Hello from venom!');
-
-// Send photo or video by injecting keystrokes
-let success = await client.sendPhotoVideoViaTyping('000000000000@c.us', 'path/to/file.jpg', 'Pretty sunset');
-
-// Send location
-await client
-  .sendLocation('000000000000@c.us', '-13.6561589', '-69.7309264', 'Brasil')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Automatically sends a link with the auto generated link preview. You can also add a custom message to be added.
-await client
-  .sendLinkPreview(
-    '000000000000@c.us',
-    'https://www.youtube.com/watch?v=V1bFr2SWP1I',
-    'Kamakawiwo ole'
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send image (you can also upload an image using a valid HTTP protocol)
-await client
-  .sendImage(
-    '000000000000@c.us',
-    'path/to/img.jpg',
-    'image-name',
-    'Caption text'
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-
-// Send image file base64
-await client.sendImageFromBase64('000000000000@c.us', base64Image, "name file")
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Send file (venom will take care of mime types, just need the path)
-// you can also upload an image using a valid HTTP protocol
-await client
-  .sendFile(
-    '000000000000@c.us',
-    'path/to/file.pdf',
-    'file_name',
-    'See my file in pdf'
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Sends file
-// base64 parameter should have mime type already defined
-await client
-  .sendFileFromBase64(
-    '000000000000@c.us',
-    base64PDF,
-    'file_name.pdf',
-    'See my file in pdf'
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Generates sticker from the provided animated gif image and sends it (Send image as animated sticker)
-// image path imageBase64 A valid gif and webp image is required. You can also send via http/https (http://www.website.com/img.gif)
-await client
-  .sendImageAsStickerGif('000000000000@c.us', './image.gif')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Generates sticker from given image and sends it (Send Image As Sticker)
-// image path imageBase64 A valid png, jpg and webp image is required. You can also send via http/https (http://www.website.com/img.jpg)
-await client
-  .sendImageAsSticker('000000000000@c.us', './image.jpg')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Forwards messages
-await client.forwardMessages(
-  '000000000000@c.us',
-  ['false_000000000000@c.us_B70847EE89E22D20FB86ECA0C1B11609','false_000000000000@c.us_B70847EE89E22D20FB86ECA0C1B11777']
-).then((result) => {
-    console.log('Result: ', result); //return object success
-})
-.catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-});
-
-// Send @tagged message
-await client.sendMentioned(
-  '000000000000@c.us',
-  'Hello @5218113130740 and @5218243160777!',
-  ['5218113130740', '5218243160777']
-);
-
-// Reply to a message
-await client.reply(
-  '000000000000@c.us',
-  'This is a reply!',
-  'true_551937311025@c.us_7C22WHCB6DKYHJKQIEN9'
-).then((result) => {
-    console.log('Result: ', result); //return object success
-}).catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-});
-
-// Send message with options
-await client.
-        .sendMessageOptions(
-          '000000000000@c.us',
-          'This is a reply!',
-           {
-              quotedMessageId: reply,
-            }
-        )
-        .then((retorno) => {
-          resp = retorno;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-
-// Send gif
-await client.sendVideoAsGif(
-  '000000000000@c.us',
-  'path/to/video.mp4',
-  'video.gif',
-  'Gif image file'
-);
-
-//checks and returns whether a message and a reply
-// exemple:
-// await client.onMessage(async (message) => {
-//     console.log(await client.returnReply(message)); // replicated message
-//     console.log(message.body ); //customer message
-//   })
-checkReply = await client.returnReply(messagem);
-
-// Send seen ✔️✔️
-await client.sendSeen('000000000000@c.us');
-
-// Start typing...
-await client.startTyping('000000000000@c.us');
-
-// Set chat state (0: Typing, 1: Recording, 2: Paused)
-await client.setChatState('000000000000@c.us', 0 | 1 | 2);
-```
-
-## Retrieving Data
-
-```javascript
-// Retrieve all chats
-const chats = await client.getAllChats();
-
-//Retrieves all chats new messages
-const chatsAllNew = getAllChatsNewMsg();
-
-//Retrieves all chats Contacts
-const contacts = await client.getAllChatsContacts();
-
-//Retrieve all contacts new messages
-const contactNewMsg = await client.getChatContactNewMsg();
-
-// Retrieve all groups
-// you can pass the group id optional use, exemple: client.getAllChatsGroups('00000000-000000@g.us')
-const chats = await client.getAllChatsGroups();
-
-//Retrieve all groups new messages
-const groupNewMsg = await client.getChatGroupNewMsg();
-
-//Retrieves all chats Transmission list
-const transmission = await client.getAllChatsTransmission();
-
-// Retrieve contacts
-const contacts = await client.getAllContacts();
-
-// Returns a list of mute and non-mute users
-// "all" List all mutes
-// "toMute" List all silent chats
-// "noMute" List all chats without silence
-const listMute = await client.getListMute('all');
-
-// Calls your list of blocked contacts (returns an array)
-const getBlockList = await client.getBlockList();
-
-// Retrieve messages in chat
-//chatID chat id
-//includeMe will be by default true, if you do not want to pass false
-//includeNotifications will be by default true, if you do not want to pass false
-//const Messages = await client.getAllMessagesInChat(chatID, includeMe, includeNotifications)
-const Messages = await client.getAllMessagesInChat('000000000000@c.us');
-
-// Retrieve more chat message
-const moreMessages = await client.loadEarlierMessages('000000000000@c.us');
-
-// Retrieve all messages in chat
-const allMessages = await client.loadAndGetAllMessagesInChat(
-  '000000000000@c.us'
-);
-
-// Retrieve contact status
-const status = await client.getStatus('000000000000@c.us');
-
-// Retrieve user profile
-// Please note that this function does not currently work due to a bug in WhatsApp itself.
-// There is no telling if or when this function might work again.
-const user = await client.getNumberProfile('000000000000@c.us');
-
-// Retrieve all unread message
-const messages = await client.getUnreadMessages();
-
-// Retrieve profile fic (as url)
-const url = await client.getProfilePicFromServer('000000000000@c.us');
-
-// Retrieve chat/conversation
-const chat = await client.getChat('000000000000@c.us');
-
-// Check if the number exists
-const chat = await client
-  .checkNumberStatus('000000000000@c.us')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-```
-
-## Group Functions
-
-```javascript
-// groupId or chatId: leaveGroup 52123123-323235@g.us
-
-//change group description
-await client
-  .setGroupDescription('00000000-000000@g.us', 'group description')
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Leave group
-await client.leaveGroup('00000000-000000@g.us');
-
-// Get group members
-await client.getGroupMembers('00000000-000000@g.us');
-
-// Get group members ids
-await client.getGroupMembersIds('00000000-000000@g.us');
-
-// Generate group invite url link
-await client.getGroupInviteLink('00000000-000000@g.us');
-
-// Create group (title, participants to add)
-await client.createGroup('Group name', [
-  '111111111111@c.us',
-  '222222222222@c.us'
-]);
-
-// Remove participant
-await client.removeParticipant('00000000-000000@g.us', '111111111111@c.us');
-
-// Add participant
-await client.addParticipant('00000000-000000@g.us', '111111111111@c.us');
-
-// Promote participant (Give admin privileges)
-await client.promoteParticipant('00000000-000000@g.us', '111111111111@c.us');
-
-// Demote particiapnt (Revoke admin privileges)
-await client.demoteParticipant('00000000-000000@g.us', '111111111111@c.us');
-
-// Get group admins
-await client.getGroupAdmins('00000000-000000@g.us');
-
-// Return the group status, jid, description from it's invite link
-await client.getGroupInfoFromInviteLink(InviteCode);
-
-// Join a group using the group invite code
-await client.joinGroup(InviteCode);
-```
-
-## Profile Functions
-
-```javascript
-// Set client status
-await client.setProfileStatus('On vacations! ✈️');
-
-// Set client profile name
-await client.setProfileName('Venom bot');
-
-// Set client profile photo
-await client.setProfilePic('path/to/image.jpg');
-
-// Get device info
-await client.getHostDevice();
-```
-
-## Device Functions
-
-```javascript
-// Disconnect from service
-await client.logout();
-
-// Delete the Service Worker
-await client.killServiceWorker();
-
-// Load the service again
-await client.restartService();
-
-// Get connection state
-await client.getConnectionState();
-
-// Get battery level
-await client.getBatteryLevel();
-
-// Is connected
-await client.isConnected();
-
-// Get whatsapp web version
-await client.getWAVersion();
-```
-
-## Events
-
-```javascript
-
-//Listens to all new messages
-//To receiver or recipient
-client.onAnyMessage(message => {
-  ...
-};
-
-// Listen to messages
-client.onMessage(message => {
-...
-})
-
-// Listen for messages that have been edited
-client.onMessageEdit(message => {
-...
-})
-
-// Listen for messages that have been deleted
-client.onMessageDelete(message => {
-...
-})
-
-// Listen to state changes
-client.onStateChange(state => {
-  ...
-});
-
-// Listen to ack's
-// See the status of the message when sent.
-// When receiving the confirmation object, "ack" may return a number, look {@link AckType} for details:
-// -7 = MD_DOWNGRADE,
-// -6 = INACTIVE,
-// -5 = CONTENT_UNUPLOADABLE,
-// -4 = CONTENT_TOO_BIG,
-// -3 = CONTENT_GONE,
-// -2 = EXPIRED,
-// -1 = FAILED,
-//  0 = CLOCK,
-//  1 = SENT,
-//  2 = RECEIVED,
-//  3 = READ,
-//  4 = PLAYED =
-
-client.onAck(ack => {
-  ...
-});
-
-// Listen to live location
-// chatId: 'phone@c.us'
-client.onLiveLocation("000000000000@c.us", (liveLocation) => {
-  ...
-});
-
-// chatId looks like this: '5518156745634-1516512045@g.us'
-// Event interface is in here: https://github.com/s2click/venom/blob/master/src/api/model/participant-event.ts
-client.onParticipantsChanged("000000000000@c.us", (event) => {
-  ...
-});
-
-// Listen when client has been added to a group
-client.onAddedToGroup(chatEvent => {
-  ...
+// Handle errors
+process.on('uncaughtException', async (error) => {
+  console.error('Error:', error);
+  await client.close();
+  process.exit(1);
 });
 ```
 
-## Other
+### Keep Session Alive
 
 ```javascript
-//Check if there is chat
-await client
-  .checkChat(chatId)
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Pin chat and Unpin chat messages with true or false
-// Pin chat, non-existent (optional)
-await client
-  .pinChat(chatId, true, false)
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-///mute a contact
-await client
-  .sendMute(
-    '000000000000@c.us', //contact mute
-    30, //duration of silence, example: 30 minutes
-    'minutes' ///kind of silence "hours" "minutes" "year"
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-///unmute contact
-await client
-  .sendMute(
-    '000000000000@c.us' //contact unmute
-  )
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Change the theme
-// string types "dark" or "light"
-await client.setTheme('dark');
-
-// Receive the current theme
-// returns string light or dark
-await client.getTheme();
-
-// Delete chat
-await client.deleteChat('000000000000@c.us');
-
-// Clear chat messages
-await client.clearChatMessages('000000000000@c.us');
-
-// Archive and unarchive chat messages with true or false
-await client.archiveChat(chatId, true);
-
-// Delete message (last parameter: delete only locally)
-await client
-  .deleteMessage('000000000000@c.us', [
-    'false_000000000000@c.us_B70847EE89E22D20FB86ECA0C1B11609',
-    'false_000000000000@c.us_B70847EE89E22D20FB86ECA0C1B11777'
-  ])
-  .then((result) => {
-    console.log('Result: ', result); //return object success
-  })
-  .catch((erro) => {
-    console.error('Error when sending: ', erro); //return object error
-  });
-
-// Mark chat as not seen (returns true if it works)
-await client.markUnseenMessage('000000000000@c.us');
-
-// Blocks a user (returns true if it works)
-await client.blockContact('000000000000@c.us');
-
-// Unlocks contacts (returns true if it works)
-await client.unblockContact('000000000000@c.us');
-```
-
-## Misc
-
-There are some tricks for a better usage of venom.
-
-#### Keep session alive:
-
-```javascript
-// function to detect conflits and change status
-// Force it to keep the current session
-// Possible state values:
-// CONFLICT
-// CONNECTED
-// DEPRECATED_VERSION
-// OPENING
-// PAIRING
-// PROXYBLOCK
-// SMB_TOS_BLOCK
-// TIMEOUT
-// TOS_BLOCK
-// UNLAUNCHED
-// UNPAIRED
-// UNPAIRED_IDLE
 client.onStateChange((state) => {
-  console.log('State changed: ', state);
-  // force whatsapp take over
-  if ('CONFLICT'.includes(state)) client.useHere();
-  // detect disconnect on whatsapp
-  if ('UNPAIRED'.includes(state)) console.log('logout');
+  console.log('State:', state);
+  if (state === 'CONFLICT') {
+    client.useHere(); // Take over session
+  }
 });
 
-// DISCONNECTED
-// SYNCING
-// RESUMING
-// CONNECTED
-let time = 0;
+let disconnectTimer;
 client.onStreamChange((state) => {
-  console.log('State Connection Stream: ' + state);
-  clearTimeout(time);
+  clearTimeout(disconnectTimer);
   if (state === 'DISCONNECTED' || state === 'SYNCING') {
-    time = setTimeout(() => {
+    disconnectTimer = setTimeout(() => {
       client.close();
     }, 80000);
   }
 });
-
-// function to detect incoming call
-client.onIncomingCall(async (call) => {
-  console.log(call);
-  client.sendText(call.peerJid, "Sorry, I still can't answer calls");
-});
 ```
 
-#### Closing (saving) sessions
+### Custom WhatsApp Web Version
 
-Close the session properly to ensure the session is saved for the next time you
-log in (So it won't ask for QR scan again). So instead of CTRL+C,
-
-```javascript
-// Catch ctrl+C
-process.on('SIGINT', function() {
-  client.close();
-});
-
-// Try-catch close
-try {
-   ...
-} catch (error) {
-   client.close();
-}
-```
-
-### Auto closing unsynced sessions
-
-The auto close is enabled by default and the timeout is set to 60 sec.
-Receives the time in milliseconds to countdown until paired.
-
-Use "autoClose: 0 | false" to disable auto closing.
-
-### Debugging
-
-### WhatsApp Web Versions
-
-You can use cached versions of WhatsApp Web by passing the `webVersion` arguments as part of your venom options:
 ```javascript
 venom.create({
-    session: 'sessionname', //name of session
-    headless: false,
-    logQR: true,
-    webVersion: '2.2402.5'
-  })
-  .then((client) => {
-    start(client);
-  });
+  session: 'my-session',
+  webVersion: '2.2402.5'  // Use specific WA Web version
+});
 ```
-This feature can use any version available in the list at https://github.com/wppconnect-team/wa-version/tree/main/html
+
+### Exporting QR Code to File
+
+```javascript
+const fs = require('fs');
+
+venom.create(
+  'session-name',
+  (base64Qr) => {
+    const matches = base64Qr.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const buffer = Buffer.from(matches[2], 'base64');
+    fs.writeFileSync('qr-code.png', buffer);
+  },
+  undefined,
+  { logQR: false }
+);
+```
+
+---
+
+## Architecture
+
+```
+src/
+├── api/
+│   ├── layers/           # Layered API architecture
+│   │   ├── host.layer.ts       # Connection & device management
+│   │   ├── profile.layer.ts    # Profile settings
+│   │   ├── sender.layer.ts     # Message sending
+│   │   ├── listener.layer.ts   # Event listeners
+│   │   ├── retriever.layer.ts  # Data retrieval
+│   │   ├── controls.layer.ts   # Chat management
+│   │   ├── group.layer.ts      # Group operations
+│   │   └── ui.layer.ts         # UI interactions
+│   ├── model/            # TypeScript interfaces
+│   └── helpers/          # Utility functions
+├── lib/
+│   └── wapi/             # Browser-injected WhatsApp Web API
+├── controllers/
+│   ├── initializer.ts    # Session creation
+│   ├── browser.ts        # Puppeteer management
+│   └── auth.ts           # Authentication
+└── config/               # Configuration
+```
+
+### Layer Hierarchy
+
+Each layer extends the previous, creating a complete feature stack:
+
+```
+HostLayer (base)
+  └── ProfileLayer
+      └── SenderLayer
+          └── ListenerLayer
+              └── RetrieverLayer
+                  └── ControlsLayer
+                      └── UILayer
+                          └── GroupLayer
+                              └── BusinessLayer (exports as Whatsapp)
+```
+
+---
+
 ## Development
 
-Building venom is really simple although it contains 3 main projects inside
-
-1. Wapi project
+### Build Commands
 
 ```bash
-> npm run build:wapi
+npm run build          # Full build
+npm run build:wapi     # Build WAPI (browser-injected code)
+npm run build:venom    # Compile TypeScript
+npm run watch          # Watch mode
 ```
 
-2. Middleware
+### Code Quality
 
 ```bash
-> npm run build:middleware
-> npm run build:jsQR
+npm run lint           # Run ESLint
+npm run lint:fix       # Fix linting issues
+npm run knip           # Check for unused dependencies
 ```
 
-3. Venom
+### Testing
 
 ```bash
-> npm run build:venom
+npm test               # Run tests
+npm run test:app       # Run example application
 ```
 
-To build the entire project just run
+### Generate API Documentation
 
 ```bash
-> npm run build
+npm run generate-api-docs
 ```
 
-## Maintainers
+---
 
-Maintainers are needed, I cannot keep with all the updates by myself. If you are
-interested please open a Pull Request.
+## Troubleshooting
+
+### QR Code Not Appearing
+
+1. Ensure `logQR: true` in options
+2. Check terminal supports Unicode
+3. Try `disableSpins: true` if using Docker
+
+### Session Not Persisting
+
+1. Check `tokens` folder has write permissions
+2. Ensure clean shutdown with `client.close()`
+3. Don't run multiple instances with the same session name
+
+### Connection Issues
+
+1. Check phone has internet connection
+2. Keep WhatsApp open on phone
+3. Use `onStateChange` to monitor connection status
+
+### Chrome/Puppeteer Issues
+
+1. Install Chrome dependencies on Linux:
+   ```bash
+   apt-get install -y chromium-browser
+   ```
+2. Set custom browser path:
+   ```javascript
+   { browserPathExecutable: '/usr/bin/chromium-browser' }
+   ```
+3. Add browser args for containers:
+   ```javascript
+   { addBrowserArgs: ['--no-sandbox', '--disable-setuid-sandbox'] }
+   ```
+
+### Media Sending Fails
+
+1. Ensure file exists and is readable
+2. Check file size limits (WhatsApp has limits)
+3. Verify FFmpeg is installed for audio/video processing
+
+---
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to
-discuss what you would like to change.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run `npm run lint` and fix any issues
+5. Submit a pull request
+
+---
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Security
+
+For security issues, please see [SECURITY.md](SECURITY.md).
+
+---
+
+## Links
+
+- [GitHub Repository](https://github.com/orkestral/venom)
+- [npm Package](https://www.npmjs.com/package/venom-bot)
+- [Issue Tracker](https://github.com/orkestral/venom/issues)
+- [Changelog](CHANGELOG.md)
