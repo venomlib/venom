@@ -42,33 +42,30 @@ export class UILayer extends GroupLayer {
    * @param chatId
    */
   public async openChat(chatId: string, force?: boolean) {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'openChat';
-      const type = 'string';
-      const check = [
-        {
-          param: 'text',
-          type: type,
-          value: chatId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'openChat';
+    const type = 'string';
+    const check = [
+      {
+        param: 'text',
+        type: type,
+        value: chatId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = await this.page.evaluate(
-        ({ chatId, force }) => WAPI.openChat(chatId, force),
-        { chatId, force }
-      );
+    ];
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      ({ chatId, force }) => WAPI.openChat(chatId, force),
+      { chatId, force }
+    );
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
