@@ -34,7 +34,7 @@
     "changelog:last": "conventional-changelog -p angular -r 2",
     "changelog:preview": "conventional-changelog -p angular -u",
     "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "clean": "shx rm -rf session dist",
+    "clean": "rm -rf session dist",
     "fix:imports": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\" && npm run lint:fix",
     "generate-api-docs": "typedoc",
     "lint:js": "npx eslint -c eslint.config.js --ext .js src",
@@ -127,7 +127,6 @@
     "qrcode": "^1.5.1",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.34.0",
-    "spinnies": "^0.5.1",
     "ts-loader": "^9.5.4",
     "unzipper": "^0.12.0",
     "yoo-hoo": "^1.2.0"

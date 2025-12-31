@@ -36,9 +36,8 @@ export async function generateASCIIQR(
 
   // Dynamic import to support both ESM and CJS
   const QRCodeModule = await import('../../vendor/QRCode/index.js');
-  const QRErrorCorrectLevelModule = await import(
-    '../../vendor/QRCode/QRErrorCorrectLevel.js'
-  );
+  const QRErrorCorrectLevelModule =
+    await import('../../vendor/QRCode/QRErrorCorrectLevel.js');
 
   const QRCode = QRCodeModule.default || QRCodeModule;
   const QRErrorCorrectLevel =

@@ -1,5 +1,6 @@
 import { Browser, BrowserContext, LaunchOptions, Page } from 'puppeteer';
 import { puppeteerConfig } from './puppeteer.config.js';
+import { LoggerFunction } from '../utils/logger.js';
 
 // Server config
 export interface CreateConfig {
@@ -58,10 +59,11 @@ export interface CreateConfig {
    */
   logQR?: boolean;
   /**
-   * Will disable Spinnies animation, useful for containers (docker) for a better log
-   * @default false
+   * Custom logger function. If provided, all logging will go through this function.
+   * If not provided, console.log will be used.
+   * @default null
    */
-  disableSpins?: boolean;
+  logger?: LoggerFunction;
   /**
    * Will disable the welcoming message which appears in the beginning
    * @default false
@@ -150,7 +152,7 @@ export const defaultOptions: CreateConfig = {
   browserArgs: puppeteerConfig.chromiumArgs,
   addBrowserArgs: [],
   puppeteerOptions: {},
-  disableSpins: false,
+  logger: null,
   disableWelcome: true,
   updatesLog: true,
   autoClose: 120000,

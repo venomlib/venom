@@ -1,5 +1,3 @@
-import { createWidWrapper } from '../helper';
-
 export async function getChat(id) {
   if (!id) {
     return false;
@@ -11,22 +9,25 @@ export async function getChat(id) {
     .Lid1X1MigrationUtils.isLidMigrated();
   let found = false;
   if (gate) {
-    console.info('Lid migration found');
-    let chatWid = await createWidWrapper(id);
-    found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(chatWid).chat;
+    let chatWid = await window.Store.WidFactory.createWid(id);
+    found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
+      chatWid
+    ).then((result) => {
+      return result.chat;
+    });
   } else {
-    console.info('Lid migration not found');
+    window.onLog('Lid migration not found');
     found = Store.Chat.get(id);
   }
 
   if (!found) {
-    console.info('Validating Wid');
+    window.onLog('Validating Wid');
     if (Store.CheckWid.validateWid(id)) {
       const ConstructChat = new window.Store.UserConstructor(id, {
         intentionallyUsePrivateConstructor: !0
       });
       const chatWid = new Store.WidFactory.createWid(id);
-      console.log('Adding chat');
+      window.onLog('Adding chat');
       await Store.Chat.add(
         {
           createdLocally: true,

@@ -39,6 +39,7 @@ declare global {
     onLiveLocation: any;
     waitNewMessages: any;
     onPoll: any;
+    onLog: any;
   }
 }
 
@@ -58,7 +59,7 @@ export class ListenerLayer extends ProfileLayer {
 
     this.page.on('close', () => {
       this.cancelAutoClose();
-      this.spin('Page Closed', 'fail');
+      this.log('Page Closed', 'fail');
     });
   }
 
@@ -122,6 +123,10 @@ export class ListenerLayer extends ProfileLayer {
         });
       })
       .catch(() => {});
+
+    this.listenerEmitter.on(ExposedFn.onLog, (msg: string) => {
+      this.log(msg);
+    });
   }
 
   public async addMsg() {

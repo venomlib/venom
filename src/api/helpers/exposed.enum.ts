@@ -13,5 +13,6 @@ export enum ExposedFn {
   onFilePicThumb = 'onFilePicThumb',
   onChatState = 'onChatState',
   onUnreadMessage = 'onUnreadMessage',
-  onPoll = 'onPoll'
+  onPoll = 'onPoll',
+  onLog = 'onLog'
 }

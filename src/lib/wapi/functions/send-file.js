@@ -56,9 +56,21 @@ export async function sendFile(
     mime = mime[1];
   }
 
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatid)
-    : await WAPI.returnChat(chatid);
+  let wid = window.Store.WidFactory.createWid(chatid);
+  let chat = null;
+
+  try {
+    chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${chatid.toString()}`);
+    return WAPI.scope(
+      chatid,
+      true,
+      null,
+      `Invalid number : ${chatid.toString()}`
+    );
+  }
 
   if (chat && chat.status != 404 && chat.id) {
     let inChat = await WAPI.getchatId(chat.id).catch(() => {

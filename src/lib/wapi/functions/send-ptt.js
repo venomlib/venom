@@ -17,9 +17,21 @@ export async function sendPtt(
   if (typeof Base64 === 'string' && !Base64.length) {
     return WAPI.scope(chatid, true, 404, 'Audio not foud');
   }
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatid)
-    : await WAPI.returnChat(chatid);
+  let wid = window.Store.WidFactory.createWid(chatid);
+  let chat = null;
+
+  try {
+    chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${chatid.toString()}`);
+    return WAPI.scope(
+      chatid,
+      true,
+      null,
+      `Invalid number : ${chatid.toString()}`
+    );
+  }
 
   if (chat && chat.status != 404 && chat.id) {
     const m = { type: 'sendPtt' };
