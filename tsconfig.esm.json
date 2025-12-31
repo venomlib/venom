@@ -10,6 +10,7 @@
     "outDir": "./dist/esm",
     "declaration": true,
     "declarationDir": "./dist/esm",
-    "sourceMap": true
+    "sourceMap": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo-esm"
   }
 }

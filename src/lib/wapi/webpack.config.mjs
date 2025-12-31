@@ -10,6 +10,13 @@ export default {
   entry: './wapi.js',
   // mode: 'development',
   // devtool: 'source-map',
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(
+      __dirname,
+      '../../../node_modules/.cache/webpack-wapi'
+    )
+  },
   output: {
     path: path.resolve(__dirname, '../../../dist/lib/wapi'),
     filename: 'wapi.js'
