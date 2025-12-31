@@ -9,7 +9,6 @@ export async function getChat(id) {
     .Lid1X1MigrationUtils.isLidMigrated();
   let found = false;
   if (gate) {
-    window.onLog('Lid migration found');
     let chatWid = await window.Store.WidFactory.createWid(id);
     found = await window.Store.FindOrCreateChat.findOrCreateLatestChat(
       chatWid
