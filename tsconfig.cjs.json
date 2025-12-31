@@ -4,6 +4,7 @@
     "module": "commonjs",
     "outDir": "./dist/cjs",
     "declaration": true,
-    "declarationDir": "./dist/cjs"
+    "declarationDir": "./dist/cjs",
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo-cjs"
   }
 }

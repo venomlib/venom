@@ -43,34 +43,31 @@ export class ControlsLayer extends UILayer {
    * @returns bollean
    */
   public async markUnseenMessage(contactId: string) {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'markUnseenMessage';
-      const type = 'string';
-      const check = [
-        {
-          param: 'contactId',
-          type: type,
-          value: contactId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'markUnseenMessage';
+    const type = 'string';
+    const check = [
+      {
+        param: 'contactId',
+        type: type,
+        value: contactId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = await this.page.evaluate(
-        (contactId: string) => WAPI.markUnseenMessage(contactId),
-        contactId
-      );
+    ];
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      (contactId: string) => WAPI.markUnseenMessage(contactId),
+      contactId
+    );
+
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -79,34 +76,31 @@ export class ControlsLayer extends UILayer {
    * @returns boolean
    */
   public async markMarkSeenMessage(contactId: string) {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'markMarkSeenMessage';
-      const type = 'string';
-      const check = [
-        {
-          param: 'contactId',
-          type: type,
-          value: contactId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'markMarkSeenMessage';
+    const type = 'string';
+    const check = [
+      {
+        param: 'contactId',
+        type: type,
+        value: contactId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = await this.page.evaluate(
-        (contactId: string) => WAPI.markMarkSeenMessage(contactId),
-        contactId
-      );
+    ];
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      (contactId: string) => WAPI.markMarkSeenMessage(contactId),
+      contactId
+    );
+
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -142,19 +136,16 @@ export class ControlsLayer extends UILayer {
    * @returns object
    */
   public async pinChat(chatId: string, option: boolean, nonExistent?: boolean) {
-    return new Promise(async (resolve, reject) => {
-      const result = await this.page.evaluate(
-        ({ chatId, option, nonExistent }) => {
-          return WAPI.pinChat(chatId, option, nonExistent);
-        },
-        { chatId, option, nonExistent }
-      );
-      if (result['erro'] == true) {
-        reject(result);
-      } else {
-        resolve(result);
-      }
-    });
+    const result = await this.page.evaluate(
+      ({ chatId, option, nonExistent }) => {
+        return WAPI.pinChat(chatId, option, nonExistent);
+      },
+      { chatId, option, nonExistent }
+    );
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -173,47 +164,43 @@ export class ControlsLayer extends UILayer {
    * Deletes message of given message id
    * @param chatId The chat id from which to delete the message.
    * @param messageId The specific message id of the message to be deleted
-   * @param onlyLocal If it should only delete locally (message remains on the other recipienct's phone). Defaults to false.
    */
   public async deleteMessage(
     chatId: string,
     messageId: string[]
   ): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'deleteMessage';
-      const type = 'string';
-      const check = [
-        {
-          param: 'chatId',
-          type: type,
-          value: chatId,
-          function: typeFunction,
-          isUser: true
-        },
-        {
-          param: 'messageId',
-          type: 'object',
-          value: messageId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'deleteMessage';
+    const type = 'string';
+    const check = [
+      {
+        param: 'chatId',
+        type: type,
+        value: chatId,
+        function: typeFunction,
+        isUser: true
+      },
+      {
+        param: 'messageId',
+        type: 'object',
+        value: messageId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = await this.page.evaluate(
-        ({ chatId, messageId }) => WAPI.deleteMessages(chatId, messageId),
-        { chatId, messageId }
-      );
+    ];
 
-      if (result['erro'] === true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      ({ chatId, messageId }) => WAPI.deleteMessages(chatId, messageId),
+      { chatId, messageId }
+    );
+
+    if (result['erro'] === true) {
+      throw result;
+    }
+    return result;
   }
 
   /**

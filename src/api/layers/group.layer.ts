@@ -7,9 +7,8 @@ import {
   fileToBase64,
   downloadFileToBase64,
   resizeImg
-} from '../helpers/index.js';
-import { GroupSettings } from '../model/enum/index.js';
-import { Chat } from '../model/index.js';
+} from '../helpers';
+import { GroupSettings } from '../model/enum';
 
 export class GroupLayer extends RetrieverLayer {
   constructor(
@@ -32,51 +31,48 @@ export class GroupLayer extends RetrieverLayer {
     settings: GroupSettings,
     value: boolean
   ): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'setGroupSettings';
-      const type = 'string';
-      const check = [
-        {
-          param: 'groupId',
-          type: type,
-          value: groupId,
-          function: typeFunction,
-          isUser: true
-        },
-        {
-          param: 'settings',
-          type: type,
-          value: settings,
-          function: typeFunction,
-          isUser: true
-        },
-        {
-          param: 'value',
-          type: type,
-          value: value,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'setGroupSettings';
+    const type = 'string';
+    const check = [
+      {
+        param: 'groupId',
+        type: type,
+        value: groupId,
+        function: typeFunction,
+        isUser: true
+      },
+      {
+        param: 'settings',
+        type: type,
+        value: settings,
+        function: typeFunction,
+        isUser: true
+      },
+      {
+        param: 'value',
+        type: type,
+        value: value,
+        function: typeFunction,
+        isUser: true
       }
+    ];
 
-      const result = await this.page.evaluate(
-        ({ groupId, settings, value }) => {
-          return WAPI.setGroupSettings(groupId, settings, value);
-        },
-        { groupId, settings, value }
-      );
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const result = await this.page.evaluate(
+      ({ groupId, settings, value }) => {
+        return WAPI.setGroupSettings(groupId, settings, value);
+      },
+      { groupId, settings, value }
+    );
+
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -127,44 +123,41 @@ export class GroupLayer extends RetrieverLayer {
    * @param {string} title group title
    */
   public async setGroupTitle(groupId: string, title: string): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'setGroupTitle';
-      const type = 'string';
-      const check = [
-        {
-          param: 'groupId',
-          type: type,
-          value: groupId,
-          function: typeFunction,
-          isUser: true
-        },
-        {
-          param: 'title',
-          type: type,
-          value: title,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'setGroupTitle';
+    const type = 'string';
+    const check = [
+      {
+        param: 'groupId',
+        type: type,
+        value: groupId,
+        function: typeFunction,
+        isUser: true
+      },
+      {
+        param: 'title',
+        type: type,
+        value: title,
+        function: typeFunction,
+        isUser: true
       }
+    ];
 
-      const result = await this.page.evaluate(
-        ({ groupId, title }) => {
-          return WAPI.setGroupTitle(groupId, title);
-        },
-        { groupId, title }
-      );
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const result = await this.page.evaluate(
+      ({ groupId, title }) => {
+        return WAPI.setGroupTitle(groupId, title);
+      },
+      { groupId, title }
+    );
+
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -176,44 +169,41 @@ export class GroupLayer extends RetrieverLayer {
     groupId: string,
     description: string
   ): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'setGroupDescription';
-      const type = 'string';
-      const check = [
-        {
-          param: 'groupId',
-          type: type,
-          value: groupId,
-          function: typeFunction,
-          isUser: true
-        },
-        {
-          param: 'description',
-          type: type,
-          value: description,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'setGroupDescription';
+    const type = 'string';
+    const check = [
+      {
+        param: 'groupId',
+        type: type,
+        value: groupId,
+        function: typeFunction,
+        isUser: true
+      },
+      {
+        param: 'description',
+        type: type,
+        value: description,
+        function: typeFunction,
+        isUser: true
       }
+    ];
 
-      const result = await this.page.evaluate(
-        ({ groupId, description }) => {
-          return WAPI.setGroupDescription(groupId, description);
-        },
-        { groupId, description }
-      );
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    const result = await this.page.evaluate(
+      ({ groupId, description }) => {
+        return WAPI.setGroupDescription(groupId, description);
+      },
+      { groupId, description }
+    );
+
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -251,36 +241,34 @@ export class GroupLayer extends RetrieverLayer {
   /**
    * Retrieves group members as [Id] objects
    * @param groupId group id
+   * @param time
    */
   public async getGroupMembers(groupId: string, time: string): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'getGroupMembers';
-      const type = 'string';
-      const check = [
-        {
-          param: 'groupId',
-          type: type,
-          value: groupId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'getGroupMembers';
+    const type = 'string';
+    const check = [
+      {
+        param: 'groupId',
+        type: type,
+        value: groupId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = await this.page.evaluate(
-        (groupId: string, time: string) =>
-          WAPI.getGroupParticipant(groupId, time),
-        groupId,
-        time
-      );
-      if (result['erro'] == true) {
-        reject(result);
-      } else {
-        resolve(result);
-      }
-    });
+    ];
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      (groupId: string, time: string) =>
+        WAPI.getGroupParticipant(groupId, time),
+      groupId,
+      time
+    );
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   // /**
@@ -415,32 +403,29 @@ export class GroupLayer extends RetrieverLayer {
    * @param groupId Group/Chat id ('0000000000-00000000@g.us')
    */
   public async getGroupAdmins(groupId: string): Promise<object> {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'getGroupAdmins';
-      const type = 'string';
-      const check = [
-        {
-          param: 'groupId',
-          type: type,
-          value: groupId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'getGroupAdmins';
+    const type = 'string';
+    const check = [
+      {
+        param: 'groupId',
+        type: type,
+        value: groupId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = this.page.evaluate(
-        (groupId: string) => WAPI.getGroupAdmins(groupId),
-        groupId
-      );
-      if (result['erro'] == true) {
-        reject(result);
-      } else {
-        resolve(result);
-      }
-    });
+    ];
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      (groupId: string) => WAPI.getGroupAdmins(groupId),
+      groupId
+    );
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
   /**
    * Join a group with invite code

@@ -1,6 +1,6 @@
-import { Page, Browser } from 'puppeteer';
+import { Browser, Page } from 'puppeteer';
 import { CreateConfig } from '../../config/create-config.js';
-import { Chat, WhatsappProfile } from '../model/index.js';
+import { Chat, WhatsappProfile } from '../model';
 import { SenderLayer } from './sender.layer.js';
 import { checkValuesSender } from '../helpers/layers-interface.js';
 
@@ -15,17 +15,18 @@ export class RetrieverLayer extends SenderLayer {
   }
 
   /**
- * Return messages by dates!
- * @param {string} id contact number id
- * @param {string} type 
-  types:
-  lowerThan: Return all messages after the date informed;
-  higherThan: Return all messages before the date informed;
-  equal: Return all messages from the informed date;
-  full: Return all messages, with two new stringdate parameters, dateNumeric;
- * @param {string} date Pass the example date 00/00/0000 or 00-00-0000
- * @param {string} date Pass the example time 00:00 24 hours
- */
+   * Return messages by dates!
+   * @param chatId
+   * @param {string} type
+   types:
+   lowerThan: Return all messages after the date informed;
+   higherThan: Return all messages before the date informed;
+   equal: Return all messages from the informed date;
+   full: Return all messages, with two new stringdate parameters, dateNumeric;
+   * @param idateStart
+   * @param time
+   * @param limit
+   */
   public async getAllMessagesDate(
     chatId: string,
     type: string,
@@ -41,34 +42,31 @@ export class RetrieverLayer extends SenderLayer {
   }
 
   public async getNewMessageId(chatId: string) {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'getNewMessageId';
-      const type = 'string';
-      const check = [
-        {
-          param: 'text',
-          type: type,
-          value: chatId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'getNewMessageId';
+    const type = 'string';
+    const check = [
+      {
+        param: 'text',
+        type: type,
+        value: chatId,
+        function: typeFunction,
+        isUser: true
       }
+    ];
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
 
-      const result = await this.page.evaluate(
-        (chatId: string) => WAPI.getNewMessageId(chatId),
-        chatId
-      );
+    const result = await this.page.evaluate(
+      (chatId: string) => WAPI.getNewMessageId(chatId),
+      chatId
+    );
 
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
-      }
-    });
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
   /**
    * Returns a list of mute and non-mute users
@@ -112,8 +110,7 @@ export class RetrieverLayer extends SenderLayer {
    */
   public async getAllChats() {
     return await this.page.evaluate(() => {
-      let chats = WAPI.getAllChats();
-      return chats;
+      return WAPI.getAllChats();
     });
   }
 
@@ -134,29 +131,25 @@ export class RetrieverLayer extends SenderLayer {
    */
   public async getAllChatsContacts() {
     return await this.page.evaluate(async () => {
-      let chats = WAPI.getAllChats(),
-        filter = (await chats).filter((chat) => chat.kind === 'chat');
-      return filter;
+      let chats = WAPI.getAllChats();
+      return (await chats).filter((chat) => chat.kind === 'chat');
     });
   }
 
   /**
    * Checks if a number is a valid WA number
-   * @param contactId, you need to include the @c.us at the end.
    * @returns contact detial as promise
+   * @param contactId
    */
   public async checkNumberStatus(contactId: string): Promise<WhatsappProfile> {
-    return new Promise(async (resolve, reject) => {
-      const result: WhatsappProfile = await this.page.evaluate(
-        (contactId) => WAPI.checkNumberStatus(contactId),
-        contactId
-      );
-      if (result['status'] !== 200) {
-        reject(result);
-      } else {
-        resolve(result);
-      }
-    });
+    const result: WhatsappProfile = await this.page.evaluate(
+      (contactId) => WAPI.checkNumberStatus(contactId),
+      contactId
+    );
+    if (result['status'] !== 200) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -273,36 +266,33 @@ export class RetrieverLayer extends SenderLayer {
 
   /**
    * Checks if a number is a valid whatsapp number
-   * @param contactId, you need to include the @c.us at the end.
-   * @returns contact detial as promise
+   * @returns contact detail as promise
+   * @param contactId
    */
   public async getNumberProfile(contactId: string) {
-    return new Promise(async (resolve, reject) => {
-      const typeFunction = 'getNumberProfile';
-      const type = 'string';
-      const check = [
-        {
-          param: 'contactId',
-          type: type,
-          value: contactId,
-          function: typeFunction,
-          isUser: true
-        }
-      ];
-      const validating = checkValuesSender(check);
-      if (typeof validating === 'object') {
-        return reject(validating);
+    const typeFunction = 'getNumberProfile';
+    const type = 'string';
+    const check = [
+      {
+        param: 'contactId',
+        type: type,
+        value: contactId,
+        function: typeFunction,
+        isUser: true
       }
-      const result = this.page.evaluate(
-        (contactId: string) => WAPI.getNumberProfile(contactId),
-        contactId
-      );
-      if (result['erro'] == true) {
-        reject(result);
-      } else {
-        resolve(result);
-      }
-    });
+    ];
+    const validating = checkValuesSender(check);
+    if (typeof validating === 'object') {
+      throw validating;
+    }
+    const result = await this.page.evaluate(
+      (contactId: string) => WAPI.getNumberProfile(contactId),
+      contactId
+    );
+    if (result['erro'] == true) {
+      throw result;
+    }
+    return result;
   }
 
   /**
@@ -326,8 +316,8 @@ export class RetrieverLayer extends SenderLayer {
   /**
    * Retrieves all messages already loaded in a chat
    * For loading every message use loadAndGetAllMessagesInChat
-   * @param chatId, the chat to get the messages from
-   * @param includeMe, include my own messages? boolean
+   * @param chatId
+   * @param includeMe
    * @param includeNotifications
    * @returns any
    */
@@ -345,8 +335,8 @@ export class RetrieverLayer extends SenderLayer {
 
   /**
    * Loads and Retrieves all Messages in a chat
-   * @param chatId, the chat to get the messages from
-   * @param includeMe, include my own messages? boolean
+   * @param chatId
+   * @param includeMe
    * @param includeNotifications
    * @returns any
    */

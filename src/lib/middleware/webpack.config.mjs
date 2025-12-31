@@ -7,6 +7,13 @@ const __dirname = dirname(__filename);
 
 export default {
   entry: './middleware.ts',
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(
+      __dirname,
+      '../../../node_modules/.cache/webpack-middleware'
+    )
+  },
   module: {
     rules: [
       {
