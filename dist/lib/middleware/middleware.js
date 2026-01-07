@@ -1,0 +1,1 @@
+(()=>{var n;!function(n){n.OnMessage="onMessage",n.OnAck="onAck",n.OnParticipantsChanged="onParticipantsChanged"}(n||(n={})),window.WAPI.waitNewMessages(!1,a=>{a.forEach(a=>{window[n.OnMessage](a)})})})();

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm run knip:*)",
+      "Bash(find:*)",
+      "Bash(xargs ls:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
+    ]
+  }
+}
