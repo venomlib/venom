@@ -1,0 +1,29 @@
+export var SocketState;
+(function (SocketState) {
+    // for state
+    SocketState["CONFLICT"] = "CONFLICT";
+    SocketState["CONNECTED"] = "CONNECTED";
+    SocketState["DEPRECATED_VERSION"] = "DEPRECATED_VERSION";
+    SocketState["OPENING"] = "OPENING";
+    SocketState["PAIRING"] = "PAIRING";
+    SocketState["PROXYBLOCK"] = "PROXYBLOCK";
+    SocketState["SMB_TOS_BLOCK"] = "SMB_TOS_BLOCK";
+    SocketState["TIMEOUT"] = "TIMEOUT";
+    SocketState["TOS_BLOCK"] = "TOS_BLOCK";
+    SocketState["UNLAUNCHED"] = "UNLAUNCHED";
+    SocketState["UNPAIRED"] = "UNPAIRED";
+    SocketState["UNPAIRED_IDLE"] = "UNPAIRED_IDLE";
+    // for stream
+    SocketState["DISCONNECTED"] = "DISCONNECTED";
+    SocketState["SYNCING"] = "SYNCING";
+    SocketState["RESUMING"] = "RESUMING";
+    SocketState["WITHOUT_INTERNET"] = "WITHOUT INTERNET";
+})(SocketState || (SocketState = {}));
+export var SocketStream;
+(function (SocketStream) {
+    SocketStream["CONNECTED"] = "CONNECTED";
+    SocketStream["DISCONNECTED"] = "DISCONNECTED";
+    SocketStream["RESUMING"] = "RESUMING";
+    SocketStream["SYNCING"] = "SYNCING";
+})(SocketStream || (SocketStream = {}));
+//# sourceMappingURL=socket-state.js.map
