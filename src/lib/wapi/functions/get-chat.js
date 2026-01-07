@@ -16,7 +16,6 @@ export async function getChat(id) {
       return result.chat;
     });
   } else {
-    window.onLog('Lid migration not found');
     found = Store.Chat.get(id);
   }
 

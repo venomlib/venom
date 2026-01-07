@@ -24,11 +24,9 @@ const getDirname = () => {
 async function checkFileExists(filePath: string): Promise<boolean> {
   try {
     await fs.access(filePath, fs.constants.F_OK); // F_OK checks existence
-    console.log('File exists!');
     return true;
   } catch (error: unknown) {
     // Type the error as NodeJS.ErrnoException if needed for more specifics
-    console.log('File does not exist or is not accessible.');
     return false;
   }
 }
