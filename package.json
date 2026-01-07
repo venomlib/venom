@@ -31,7 +31,7 @@
     "copy:vendor": "shx cp -r vendor dist/",
     "build:wapi": "cd src/lib/wapi/ && webpack",
     "build:libs": "npm run build:wapi && npm run build:middleware && npm run build:counter",
-    "build": "npm run fix:imports && npm run build:libs && npm run build:venom",
+    "build": "npm run build:libs && npm run build:venom",
     "build:test": "npm run build && npm test",
     "changelog:last": "conventional-changelog -p angular -r 2",
     "changelog:preview": "conventional-changelog -p angular -u",
