@@ -16,6 +16,9 @@ export class ListenerLayer extends ProfileLayer {
             this.cancelAutoClose();
             this.log('Page Closed', 'fail');
         });
+        this.listenerEmitter.on(ExposedFn.onLog, (msg) => {
+            this.log(msg);
+        });
     }
     async initialize() {
         const functions = [...Object.values(ExposedFn)];
@@ -72,9 +75,6 @@ export class ListenerLayer extends ProfileLayer {
             });
         })
             .catch(() => { });
-        this.listenerEmitter.on(ExposedFn.onLog, (msg) => {
-            this.log(msg);
-        });
     }
     async addMsg() {
         this.page

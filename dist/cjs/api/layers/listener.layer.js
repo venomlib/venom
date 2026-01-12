@@ -19,6 +19,9 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             this.cancelAutoClose();
             this.log('Page Closed', 'fail');
         });
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onLog, (msg) => {
+            this.log(msg);
+        });
     }
     async initialize() {
         const functions = [...Object.values(exposed_enum_js_1.ExposedFn)];
@@ -75,9 +78,6 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             });
         })
             .catch(() => { });
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onLog, (msg) => {
-            this.log(msg);
-        });
     }
     async addMsg() {
         this.page
