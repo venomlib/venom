@@ -7,11 +7,18 @@ export const _serializeMessageObj = async (obj) => {
     obj?.to?.server === 'g.us' || obj?.from?.server === 'g.us';
 
   // Only fetch group info if this is a group message - avoid getAllChats()
+  // Use 'to' for outgoing messages, 'from' for incoming messages
   let groupInfo = null;
-  if (isGroupMsg && obj?.from?._serialized) {
-    const groupChat = window.Store.Chat.get(obj.from._serialized);
-    if (groupChat?.contact) {
-      groupInfo = await WAPI._serializeContactObj(groupChat.contact);
+  if (isGroupMsg) {
+    const groupId =
+      obj?.to?.server === 'g.us'
+        ? obj.to._serialized
+        : obj?.from?._serialized;
+    if (groupId) {
+      const groupChat = window.Store.Chat.get(groupId);
+      if (groupChat?.contact) {
+        groupInfo = await WAPI._serializeContactObj(groupChat.contact);
+      }
     }
   }
 
