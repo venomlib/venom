@@ -17,7 +17,7 @@ import { InterfaceChangeMode } from '../model/index.js';
 import { InterfaceMode } from '../model/enum/interface-mode.js';
 import { InterfaceState } from '../model/enum/interface-state.js';
 import { ProfileLayer } from './profile.layer.js';
-import { callbackWile } from '../helpers/index.js';
+import { DeduplicationCache } from '../helpers/index.js';
 
 declare global {
   interface Window {
@@ -43,11 +43,13 @@ declare global {
   }
 }
 
-const callonMessage = new callbackWile();
-const callOnack = new callbackWile();
+const messageCache = new DeduplicationCache();
+const ackCache = new DeduplicationCache();
 
 export class ListenerLayer extends ProfileLayer {
   private listenerEmitter = new EventEmitter();
+  private storeListenersInstalled = false;
+  private wapiListenersInstalled = false;
 
   constructor(
     public browser: Browser,
@@ -60,6 +62,10 @@ export class ListenerLayer extends ProfileLayer {
     this.page.on('close', () => {
       this.cancelAutoClose();
       this.log('Page Closed', 'fail');
+    });
+
+    this.listenerEmitter.on(ExposedFn.onLog, (msg: string) => {
+      this.log(msg);
     });
   }
 
@@ -81,8 +87,20 @@ export class ListenerLayer extends ProfileLayer {
     }
 
     await this.addMsg();
+
+    if (this.wapiListenersInstalled) {
+      return;
+    }
+    this.wapiListenersInstalled = true;
+
     await this.page
       .evaluate(() => {
+        // Guard against duplicate WAPI listeners in browser context
+        if ((window as any).__venomWapiListenersInstalled) {
+          return;
+        }
+        (window as any).__venomWapiListenersInstalled = true;
+
         window.WAPI.onInterfaceChange((e: any) => {
           window.onInterfaceChange(e);
         });
@@ -123,15 +141,22 @@ export class ListenerLayer extends ProfileLayer {
         });
       })
       .catch(() => {});
-
-    this.listenerEmitter.on(ExposedFn.onLog, (msg: string) => {
-      this.log(msg);
-    });
   }
 
   public async addMsg() {
+    if (this.storeListenersInstalled) {
+      return;
+    }
+    this.storeListenersInstalled = true;
+
     this.page
       .evaluate(() => {
+        // Guard against duplicate listeners in browser context
+        if ((window as any).__venomStoreListenersInstalled) {
+          return;
+        }
+        (window as any).__venomStoreListenersInstalled = true;
+
         let isHeroEqual = {};
 
         // Install the new message listener (add event)
@@ -173,27 +198,27 @@ export class ListenerLayer extends ProfileLayer {
         // Install the message reaction listener
         // This is a strange one - seems like the way to do it is to override the WhatsApp WAWebAddonReactionTableMode.reactionTableMode.bulkUpsert function
         const module = window.Store.Reaction.reactionTableMode;
-        const ogMethod = module.bulkUpsert;
-        module.bulkUpsert = ((...args) => {
-          if (args[0].length > 0) {
-            window.onMessageReaction(args[0][0]);
-          }
-          return ogMethod(...args);
-        }).bind(module);
+        if (!(module as any).__venomPatched) {
+          (module as any).__venomPatched = true;
+          const ogMethod = module.bulkUpsert;
+          module.bulkUpsert = ((...args) => {
+            if (args[0].length > 0) {
+              window.onMessageReaction(args[0][0]);
+            }
+            return ogMethod(...args);
+          }).bind(module);
+        }
       })
       .catch(() => {});
   }
 
   public async onPoll(fn: (ack: any) => void) {
-    this.listenerEmitter.on(ExposedFn.onPoll, (e) => {
-      fn(e);
-    });
+    const handler = (e: any) => fn(e);
+    this.listenerEmitter.on(ExposedFn.onPoll, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.onPoll, (e) => {
-          fn(e);
-        });
+        this.listenerEmitter.off(ExposedFn.onPoll, handler);
       }
     };
   }
@@ -203,15 +228,12 @@ export class ListenerLayer extends ProfileLayer {
    * @param fn
    */
   public async onAnyMessage(fn: (message: Message) => void) {
-    this.listenerEmitter.on(ExposedFn.OnAnyMessage, (msg) => {
-      fn(msg);
-    });
+    const handler = (msg: Message) => fn(msg);
+    this.listenerEmitter.on(ExposedFn.OnAnyMessage, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.OnAnyMessage, (msg) => {
-          fn(msg);
-        });
+        this.listenerEmitter.off(ExposedFn.OnAnyMessage, handler);
       }
     };
   }
@@ -221,15 +243,12 @@ export class ListenerLayer extends ProfileLayer {
    * @param fn
    */
   public async onMessageEdit(fn: (message: Message) => void) {
-    this.listenerEmitter.on(ExposedFn.OnMessageEdit, (msg) => {
-      fn(msg);
-    });
+    const handler = (msg: Message) => fn(msg);
+    this.listenerEmitter.on(ExposedFn.OnMessageEdit, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.OnMessageEdit, (msg) => {
-          fn(msg);
-        });
+        this.listenerEmitter.off(ExposedFn.OnMessageEdit, handler);
       }
     };
   }
@@ -239,15 +258,12 @@ export class ListenerLayer extends ProfileLayer {
    * @param fn
    */
   public async onMessageDelete(fn: (message: Message) => void) {
-    this.listenerEmitter.on(ExposedFn.OnMessageDelete, (msg) => {
-      fn(msg);
-    });
+    const handler = (msg: Message) => fn(msg);
+    this.listenerEmitter.on(ExposedFn.OnMessageDelete, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.OnMessageDelete, (msg) => {
-          fn(msg);
-        });
+        this.listenerEmitter.off(ExposedFn.OnMessageDelete, handler);
       }
     };
   }
@@ -257,15 +273,12 @@ export class ListenerLayer extends ProfileLayer {
    * @param fn
    */
   public async onMessageReaction(fn: (reaction: Reaction) => void) {
-    this.listenerEmitter.on(ExposedFn.OnMessageReaction, (reaction) => {
-      fn(reaction);
-    });
+    const handler = (reaction: Reaction) => fn(reaction);
+    this.listenerEmitter.on(ExposedFn.OnMessageReaction, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.OnMessageReaction, (reaction) => {
-          fn(reaction);
-        });
+        this.listenerEmitter.off(ExposedFn.OnMessageReaction, handler);
       }
     };
   }
@@ -288,12 +301,11 @@ export class ListenerLayer extends ProfileLayer {
    * @returns Returns chat state
    */
   public async onChatState(fn: (state: ChatStatus) => void) {
-    this.listenerEmitter.on(ExposedFn.onChatState, (state: ChatStatus) => {
-      fn(state);
-    });
+    const handler = (state: ChatStatus) => fn(state);
+    this.listenerEmitter.on(ExposedFn.onChatState, handler);
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.onChatState, fn);
+        this.listenerEmitter.off(ExposedFn.onChatState, handler);
       }
     };
   }
@@ -303,12 +315,11 @@ export class ListenerLayer extends ProfileLayer {
    * @returns Returns the current state of the connection
    */
   public async onStreamChange(fn: (state: SocketStream) => void) {
-    this.listenerEmitter.on(ExposedFn.onStreamChange, (state: SocketStream) => {
-      fn(state);
-    });
+    const handler = (state: SocketStream) => fn(state);
+    this.listenerEmitter.on(ExposedFn.onStreamChange, handler);
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.onStreamChange, fn);
+        this.listenerEmitter.off(ExposedFn.onStreamChange, handler);
       }
     };
   }
@@ -363,20 +374,16 @@ export class ListenerLayer extends ProfileLayer {
    * @returns Observable stream of messages
    */
   public async onMessage(fn: (message: Message) => void) {
-    this.listenerEmitter.on(ExposedFn.OnMessage, (state: Message) => {
-      if (!callonMessage.checkObj(state.from, state.id)) {
-        callonMessage.addObjects(state.from, state.id);
+    const handler = (state: Message) => {
+      if (!messageCache.has(state.from, state.id)) {
+        messageCache.add(state.from, state.id);
         fn(state);
       }
-    });
+    };
+    this.listenerEmitter.on(ExposedFn.OnMessage, handler);
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.OnMessage, (state: Message) => {
-          if (!callonMessage.checkObj(state.from, state.id)) {
-            callonMessage.addObjects(state.from, state.id);
-            fn(state);
-          }
-        });
+        this.listenerEmitter.off(ExposedFn.OnMessage, handler);
       }
     };
   }
@@ -386,33 +393,22 @@ export class ListenerLayer extends ProfileLayer {
    * @returns Observable stream of messages
    */
   public async onAck(fn: (ack: Ack) => void) {
-    this.listenerEmitter.on(ExposedFn.onAck, (e: Ack) => {
-      if (!callOnack.checkObj(e.ack, e.id._serialized)) {
-        let key = callOnack.getObjKey(e.id._serialized);
-        if (key) {
-          callOnack.module[key].id = e.ack;
-          fn(e);
+    const handler = (e: Ack) => {
+      if (!ackCache.has(e.ack, e.id._serialized)) {
+        const existing = ackCache.get(e.id._serialized);
+        if (existing) {
+          ackCache.updateId(e.id._serialized, e.ack);
         } else {
-          callOnack.addObjects(e.ack, e.id._serialized);
-          fn(e);
+          ackCache.add(e.ack, e.id._serialized);
         }
+        fn(e);
       }
-    });
+    };
+    this.listenerEmitter.on(ExposedFn.onAck, handler);
 
     return {
       dispose: () => {
-        this.listenerEmitter.off(ExposedFn.onAck, (e: Ack) => {
-          if (!callOnack.checkObj(e.ack, e.id._serialized)) {
-            let key = callOnack.getObjKey(e.id._serialized);
-            if (key) {
-              callOnack.module[key].id = e.ack;
-              fn(e);
-            } else {
-              callOnack.addObjects(e.ack, e.id._serialized);
-              fn(e);
-            }
-          }
-        });
+        this.listenerEmitter.off(ExposedFn.onAck, handler);
       }
     };
   }

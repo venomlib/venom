@@ -6,11 +6,27 @@ export async function sendMessageWithThumb(
   chatId,
   done
 ) {
-  var chatSend = await WAPI.getChat(chatId);
-  if (chatSend === undefined) {
+  let wid = window.Store.WidFactory.createWid(chatId);
+  let chatSend = null;
+  try {
+    chatSend = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${chatId.toString()}`);
     if (done !== undefined) done(false);
-    return false;
+    return WAPI.scope(
+      chatId,
+      true,
+      null,
+      `Invalid number : ${chatId.toString()}`
+    );
   }
+
+  if (!chatSend || !chatSend.id) {
+    if (done !== undefined) done(false);
+    return WAPI.scope(chatId, true, 404, 'Chat not found');
+  }
+
   var linkPreview = {
     canonicalUrl: url,
     description: description,
@@ -25,5 +41,5 @@ export async function sendMessageWithThumb(
     quotedMsgAdminGroupJid: null
   });
   if (done !== undefined) done(true);
-  return true;
+  return WAPI.scope(chatId, false, null, null);
 }

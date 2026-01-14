@@ -16,18 +16,23 @@ export async function sendVideoAsGif(
   caption,
   done
 ) {
-  // const idUser = new window.Store.UserConstructor(chatid);
-  const idUser = new Store.WidFactory.createWid(chatid);
-  await Store.Chat.add(
-    {
-      createdLocally: true,
-      id: idUser
-    },
-    {
-      merge: true
-    }
-  );
-  return Store.Chat.find(idUser).then((chat) => {
+  let wid = window.Store.WidFactory.createWid(chatid);
+  let chat = null;
+  try {
+    chat = (await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid))
+      .chat;
+  } catch (err) {
+    window.onLog(`Invalid number : ${chatid.toString()}`);
+    if (done !== undefined) done(false);
+    return WAPI.scope(
+      chatid,
+      true,
+      null,
+      `Invalid number : ${chatid.toString()}`
+    );
+  }
+
+  if (chat && chat.id) {
     var mediaBlob = base64ToFile(dataBase64, filename);
     processFiles(chat, mediaBlob).then((mc) => {
       var media = mc.models[0];
@@ -36,5 +41,9 @@ export async function sendVideoAsGif(
       media.mediaPrep.sendToChat(chat, { caption: caption });
       if (done !== undefined) done(true);
     });
-  });
+    return WAPI.scope(chatid, false, null, null);
+  } else {
+    if (done !== undefined) done(false);
+    return WAPI.scope(chatid, true, 404, 'Chat not found');
+  }
 }

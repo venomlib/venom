@@ -207,6 +207,10 @@ export async function sendExist(chatId, returnChat = true, Send = true) {
     }
   }
 
+  if (!chat) {
+    return WAPI.scope(chatId, true, 404);
+  }
+
   if (!ck.numberExists && !chat.t && chat.isUser) {
     return WAPI.scope(chatId, true, ck.status, 'The number does not exist');
   }
@@ -233,10 +237,6 @@ export async function sendExist(chatId, returnChat = true, Send = true) {
       ck.status,
       'The transmission list number does not exist on your chat list, or it does not exist at all!'
     );
-  }
-
-  if (!chat) {
-    return WAPI.scope(chatId, true, 404);
   }
 
   if (Send) {
