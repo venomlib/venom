@@ -7,7 +7,7 @@ export { scrapeLogin } from './scrape-login.js';
 export { scrapeDesconnected } from './scrape-desconnect.js';
 export { scrapeDeleteToken } from './scrape-deletetoken.js';
 export { deleteFiles } from './delete-file.js';
-export { callbackWile } from './callback-wile.js';
+export { DeduplicationCache, callbackWile } from './deduplication-cache.js';
 export { checkingCloses } from './closes-browser.js';
 export { loadForceConnect } from './force-connect.js';
 export { sleep } from './sleep.js';

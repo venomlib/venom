@@ -5,12 +5,14 @@ const events_1 = require("events");
 const exposed_enum_js_1 = require("../helpers/exposed.enum.js");
 const profile_layer_js_1 = require("./profile.layer.js");
 const index_js_1 = require("../helpers/index.js");
-const callonMessage = new index_js_1.callbackWile();
-const callOnack = new index_js_1.callbackWile();
+const messageCache = new index_js_1.DeduplicationCache();
+const ackCache = new index_js_1.DeduplicationCache();
 class ListenerLayer extends profile_layer_js_1.ProfileLayer {
     browser;
     page;
     listenerEmitter = new events_1.EventEmitter();
+    storeListenersInstalled = false;
+    wapiListenersInstalled = false;
     constructor(browser, page, session, options) {
         super(browser, page, session, options);
         this.browser = browser;
@@ -36,8 +38,17 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             }
         }
         await this.addMsg();
+        if (this.wapiListenersInstalled) {
+            return;
+        }
+        this.wapiListenersInstalled = true;
         await this.page
             .evaluate(() => {
+            // Guard against duplicate WAPI listeners in browser context
+            if (window.__venomWapiListenersInstalled) {
+                return;
+            }
+            window.__venomWapiListenersInstalled = true;
             window.WAPI.onInterfaceChange((e) => {
                 window.onInterfaceChange(e);
             });
@@ -80,8 +91,17 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             .catch(() => { });
     }
     async addMsg() {
+        if (this.storeListenersInstalled) {
+            return;
+        }
+        this.storeListenersInstalled = true;
         this.page
             .evaluate(() => {
+            // Guard against duplicate listeners in browser context
+            if (window.__venomStoreListenersInstalled) {
+                return;
+            }
+            window.__venomStoreListenersInstalled = true;
             let isHeroEqual = {};
             // Install the new message listener (add event)
             window.Store.Msg.on('add', async (newMessage) => {
@@ -109,25 +129,25 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             // Install the message reaction listener
             // This is a strange one - seems like the way to do it is to override the WhatsApp WAWebAddonReactionTableMode.reactionTableMode.bulkUpsert function
             const module = window.Store.Reaction.reactionTableMode;
-            const ogMethod = module.bulkUpsert;
-            module.bulkUpsert = ((...args) => {
-                if (args[0].length > 0) {
-                    window.onMessageReaction(args[0][0]);
-                }
-                return ogMethod(...args);
-            }).bind(module);
+            if (!module.__venomPatched) {
+                module.__venomPatched = true;
+                const ogMethod = module.bulkUpsert;
+                module.bulkUpsert = ((...args) => {
+                    if (args[0].length > 0) {
+                        window.onMessageReaction(args[0][0]);
+                    }
+                    return ogMethod(...args);
+                }).bind(module);
+            }
         })
             .catch(() => { });
     }
     async onPoll(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onPoll, (e) => {
-            fn(e);
-        });
+        const handler = (e) => fn(e);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onPoll, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onPoll, (e) => {
-                    fn(e);
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onPoll, handler);
             }
         };
     }
@@ -136,14 +156,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @param fn
      */
     async onAnyMessage(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnAnyMessage, (msg) => {
-            fn(msg);
-        });
+        const handler = (msg) => fn(msg);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnAnyMessage, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnAnyMessage, (msg) => {
-                    fn(msg);
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnAnyMessage, handler);
             }
         };
     }
@@ -152,14 +169,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @param fn
      */
     async onMessageEdit(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageEdit, (msg) => {
-            fn(msg);
-        });
+        const handler = (msg) => fn(msg);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageEdit, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageEdit, (msg) => {
-                    fn(msg);
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageEdit, handler);
             }
         };
     }
@@ -168,14 +182,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @param fn
      */
     async onMessageDelete(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageDelete, (msg) => {
-            fn(msg);
-        });
+        const handler = (msg) => fn(msg);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageDelete, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageDelete, (msg) => {
-                    fn(msg);
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageDelete, handler);
             }
         };
     }
@@ -184,14 +195,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @param fn
      */
     async onMessageReaction(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageReaction, (reaction) => {
-            fn(reaction);
-        });
+        const handler = (reaction) => fn(reaction);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessageReaction, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageReaction, (reaction) => {
-                    fn(reaction);
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessageReaction, handler);
             }
         };
     }
@@ -211,12 +219,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @returns Returns chat state
      */
     async onChatState(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onChatState, (state) => {
-            fn(state);
-        });
+        const handler = (state) => fn(state);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onChatState, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onChatState, fn);
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onChatState, handler);
             }
         };
     }
@@ -225,12 +232,11 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @returns Returns the current state of the connection
      */
     async onStreamChange(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onStreamChange, (state) => {
-            fn(state);
-        });
+        const handler = (state) => fn(state);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onStreamChange, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onStreamChange, fn);
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onStreamChange, handler);
             }
         };
     }
@@ -274,20 +280,16 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @returns Observable stream of messages
      */
     async onMessage(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessage, (state) => {
-            if (!callonMessage.checkObj(state.from, state.id)) {
-                callonMessage.addObjects(state.from, state.id);
+        const handler = (state) => {
+            if (!messageCache.has(state.from, state.id)) {
+                messageCache.add(state.from, state.id);
                 fn(state);
             }
-        });
+        };
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.OnMessage, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessage, (state) => {
-                    if (!callonMessage.checkObj(state.from, state.id)) {
-                        callonMessage.addObjects(state.from, state.id);
-                        fn(state);
-                    }
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.OnMessage, handler);
             }
         };
     }
@@ -296,34 +298,22 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
      * @returns Observable stream of messages
      */
     async onAck(fn) {
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onAck, (e) => {
-            if (!callOnack.checkObj(e.ack, e.id._serialized)) {
-                let key = callOnack.getObjKey(e.id._serialized);
-                if (key) {
-                    callOnack.module[key].id = e.ack;
-                    fn(e);
+        const handler = (e) => {
+            if (!ackCache.has(e.ack, e.id._serialized)) {
+                const existing = ackCache.get(e.id._serialized);
+                if (existing) {
+                    ackCache.updateId(e.id._serialized, e.ack);
                 }
                 else {
-                    callOnack.addObjects(e.ack, e.id._serialized);
-                    fn(e);
+                    ackCache.add(e.ack, e.id._serialized);
                 }
+                fn(e);
             }
-        });
+        };
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onAck, handler);
         return {
             dispose: () => {
-                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onAck, (e) => {
-                    if (!callOnack.checkObj(e.ack, e.id._serialized)) {
-                        let key = callOnack.getObjKey(e.id._serialized);
-                        if (key) {
-                            callOnack.module[key].id = e.ack;
-                            fn(e);
-                        }
-                        else {
-                            callOnack.addObjects(e.ack, e.id._serialized);
-                            fn(e);
-                        }
-                    }
-                });
+                this.listenerEmitter.off(exposed_enum_js_1.ExposedFn.onAck, handler);
             }
         };
     }

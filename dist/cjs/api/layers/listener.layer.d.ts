@@ -33,6 +33,8 @@ export declare class ListenerLayer extends ProfileLayer {
     browser: Browser;
     page: Page;
     private listenerEmitter;
+    private storeListenersInstalled;
+    private wapiListenersInstalled;
     constructor(browser: Browser, page: Page, session?: string, options?: CreateConfig);
     initialize(): Promise<void>;
     addMsg(): Promise<void>;

@@ -4,7 +4,8 @@ export declare class callbackWile {
         id: AckType | string;
         serialized: string;
     }>;
-    constructor();
+    private maxSize;
+    constructor(maxSize?: number);
     addObjects(ids: AckType | string, serializeds: string): boolean;
     getObjKey(serialized: string): string | false;
     checkObj(id: AckType | string, serialized: string): boolean;
