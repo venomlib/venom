@@ -143,7 +143,40 @@ export async function returnChat(chatId, returnChat = true, Send = true) {
   }
 
   if (Send) {
-    await window.Store.ReadSeen.sendSeen(chat, false);
+    try {
+      await window.Store.ReadSeen.sendSeen(chat, false);
+    } catch (e) {
+      const errorInfo = {
+        message: e?.message,
+        stack: e?.stack,
+        undefinedProp: e?.message?.match(/Cannot read properties of undefined \(reading '(.+)'\)/)?.[1],
+        chatId: chatId,
+        chatExists: !!chat,
+        chatKeys: chat ? Object.keys(chat).slice(0, 30) : [],
+        chatProto: chat ? Object.getOwnPropertyNames(Object.getPrototypeOf(chat)).slice(0, 20) : []
+      };
+      window.onLog('sendSeen failed in returnChat: ' + JSON.stringify(errorInfo));
+
+      // Try to extract source code context from WhatsApp's minified code
+      try {
+        const stackMatch = e?.stack?.match(/(https:\/\/static\.whatsapp\.net\/[^\s:]+):(\d+):(\d+)/);
+        if (stackMatch) {
+          const [, url, line, col] = stackMatch;
+          const response = await fetch(url);
+          const source = await response.text();
+          const lineNum = parseInt(line, 10);
+          const colNum = parseInt(col, 10);
+          const lines = source.split('\n');
+          const targetLine = lines[lineNum - 1] || '';
+          // Extract ~100 chars around the error column
+          const start = Math.max(0, colNum - 50);
+          const snippet = targetLine.substring(start, start + 100);
+          window.onLog('WA source context: ' + JSON.stringify({ url, line, col, snippet }));
+        }
+      } catch (srcErr) {
+        // Ignore source fetch errors
+      }
+    }
   }
 
   if (returnChat) {
@@ -240,7 +273,40 @@ export async function sendExist(chatId, returnChat = true, Send = true) {
   }
 
   if (Send) {
-    await window.Store.ReadSeen.sendSeen(chat, false);
+    try {
+      await window.Store.ReadSeen.sendSeen(chat, false);
+    } catch (e) {
+      const errorInfo = {
+        message: e?.message,
+        stack: e?.stack,
+        undefinedProp: e?.message?.match(/Cannot read properties of undefined \(reading '(.+)'\)/)?.[1],
+        chatId: chatId,
+        chatExists: !!chat,
+        chatKeys: chat ? Object.keys(chat).slice(0, 30) : [],
+        chatProto: chat ? Object.getOwnPropertyNames(Object.getPrototypeOf(chat)).slice(0, 20) : []
+      };
+      window.onLog('sendSeen failed in sendExist: ' + JSON.stringify(errorInfo));
+
+      // Try to extract source code context from WhatsApp's minified code
+      try {
+        const stackMatch = e?.stack?.match(/(https:\/\/static\.whatsapp\.net\/[^\s:]+):(\d+):(\d+)/);
+        if (stackMatch) {
+          const [, url, line, col] = stackMatch;
+          const response = await fetch(url);
+          const source = await response.text();
+          const lineNum = parseInt(line, 10);
+          const colNum = parseInt(col, 10);
+          const lines = source.split('\n');
+          const targetLine = lines[lineNum - 1] || '';
+          // Extract ~100 chars around the error column
+          const start = Math.max(0, colNum - 50);
+          const snippet = targetLine.substring(start, start + 100);
+          window.onLog('WA source context: ' + JSON.stringify({ url, line, col, snippet }));
+        }
+      } catch (srcErr) {
+        // Ignore source fetch errors
+      }
+    }
   }
 
   if (returnChat) {
