@@ -268,6 +268,7 @@ interface WAPI {
   processMessageObj: (a: any, b: any, c: any) => any;
   createCommunity: (name: string, description: string) => void;
   sendPollCreation: (to: string, poll: any) => void;
+  _queueNewMessage: (message: any) => void;
 }
 
 declare global {
