@@ -171,6 +171,10 @@ export class ListenerLayer extends ProfileLayer {
                 false
               );
 
+              if (!processMessageObj) {
+                return;
+              }
+
               // Immediate callback for all messages
               window.onAnyMessage(processMessageObj);
 

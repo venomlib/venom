@@ -101,12 +101,21 @@ export class ListenerLayer extends ProfileLayer {
             window.__venomStoreListenersInstalled = true;
             let isHeroEqual = {};
             // Install the new message listener (add event)
+            // Serializes once and distributes to both onAnyMessage (immediate) and onMessage (debounced)
             window.Store.Msg.on('add', async (newMessage) => {
                 if (!Object.is(isHeroEqual, newMessage)) {
                     isHeroEqual = newMessage;
                     if (newMessage && newMessage.isNewMsg) {
                         const processMessageObj = await window.WAPI.processMessageObj(newMessage, true, false);
+                        if (!processMessageObj) {
+                            return;
+                        }
+                        // Immediate callback for all messages
                         window.onAnyMessage(processMessageObj);
+                        // Queue incoming messages for debounced onMessage callback
+                        if (!newMessage.isSentByMe) {
+                            window.WAPI._queueNewMessage(processMessageObj);
+                        }
                     }
                 }
             });

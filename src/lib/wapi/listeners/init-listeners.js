@@ -13,10 +13,10 @@ export function initNewMessagesListener() {
       window.WAPI._newMessagesQueue.length > 0
     ) {
       window.WAPI._newMessagesDebouncer = setTimeout(() => {
+        // Atomically swap the queue to prevent losing messages added during processing
         let queuedMessages = window.WAPI._newMessagesQueue;
-
-        window.WAPI._newMessagesDebouncer = null;
         window.WAPI._newMessagesQueue = [];
+        window.WAPI._newMessagesDebouncer = null;
 
         let removeCallbacks = [];
 
