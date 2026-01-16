@@ -23,7 +23,7 @@ export async function reply(chatId, content, quotedMessageId) {
       'enter the content variable as an string'
     );
   }
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404) {
     let To = chat.id;
     const m = { type: 'deleteMessages' };
@@ -57,7 +57,7 @@ export async function reply(chatId, content, quotedMessageId) {
     }
 
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     let inChat = await WAPI.getchatId(chat.id).catch(() => {});
     if (inChat) {
       chat.lastReceivedKey._serialized = inChat._serialized;

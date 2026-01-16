@@ -83,7 +83,7 @@ export async function sendPtt(
               );
             }
 
-            const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+            const fromwWid = await WAPI.getMeUser();
 
             const message = {
               id: newMsgId,

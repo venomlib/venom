@@ -10,7 +10,7 @@ export async function setGroupImage(obj, groupId) {
   if (typeof groupId !== 'string' || groupId.length === 0) {
     return WAPI.scope(groupId, true, 400, 'You must pass the group groupId!');
   }
-  const chat = await WAPI.sendExist(groupId);
+  const chat = await WAPI.findChat(groupId);
   if (chat && chat.status != 404) {
     groupId = new Store.WidFactory.createWid(groupId);
     let base64 = 'data:image/jpeg;base64,';

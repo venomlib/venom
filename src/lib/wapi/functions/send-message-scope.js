@@ -36,12 +36,12 @@ export async function sendMessage(to, body, options = {}) {
     );
   }
 
-  const chat = await WAPI.sendExist(to);
+  const chat = await WAPI.findChat(to);
   const merge = {};
 
   if (chat && chat.status != 404 && chat.id) {
     const newMsgId = await WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
 
     if (options.type === typesObj.sendText) {
       merge.type = 'chat';

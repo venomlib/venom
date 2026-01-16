@@ -10,7 +10,11 @@ export const filterObjects = [
     type: 'MaybeMeUser',
     // getMaybeMeUser can eventually be removed
     when: (module) =>
-      module.getMaybeMePnUser || module.getMaybeMeUser ? module : null
+      module.getMaybeMePnUser ||
+      module.getMaybeMeUser ||
+      module.getMaybeMeLidUser
+        ? module
+        : null
   },
   {
     type: 'Participants',

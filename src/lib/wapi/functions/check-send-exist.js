@@ -40,16 +40,18 @@ export function sendCheckType(chatId = undefined) {
     const contact = '@c.us';
     const broadcast = '@broadcast';
     const grup = '@g.us';
+    const lid = '@lid';
     if (
       contact !== chatId.substr(-contact.length, contact.length) &&
       broadcast !== chatId.substr(-broadcast.length, broadcast.length) &&
-      grup !== chatId.substr(-grup.length, grup.length)
+      grup !== chatId.substr(-grup.length, grup.length) &&
+      lid !== chatId.substr(-lid.length, lid.length)
     ) {
       return WAPI.scope(
         chatId,
         true,
         404,
-        'The chat number must contain the parameters @c.us, @broadcast or @g.us. At the end of the number!'
+        'The chat number must contain the parameters @c.us, @broadcast, @g.us, or @lid at the end of the number!'
       );
     }
     if (
@@ -94,224 +96,21 @@ export function sendCheckType(chatId = undefined) {
   }
 }
 
-export async function returnChat(chatId, returnChat = true, Send = true) {
+export async function findChat(chatId) {
   const checkType = WAPI.sendCheckType(chatId);
-  if (!!checkType && checkType.status === 404) {
+  if (checkType && checkType.status === 404) {
     return checkType;
   }
 
-  let chat = await WAPI.getChat(chatId);
-  if (!chat) {
-    var idUser = new Store.UserConstructor(chatId, {
-      intentionallyUsePrivateConstructor: true
-    });
-    const chatWid = new Store.WidFactory.createWid(chatId);
-    await Store.Chat.add(
-      {
-        createdLocally: true,
-        id: chatWid
-      },
-      {
-        merge: true
-      }
-    );
-    chat = await Store.Chat.find(idUser);
-  }
-
-  if (chat === undefined) {
-    const chatWid = new Store.WidFactory.createWid(chatId);
-    await Store.Chat.add(
-      {
-        createdLocally: true,
-        id: chatWid
-      },
-      {
-        merge: true
-      }
-    );
-    const storeChat = await Store.Chat.find(chatId);
-    if (storeChat) {
-      chat =
-        storeChat && storeChat.id && storeChat.id._serialized
-          ? await WAPI.getChat(storeChat.id._serialized)
-          : undefined;
+  try {
+    const wid = window.Store.WidFactory.createWid(chatId);
+    const { chat } = await window.Store.FindOrCreateChat.findOrCreateLatestChat(wid);
+    if (chat) {
+      return chat;
     }
+  } catch (err) {
+    window.onLog(`findChat error for ${chatId}: ${err?.message || err}`);
   }
 
-  if (!chat) {
-    return WAPI.scope(chatId, true, 404);
-  }
-
-  if (Send) {
-    try {
-      await window.Store.ReadSeen.sendSeen(chat, false);
-    } catch (e) {
-      const errorInfo = {
-        message: e?.message,
-        stack: e?.stack,
-        undefinedProp: e?.message?.match(/Cannot read properties of undefined \(reading '(.+)'\)/)?.[1],
-        chatId: chatId,
-        chatExists: !!chat,
-        chatKeys: chat ? Object.keys(chat).slice(0, 30) : [],
-        chatProto: chat ? Object.getOwnPropertyNames(Object.getPrototypeOf(chat)).slice(0, 20) : []
-      };
-      window.onLog('sendSeen failed in returnChat: ' + JSON.stringify(errorInfo));
-
-      // Try to extract source code context from WhatsApp's minified code
-      try {
-        const stackMatch = e?.stack?.match(/(https:\/\/static\.whatsapp\.net\/[^\s:]+):(\d+):(\d+)/);
-        if (stackMatch) {
-          const [, url, line, col] = stackMatch;
-          const response = await fetch(url);
-          const source = await response.text();
-          const lineNum = parseInt(line, 10);
-          const colNum = parseInt(col, 10);
-          const lines = source.split('\n');
-          const targetLine = lines[lineNum - 1] || '';
-          // Extract ~100 chars around the error column
-          const start = Math.max(0, colNum - 50);
-          const snippet = targetLine.substring(start, start + 100);
-          window.onLog('WA source context: ' + JSON.stringify({ url, line, col, snippet }));
-        }
-      } catch (srcErr) {
-        // Ignore source fetch errors
-      }
-    }
-  }
-
-  if (returnChat) {
-    return chat;
-  }
-
-  return WAPI.scope(chatId, false, 200);
-}
-
-export async function sendExist(chatId, returnChat = true, Send = true) {
-  const checkType = await WAPI.sendCheckType(chatId);
-  if (!!checkType && checkType.status === 404) {
-    return checkType;
-  }
-
-  let ck = await window.WAPI.checkNumberStatus(chatId, false);
-
-  if (
-    (ck.status === 404 &&
-      !chatId.includes('@g.us') &&
-      !chatId.includes('@broadcast')) ||
-    (ck &&
-      ck.text &&
-      typeof ck.text.includes === 'function' &&
-      ck.text.includes('XmppParsingFailure'))
-  ) {
-    return WAPI.scope(chatId, true, ck.status, 'The number does not exist');
-  }
-
-  const chatWid = new Store.WidFactory.createWid(chatId);
-
-  let chat =
-    ck && ck.id && ck.id._serialized
-      ? await WAPI.getChat(ck.id._serialized)
-      : undefined;
-
-  if (ck.numberExists && chat === undefined) {
-    var idUser = new Store.UserConstructor(chatId, {
-      intentionallyUsePrivateConstructor: true
-    });
-    const chatWid = new Store.WidFactory.createWid(chatId);
-    await Store.Chat.add(
-      {
-        createdLocally: true,
-        id: chatWid
-      },
-      {
-        merge: true
-      }
-    );
-    chat = await Store.Chat.find(idUser);
-  }
-
-  if (!chat) {
-    const storeChat = await Store.Chat.find(chatWid);
-    if (storeChat) {
-      chat =
-        storeChat && storeChat.id && storeChat.id._serialized
-          ? await WAPI.getChat(storeChat.id._serialized)
-          : undefined;
-    }
-  }
-
-  if (!chat) {
-    return WAPI.scope(chatId, true, 404);
-  }
-
-  if (!ck.numberExists && !chat.t && chat.isUser) {
-    return WAPI.scope(chatId, true, ck.status, 'The number does not exist');
-  }
-
-  if (!ck.numberExists && !chat.t && chat.isGroup) {
-    return WAPI.scope(
-      chatId,
-      true,
-      ck.status,
-      'The group number does not exist on your chat list, or it does not exist at all!'
-    );
-  }
-
-  if (
-    !ck.numberExists &&
-    !chat.t &&
-    chat.id &&
-    chat.id.user != 'status' &&
-    chat.isBroadcast
-  ) {
-    return WAPI.scope(
-      chatId,
-      true,
-      ck.status,
-      'The transmission list number does not exist on your chat list, or it does not exist at all!'
-    );
-  }
-
-  if (Send) {
-    try {
-      await window.Store.ReadSeen.sendSeen(chat, false);
-    } catch (e) {
-      const errorInfo = {
-        message: e?.message,
-        stack: e?.stack,
-        undefinedProp: e?.message?.match(/Cannot read properties of undefined \(reading '(.+)'\)/)?.[1],
-        chatId: chatId,
-        chatExists: !!chat,
-        chatKeys: chat ? Object.keys(chat).slice(0, 30) : [],
-        chatProto: chat ? Object.getOwnPropertyNames(Object.getPrototypeOf(chat)).slice(0, 20) : []
-      };
-      window.onLog('sendSeen failed in sendExist: ' + JSON.stringify(errorInfo));
-
-      // Try to extract source code context from WhatsApp's minified code
-      try {
-        const stackMatch = e?.stack?.match(/(https:\/\/static\.whatsapp\.net\/[^\s:]+):(\d+):(\d+)/);
-        if (stackMatch) {
-          const [, url, line, col] = stackMatch;
-          const response = await fetch(url);
-          const source = await response.text();
-          const lineNum = parseInt(line, 10);
-          const colNum = parseInt(col, 10);
-          const lines = source.split('\n');
-          const targetLine = lines[lineNum - 1] || '';
-          // Extract ~100 chars around the error column
-          const start = Math.max(0, colNum - 50);
-          const snippet = targetLine.substring(start, start + 100);
-          window.onLog('WA source context: ' + JSON.stringify({ url, line, col, snippet }));
-        }
-      } catch (srcErr) {
-        // Ignore source fetch errors
-      }
-    }
-  }
-
-  if (returnChat) {
-    return chat;
-  }
-
-  return WAPI.scope(chatId, false, 200);
+  return WAPI.scope(chatId, true, 404, 'Chat not found');
 }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GroupLayer = void 0;
 const retriever_layer_js_1 = require("./retriever.layer.js");
 const layers_interface_js_1 = require("../helpers/layers-interface.js");
-const helpers_1 = require("../helpers");
+const index_js_1 = require("../helpers/index.js");
 class GroupLayer extends retriever_layer_js_1.RetrieverLayer {
     browser;
     page;
@@ -62,7 +62,7 @@ class GroupLayer extends retriever_layer_js_1.RetrieverLayer {
      * @param {string} path of image
      */
     async setGroupImage(groupId, path) {
-        let b64 = await (0, helpers_1.downloadFileToBase64)(path, [
+        let b64 = await (0, index_js_1.downloadFileToBase64)(path, [
             'image/gif',
             'image/png',
             'image/jpg',
@@ -70,13 +70,13 @@ class GroupLayer extends retriever_layer_js_1.RetrieverLayer {
             'image/webp'
         ]);
         if (!b64) {
-            b64 = await (0, helpers_1.fileToBase64)(path);
+            b64 = await (0, index_js_1.fileToBase64)(path);
         }
         if (b64) {
             const buff = Buffer.from(b64.replace(/^data:image\/(png|jpe?g|webp);base64,/, ''), 'base64');
-            const mimeInfo = (0, helpers_1.base64MimeType)(b64);
+            const mimeInfo = (0, index_js_1.base64MimeType)(b64);
             if (!mimeInfo || mimeInfo.includes('image')) {
-                let _webb64_96 = await (0, helpers_1.resizeImg)(buff, { width: 96, height: 96 }), _webb64_640 = await (0, helpers_1.resizeImg)(buff, { width: 640, height: 640 });
+                let _webb64_96 = await (0, index_js_1.resizeImg)(buff, { width: 96, height: 96 }), _webb64_640 = await (0, index_js_1.resizeImg)(buff, { width: 640, height: 640 });
                 let obj = { a: _webb64_640, b: _webb64_96 };
                 return await this.page.evaluate(({ obj, groupId }) => WAPI.setProfilePic(obj, groupId), {
                     obj,

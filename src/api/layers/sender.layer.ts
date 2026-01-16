@@ -7,7 +7,7 @@ import {
   downloadFileToBase64,
   fileToBase64,
   stickerSelect
-} from '../helpers';
+} from '../helpers/index.js';
 import { filenameFromMimeType } from '../helpers/filename-from-mimetype.js';
 import { Message, SendFileResult, SendStickerResult } from '../model';
 import { ChatState } from '../model/enum';

@@ -1,6 +1,6 @@
 import { RetrieverLayer } from './retriever.layer.js';
 import { checkValuesSender } from '../helpers/layers-interface.js';
-import { base64MimeType, fileToBase64, downloadFileToBase64, resizeImg } from '../helpers';
+import { base64MimeType, fileToBase64, downloadFileToBase64, resizeImg } from '../helpers/index.js';
 export class GroupLayer extends RetrieverLayer {
     browser;
     page;

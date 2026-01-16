@@ -1,5 +1,5 @@
 export async function sendSeen(id, done) {
-  const chat = await WAPI.sendExist(id);
+  const chat = await WAPI.findChat(id);
   if (!chat.erro) {
     await Store.ReadSeen.markUnread(chat, false)
       .then(() => {

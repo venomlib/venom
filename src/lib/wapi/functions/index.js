@@ -87,11 +87,10 @@ export { restartService } from './restart-service';
 export { killServiceWorker } from './kill-service-worker';
 export { sendLinkPreview } from './send-link-preview';
 export {
-  sendExist,
   scope,
   getchatId,
   sendCheckType,
-  returnChat
+  findChat
 } from './check-send-exist';
 export { sendContactVcardList } from './send-contact-vcard-list';
 export { setProfilePic } from './set-profile-pic';

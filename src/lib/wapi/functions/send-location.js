@@ -4,7 +4,7 @@ export async function sendLocation(
   longitude,
   location = null
 ) {
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (isNaN(Number(latitude)) || isNaN(Number(longitude))) {
     return WAPI.scope(
       chatId,
@@ -16,7 +16,7 @@ export async function sendLocation(
   if (!chat.erro) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
     const inChat = await WAPI.getchatId(chat.id).catch(() => {});
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
 
     if (inChat) {
       chat.lastReceivedKey._serialized = inChat._serialized;

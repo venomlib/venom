@@ -5,7 +5,7 @@ export async function pinChat(chatId, type = true, notExist = false) {
   }
   let typeFix = type ? 'pin' : 'unpin',
     retult = void 0;
-  var chat = await WAPI.sendExist(chatId, true, notExist);
+  var chat = await WAPI.findChat(chatId);
   if (!chat.erro) {
     var m = {
         type: 'pinChat',

@@ -39,7 +39,7 @@ export async function getAllMessagesDate(
     );
   }
 
-  const chat = await WAPI.sendExist(id);
+  const chat = await WAPI.findChat(id);
   if (chat && chat.status != 404) {
     const statusMsg = chat.msgs.msgLoadState.noEarlierMsgs;
     if (statusMsg === false) {

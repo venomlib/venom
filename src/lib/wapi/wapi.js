@@ -88,8 +88,7 @@ import {
   sendLinkPreview,
   scope,
   getchatId,
-  sendExist,
-  returnChat,
+  findChat,
   sendContactVcardList,
   setProfilePic,
   pinChat,
@@ -128,7 +127,8 @@ import {
   getFileHash,
   arrayBufferToBase64,
   sleep,
-  injectConfig
+  injectConfig,
+  getMeUser
 } from './helper/index.js';
 import {
   addNewMessagesListener,
@@ -267,6 +267,7 @@ if (typeof window.WAPI === 'undefined') {
   window.WAPI.sendListMenu = sendListMenu;
   window.WAPI.getStateConnection = getStateConnection;
   window.WAPI.sleep = sleep;
+  window.WAPI.getMeUser = getMeUser;
   window.WAPI.isBeta = isBeta;
 
   //Profile
@@ -276,8 +277,7 @@ if (typeof window.WAPI === 'undefined') {
   // Chat Functions
   window.WAPI.scope = scope;
   window.WAPI.getchatId = getchatId;
-  window.WAPI.sendExist = sendExist;
-  window.WAPI.returnChat = returnChat;
+  window.WAPI.findChat = findChat;
   window.WAPI.pinChat = pinChat;
   window.WAPI.archiveChat = archiveChat;
 

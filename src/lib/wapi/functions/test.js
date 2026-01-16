@@ -1,9 +1,9 @@
 async function test() {
-  const chat = await WAPI.sendExist('556999626866@c.us');
+  const chat = await WAPI.findChat('556999626866@c.us');
 
   if (chat && chat.status != 404 && chat.id) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
 
     let inChat = await WAPI.getchatId(chat.id).catch(() => {
       return WAPI.scope(chat.id, true, 404, 'Error to number ' + chat);
