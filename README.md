@@ -47,7 +47,7 @@ A high-performance WhatsApp bot library for Node.js using Puppeteer to automate 
 ## Installation
 
 ```bash
-npm install github:venomlib/venom#v6.8.0
+npm install github:venomlib/venom#v6.9.0
 ```
 
 ### Import
