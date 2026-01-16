@@ -34,7 +34,7 @@ export async function pollCreation(idUser, poll) {
     }
   }
 
-  const chat = await WAPI.sendExist(idUser);
+  const chat = await WAPI.findChat(idUser);
   if (chat && chat.status !== 404 && chat.id) {
     await Store.Survey.sendPollCreation({
       chat: chat,

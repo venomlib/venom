@@ -26,11 +26,11 @@ export async function sendContactVcardList(chatId, contacts) {
     );
   }
 
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
 
   if (!chat.erro) {
     var conta = contacts.map(async (e) => {
-      return await WAPI.sendExist(e);
+      return await WAPI.findChat(e);
     });
 
     var ar = await Promise.all(conta);
@@ -49,7 +49,7 @@ export async function sendContactVcardList(chatId, contacts) {
     });
 
     var newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     let inChat = await WAPI.getchatId(chat.id).catch(() => {});
 
     if (inChat) {

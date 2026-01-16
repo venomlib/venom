@@ -3,7 +3,7 @@ export async function createGroup(name, contactsId) {
     contactsId = [contactsId];
   }
 
-  contactsId = await Promise.all(contactsId.map((c) => WAPI.sendExist(c)));
+  contactsId = await Promise.all(contactsId.map((c) => WAPI.findChat(c)));
   contactsId = contactsId.filter((c) => !c.erro && c.isUser);
 
   if (!contactsId.length) {

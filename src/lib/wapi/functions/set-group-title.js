@@ -12,7 +12,7 @@ export async function setGroupTitle(groupId, title) {
       'It is necessary to write a text!'
     );
   }
-  const chat = await WAPI.sendExist(groupId);
+  const chat = await WAPI.findChat(groupId);
   if (chat && chat.status != 404) {
     const m = { type: 'setGroupTitle', title };
     const To = await WAPI.getchatId(chat.id);

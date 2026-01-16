@@ -1,5 +1,5 @@
 export async function archiveChat(idUser, type) {
-  const chat = await WAPI.sendExist(idUser);
+  const chat = await WAPI.findChat(idUser);
   if (typeof type !== 'boolean') {
     return WAPI.scope(
       undefined,

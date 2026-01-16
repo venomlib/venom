@@ -13,7 +13,7 @@ export async function setGroupSettings(groupId, settings, value) {
       'It is necessary to write a settings!'
     );
   }
-  const chat = await WAPI.sendExist(groupId);
+  const chat = await WAPI.findChat(groupId);
   if (chat && chat.status != 404) {
     const m = { type: 'setGroupSettings', settings };
     const To = await WAPI.getchatId(chat.id);

@@ -1,6 +1,6 @@
 export async function setProfilePic(obj, id) {
   if (!id) {
-    id = await Store.MaybeMeUser.getMaybeMePnUser();
+    id = await WAPI.getMeUser();
   } else {
     id = new Store.WidFactory.createWid(id);
   }

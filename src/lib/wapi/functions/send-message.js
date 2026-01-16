@@ -43,7 +43,7 @@ export async function sendMessage(
     const newMsgId = !passId
       ? await window.WAPI.getNewMessageId(chat.id._serialized, checkNumber)
       : await window.WAPI.setNewMessageId(passId, checkNumber);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
 
     let inChat = await WAPI.getchatId(chat.id).catch(() => {
       return WAPI.scope(chat.id, true, 404, 'Error to number ' + to);

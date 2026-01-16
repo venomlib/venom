@@ -1,5 +1,5 @@
 export async function sendMute(chatId, time, type) {
-  var chat = await WAPI.sendExist(chatId);
+  var chat = await WAPI.findChat(chatId);
   if (!chat.erro) {
     let TimeInt = null;
     var result = null,

@@ -95,11 +95,11 @@ export async function sendListMenu(
     }
   }
 
-  const chat = await WAPI.sendExist(to);
+  const chat = await WAPI.findChat(to);
 
   if (chat && chat.status != 404 && chat.id) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     const inChat = await WAPI.getchatId(chat.id).catch(() => {});
 
     if (inChat) {

@@ -3,21 +3,33 @@ export const _serializeMessageObj = async (obj) => {
     return null;
   }
   const _chat = obj['chat'] ? await WAPI._serializeChatObj(obj['chat']) : {};
-  let chats = await WAPI.getAllChats();
+  const isGroupMsg =
+    obj?.to?.server === 'g.us' || obj?.from?.server === 'g.us';
+
+  // Only fetch group info if this is a group message - avoid getAllChats()
+  // Use 'to' for outgoing messages, 'from' for incoming messages
+  let groupInfo = null;
+  if (isGroupMsg) {
+    const groupId =
+      obj?.to?.server === 'g.us'
+        ? obj.to._serialized
+        : obj?.from?._serialized;
+    if (groupId) {
+      const groupChat = window.Store.Chat.get(groupId);
+      if (groupChat?.contact) {
+        groupInfo = await WAPI._serializeContactObj(groupChat.contact);
+      }
+    }
+  }
+
   return {
     ...window.WAPI._serializeRawObj(obj),
     id: obj?.id?._serialized,
     from: obj?.from?._serialized,
-    quotedParticipant: obj?.quotedParticipant?._serialized
-      ? obj?.quotedParticipant?._serialized
-      : undefined,
-    author: obj?.author?._serialized ? obj?.author?._serialized : undefined,
-    chatId: obj?.id?.remote
-      ? obj?.id?.remote
-      : obj?.chatId?._serialized
-        ? obj?.chatId?._serialized
-        : undefined,
-    to: obj?.to?._serialized ? obj?.to?._serialized : undefined,
+    quotedParticipant: obj?.quotedParticipant?._serialized || undefined,
+    author: obj?.author?._serialized || undefined,
+    chatId: obj?.id?.remote || obj?.chatId?._serialized || undefined,
+    to: obj?.to?._serialized || undefined,
     fromMe: obj?.id?.fromMe,
     sender: obj?.senderObj
       ? await WAPI._serializeContactObj(obj?.senderObj)
@@ -35,7 +47,7 @@ export const _serializeMessageObj = async (obj) => {
     isOnline: _chat?.isOnline,
     lastSeen: _chat?.lastSeen,
     quotedMsgObj: obj?.quotedMsg,
-    quotedStanzaId: obj?.quotedStanzaID ? obj?.quotedStanzaID : undefined,
+    quotedStanzaId: obj?.quotedStanzaID || undefined,
     mediaData: window.WAPI._serializeRawObj(obj?.mediaData),
     caption: obj?.caption,
     deprecatedMms3Url: obj?.deprecatedMms3Url,
@@ -55,24 +67,11 @@ export const _serializeMessageObj = async (obj) => {
     width: obj?.width,
     self: obj?.self,
     initialPageSize: obj?.initialPageSize,
-    lat: obj?.lat ? obj.lat : undefined,
-    lng: obj?.lng ? obj.lng : undefined,
+    lat: obj?.lat || undefined,
+    lng: obj?.lng || undefined,
     ack: obj?.ack,
-    scanLengths: null,
-    scansSidecar: null,
-    streamingSidecar: null,
-    waveform: null,
-    replyButtons: null,
-    dynamicReplyButtons: null,
-    buttons: null,
-    hydratedButtons: null,
-    isGroupMsg:
-      obj?.to?.server === 'g.us' || obj?.from?.server === 'g.us' ? true : false,
-    groupInfo:
-      obj?.to?.server === 'g.us' || obj?.from?.server === 'g.us'
-        ? chats.find((chat) => chat.id._serialized === obj.from._serialized)
-            .contact
-        : null,
+    isGroupMsg,
+    groupInfo,
     reply: (body) => window.WAPI.reply(_chat.id._serialized, body, obj)
   };
 };

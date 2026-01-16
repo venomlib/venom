@@ -5,7 +5,7 @@ export async function promoteParticipant(groupId, contactsId, done) {
     contactsId = [contactsId];
   }
 
-  contactsId = await Promise.all(contactsId.map((c) => WAPI.sendExist(c)));
+  contactsId = await Promise.all(contactsId.map((c) => WAPI.findChat(c)));
   contactsId = contactsId
     .filter((c) => !c.erro && c.isUser)
     .map((c) => chat.groupMetadata.participants.get(c.id))

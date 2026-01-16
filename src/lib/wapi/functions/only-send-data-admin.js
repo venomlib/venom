@@ -8,7 +8,7 @@ export async function onlySendDataAdmin(chat, type) {
   }
 
   if (chat && chat.status != 404 && chat.id) {
-    const chat = await WAPI.sendExist(chat);
+    const chatObj = await WAPI.findChat(chat);
     try {
       await Store.onlySendAdmin.sendSetGroupProperty(chat.id, `restrict`, type);
       return WAPI.scope(chat, false, 200, 'successfully changed');

@@ -13,7 +13,7 @@ export async function openChat(chatId, force = false) {
     return WAPI.scope(chatId, true, 404, 'It is necessary to number');
   }
 
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     const chat = Store.Chat.get(chatId);
     const result = Store.Cmd.default.openChatBottom(chat);

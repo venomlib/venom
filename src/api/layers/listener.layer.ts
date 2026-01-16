@@ -160,6 +160,7 @@ export class ListenerLayer extends ProfileLayer {
         let isHeroEqual = {};
 
         // Install the new message listener (add event)
+        // Serializes once and distributes to both onAnyMessage (immediate) and onMessage (debounced)
         window.Store.Msg.on('add', async (newMessage) => {
           if (!Object.is(isHeroEqual, newMessage)) {
             isHeroEqual = newMessage;
@@ -169,7 +170,18 @@ export class ListenerLayer extends ProfileLayer {
                 true,
                 false
               );
+
+              if (!processMessageObj) {
+                return;
+              }
+
+              // Immediate callback for all messages
               window.onAnyMessage(processMessageObj);
+
+              // Queue incoming messages for debounced onMessage callback
+              if (!newMessage.isSentByMe) {
+                window.WAPI._queueNewMessage(processMessageObj);
+              }
             }
           }
         });

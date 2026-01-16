@@ -12,8 +12,8 @@ export async function sendContactVcard(chatId, contact, name) {
     );
   }
 
-  const chat = await WAPI.sendExist(chatId);
-  const cont = await WAPI.sendExist(contact);
+  const chat = await WAPI.findChat(chatId);
+  const cont = await WAPI.findChat(contact);
   if (
     chat &&
     chat.status != 404 &&
@@ -40,7 +40,7 @@ export async function sendContactVcard(chatId, contact, name) {
       return WAPI.scope(chatId, true, 404, 'Error to newId');
     }
 
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     const body = await window.Store.Vcard.vcardFromContactModel(
       cont.__x_contact
     );

@@ -35,7 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SenderLayer = void 0;
 const path = __importStar(require("path"));
-const helpers_1 = require("../helpers");
+const index_js_1 = require("../helpers/index.js");
 const filename_from_mimetype_js_1 = require("../helpers/filename-from-mimetype.js");
 const layers_interface_js_1 = require("../helpers/layers-interface.js");
 const listener_layer_js_1 = require("./listener.layer.js");
@@ -120,7 +120,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param description
      */
     async sendImageStatus(filePath, description) {
-        let base64 = await (0, helpers_1.downloadFileToBase64)(filePath, [
+        let base64 = await (0, index_js_1.downloadFileToBase64)(filePath, [
             'image/gif',
             'image/png',
             'image/jpg',
@@ -128,7 +128,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
             'image/webp'
         ]);
         if (!base64) {
-            base64 = await (0, helpers_1.fileToBase64)(filePath);
+            base64 = await (0, index_js_1.fileToBase64)(filePath);
         }
         if (!base64) {
             throw {
@@ -138,7 +138,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
             };
         }
         let filename = path.basename(filePath);
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -169,9 +169,9 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param description
      */
     async sendVideoStatus(filePath, description) {
-        let base64 = await (0, helpers_1.downloadFileToBase64)(filePath, ['video/mp4']);
+        let base64 = await (0, index_js_1.downloadFileToBase64)(filePath, ['video/mp4']);
         if (!base64) {
-            base64 = await (0, helpers_1.fileToBase64)(filePath);
+            base64 = await (0, index_js_1.fileToBase64)(filePath);
         }
         if (!base64) {
             throw {
@@ -181,7 +181,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
             };
         }
         let filename = path.basename(filePath);
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -352,7 +352,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
         if (typeof validating === 'object') {
             throw validating;
         }
-        const thumbnail = await (0, helpers_1.dowloadMetaFileBase64)(url);
+        const thumbnail = await (0, index_js_1.dowloadMetaFileBase64)(url);
         const result = await this.page.evaluate(({ chatId, url, title, message, thumbnail }) => {
             return WAPI.sendLinkPreview(chatId, url, title, message, thumbnail);
         }, { chatId, url, title, message, thumbnail });
@@ -399,7 +399,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
         if (typeof validating === 'object') {
             throw validating;
         }
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -454,7 +454,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param passId
      */
     async sendImage(to, filePath, filename, caption, passId) {
-        let base64 = await (0, helpers_1.downloadFileToBase64)(filePath, [
+        let base64 = await (0, index_js_1.downloadFileToBase64)(filePath, [
             'image/gif',
             'image/png',
             'image/jpg',
@@ -462,7 +462,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
             'image/webp'
         ]);
         if (!base64) {
-            base64 = await (0, helpers_1.fileToBase64)(filePath);
+            base64 = await (0, index_js_1.fileToBase64)(filePath);
         }
         if (!base64) {
             throw {
@@ -474,7 +474,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
         if (!filename) {
             filename = path.basename(filePath);
         }
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -568,7 +568,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param passId new id
      */
     async sendVoiceBase64(to, base64, passId) {
-        const mimeType = (0, helpers_1.base64MimeType)(base64);
+        const mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -606,13 +606,13 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param delSend
      */
     async sendVoice(to, filePath, passId, checkNumber, forcingReturn, delSend) {
-        let base64 = await (0, helpers_1.downloadFileToBase64)(filePath, [
+        let base64 = await (0, index_js_1.downloadFileToBase64)(filePath, [
             'audio/mpeg',
             'audio/mp3',
             'audio/ogg'
         ]);
         if (!base64) {
-            base64 = await (0, helpers_1.fileToBase64)(filePath);
+            base64 = await (0, index_js_1.fileToBase64)(filePath);
         }
         if (!base64) {
             throw {
@@ -621,7 +621,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
                 text: 'No such file or directory, open "' + filePath + '"'
             };
         }
-        const mimeInfo = (0, helpers_1.base64MimeType)(base64);
+        const mimeInfo = (0, index_js_1.base64MimeType)(base64);
         if (!mimeInfo ||
             mimeInfo.includes('audio/mpeg') ||
             mimeInfo.includes('audio/mp3') ||
@@ -652,7 +652,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param passId
      */
     async sendFileFromBase64(to, base64, filename, caption, passId) {
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -682,9 +682,9 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param delSend
      */
     async sendFile(to, filePath, filename, caption, passId, checkNumber, forcingReturn, delSend) {
-        let base64 = await (0, helpers_1.downloadFileToBase64)(filePath);
+        let base64 = await (0, index_js_1.downloadFileToBase64)(filePath);
         if (!base64) {
-            base64 = await (0, helpers_1.fileToBase64)(filePath);
+            base64 = await (0, index_js_1.fileToBase64)(filePath);
         }
         if (!base64) {
             throw {
@@ -696,7 +696,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
         if (!filename && typeof filename !== 'string') {
             filename = path.basename(filePath);
         }
-        let mimeType = (0, helpers_1.base64MimeType)(base64);
+        let mimeType = (0, index_js_1.base64MimeType)(base64);
         if (!mimeType) {
             throw {
                 erro: true,
@@ -730,7 +730,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param caption string xxxxx
      */
     async sendVideoAsGif(to, path, filename, caption) {
-        const base64 = await (0, helpers_1.fileToBase64)(path);
+        const base64 = await (0, index_js_1.fileToBase64)(path);
         if (base64) {
             return this.sendVideoAsGifFromBase64(to, base64, filename, caption);
         }
@@ -797,15 +797,15 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      *  @param to chatId '000000000000@c.us'
      */
     async sendImageAsStickerGif(to, path) {
-        let b64 = await (0, helpers_1.downloadFileToBase64)(path, ['image/gif', 'image/webp']);
+        let b64 = await (0, index_js_1.downloadFileToBase64)(path, ['image/gif', 'image/webp']);
         if (!b64) {
-            b64 = await (0, helpers_1.fileToBase64)(path);
+            b64 = await (0, index_js_1.fileToBase64)(path);
         }
         if (b64) {
             const buff = Buffer.from(b64.replace(/^data:image\/(gif|webp);base64,/, ''), 'base64');
-            const mimeInfo = (0, helpers_1.base64MimeType)(b64);
+            const mimeInfo = (0, index_js_1.base64MimeType)(b64);
             if (!mimeInfo || mimeInfo.includes('image')) {
-                let obj = await (0, helpers_1.stickerSelect)(buff, 1);
+                let obj = await (0, index_js_1.stickerSelect)(buff, 1);
                 if (typeof obj == 'object') {
                     let _webb64 = obj['webpBase64'];
                     let _met = obj['metadata'];
@@ -836,7 +836,7 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
      * @param to chatId '000000000000@c.us'
      */
     async sendImageAsSticker(to, path) {
-        let b64 = await (0, helpers_1.downloadFileToBase64)(path, [
+        let b64 = await (0, index_js_1.downloadFileToBase64)(path, [
             'image/gif',
             'image/png',
             'image/jpg',
@@ -844,13 +844,13 @@ class SenderLayer extends listener_layer_js_1.ListenerLayer {
             'image/webp'
         ]);
         if (!b64) {
-            b64 = await (0, helpers_1.fileToBase64)(path);
+            b64 = await (0, index_js_1.fileToBase64)(path);
         }
         if (b64) {
             const buff = Buffer.from(b64.replace(/^data:image\/(png|jpe?g|webp|gif);base64,/, ''), 'base64');
-            const mimeInfo = (0, helpers_1.base64MimeType)(b64);
+            const mimeInfo = (0, index_js_1.base64MimeType)(b64);
             if (!mimeInfo || mimeInfo.includes('image')) {
-                let obj = await (0, helpers_1.stickerSelect)(buff, 0);
+                let obj = await (0, index_js_1.stickerSelect)(buff, 0);
                 if (typeof obj == 'object') {
                     let _webb64 = obj['webpBase64'];
                     let _met = obj['metadata'];

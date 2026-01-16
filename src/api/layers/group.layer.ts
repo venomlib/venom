@@ -7,7 +7,7 @@ import {
   fileToBase64,
   downloadFileToBase64,
   resizeImg
-} from '../helpers';
+} from '../helpers/index.js';
 import { GroupSettings } from '../model/enum';
 
 export class GroupLayer extends RetrieverLayer {

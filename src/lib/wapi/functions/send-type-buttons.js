@@ -1,5 +1,5 @@
 export async function sendTypeButtons(to, text, title, footer, hButtons) {
-  const chat = await WAPI.sendExist(to);
+  const chat = await WAPI.findChat(to);
 
   if (typeof text != 'string' || text.length === 0) {
     return WAPI.scope(to, true, 404, 'It is necessary to write a text!');
@@ -119,7 +119,7 @@ export async function sendTypeButtons(to, text, title, footer, hButtons) {
   }
   if (chat && chat.status != 404 && chat.id) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     const buttons = new Store.TemplateButtonCollection();
     const message = {
       from: fromwWid,

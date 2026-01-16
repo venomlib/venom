@@ -1,9 +1,9 @@
 export async function sendSticker(sticker, chatId, metadata, type) {
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
 
   if (!chat.erro) {
     const newMsgId = await window.WAPI.getNewMessageId(chat.id._serialized);
-    const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+    const fromwWid = await WAPI.getMeUser();
     const inChat = await WAPI.getchatId(chat.id).catch(() => {
       return WAPI.scope(chat.id, true, 404, 'Error to number ' + chatId);
     });

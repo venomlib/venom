@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { base64MimeType, dowloadMetaFileBase64, downloadFileToBase64, fileToBase64, stickerSelect } from '../helpers';
+import { base64MimeType, dowloadMetaFileBase64, downloadFileToBase64, fileToBase64, stickerSelect } from '../helpers/index.js';
 import { filenameFromMimeType } from '../helpers/filename-from-mimetype.js';
 import { checkValuesSender } from '../helpers/layers-interface.js';
 import { ListenerLayer } from './listener.layer.js';

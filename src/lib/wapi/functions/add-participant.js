@@ -5,7 +5,7 @@ export async function addParticipant(groupId, contactsId) {
     contactsId = [contactsId];
   }
 
-  contactsId = await Promise.all(contactsId.map((c) => WAPI.sendExist(c)));
+  contactsId = await Promise.all(contactsId.map((c) => WAPI.findChat(c)));
   if (!contactsId.length) {
     return false;
   }

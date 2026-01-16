@@ -4,7 +4,7 @@
  * @returns bollean
  */
 export async function markMarkSeenMessage(id) {
-  const chat = await WAPI.sendExist(id);
+  const chat = await WAPI.findChat(id);
   if (!chat.erro) {
     //await Store.ReadSeen.markUnread(chat);
     await Store.ReadSeen.sendSeen(chat, false);

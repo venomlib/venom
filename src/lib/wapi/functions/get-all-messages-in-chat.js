@@ -29,6 +29,6 @@ export async function getAllMessagesInChat(
     if (done !== undefined) done(output);
     return output;
   } else {
-    return await WAPI.sendExist(id);
+    return await WAPI.findChat(id);
   }
 }

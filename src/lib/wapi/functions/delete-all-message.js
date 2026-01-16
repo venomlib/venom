@@ -7,7 +7,7 @@ export async function deleteMessages(chatId, messageArray) {
       'enter the chatid variable as an string'
     );
   }
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404) {
     if (!Array.isArray(messageArray)) {
       return WAPI.scope(

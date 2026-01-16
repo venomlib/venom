@@ -1,5 +1,5 @@
 export async function forwardMessages(chatId, messages, skipMyMessages) {
-  var chat = await WAPI.sendExist(chatId);
+  var chat = await WAPI.findChat(chatId);
 
   if (!Array.isArray(messages)) {
     messages = [messages];
@@ -36,7 +36,7 @@ export async function forwardMessages(chatId, messages, skipMyMessages) {
       let tempMsg = await Object.create(
         chat.msgs.filter((msg) => msg.__x_isSentByMe)
       )[0];
-      const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+      const fromwWid = await WAPI.getMeUser();
       let toFor = await Object.assign(e);
       let extend = {
         id: newMsgId,

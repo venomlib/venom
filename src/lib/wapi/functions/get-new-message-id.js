@@ -1,7 +1,5 @@
 export async function getNewMessageId(chatId, checkNumber = true) {
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatId)
-    : await WAPI.returnChat(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat.id) {
     const newMsgId = new Object();
     newMsgId.fromMe = true;

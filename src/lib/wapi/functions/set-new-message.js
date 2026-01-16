@@ -6,9 +6,7 @@ export async function setNewMessageId(info, checkNumber = true) {
     info._serialized &&
     info.id
   ) {
-    const chat = checkNumber
-      ? await WAPI.sendExist(info.number)
-      : await WAPI.returnChat(info.number);
+    const chat = await WAPI.findChat(info.number);
     delete info.number;
     if (chat.id) {
       const newMsgId = new Object();

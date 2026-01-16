@@ -6,7 +6,7 @@ export async function onlySendAdmin(chatId, type) {
   if (typeof type !== 'boolean') {
     return window.WAPI.scope(chatId, true, 404, 'the type must be boolean');
   }
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     try {
       const onlyAdmin = await Store.onlySendAdmin.setGroupProperty(

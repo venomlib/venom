@@ -4,9 +4,7 @@
  * @param checkNumber the number when submitting!
  */
 export async function startTyping(chatId, checkNumber = true) {
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatId)
-    : await WAPI.returnChat(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     await WAPI.presenceAvailable();
     const result = await Store.SetStatusChat.markComposing(chat);
@@ -24,9 +22,7 @@ export async function startTyping(chatId, checkNumber = true) {
  * @param checkNumber the number when submitting!
  */
 export async function startRecording(chatId, checkNumber = true) {
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatId)
-    : await WAPI.returnChat(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     await WAPI.presenceAvailable();
     const result = await Store.SetStatusChat.markRecording(chat);
@@ -44,9 +40,7 @@ export async function startRecording(chatId, checkNumber = true) {
  * @param checkNumber the number when submitting!
  */
 export async function markPaused(chatId, checkNumber = true) {
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatId)
-    : await WAPI.returnChat(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     await WAPI.presenceAvailable();
     const result = await Store.SetStatusChat.markPaused(chat);
@@ -63,9 +57,7 @@ export async function markPaused(chatId, checkNumber = true) {
  * @param checkNumber the number when submitting!
  */
 export async function clearPresence(chatId, checkNumber = true) {
-  const chat = checkNumber
-    ? await WAPI.sendExist(chatId)
-    : await WAPI.returnChat(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404 && chat.id) {
     const result = await Store.SetStatusChat.clearPresence(chat);
     return WAPI.scope(undefined, false, result);

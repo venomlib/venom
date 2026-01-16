@@ -7,7 +7,7 @@ export async function checkIdMessage(chatId, idMesagem) {
       'enter the chatId variable as an string'
     );
   }
-  const chat = await WAPI.sendExist(chatId);
+  const chat = await WAPI.findChat(chatId);
   if (chat && chat.status != 404) {
     const getIdMessage = await window.Store.Msg.get(idMesagem);
     if (!getIdMessage) {

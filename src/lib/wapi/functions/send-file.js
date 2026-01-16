@@ -125,7 +125,7 @@ export async function sendFile(
                 );
               }
 
-              const fromwWid = await Store.MaybeMeUser.getMaybeMePnUser();
+              const fromwWid = await WAPI.getMeUser();
               const message = {
                 id: newMsgId,
                 ack: 0,

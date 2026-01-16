@@ -2,7 +2,7 @@ export async function getGroupAdmins(groupId) {
   if (typeof groupId !== 'string') {
     return WAPI.scope(undefined, true, null, 'Use to groupId string');
   }
-  const chat = await WAPI.sendExist(groupId);
+  const chat = await WAPI.findChat(groupId);
 
   if (chat && chat.status != 404 && chat.id) {
     const moduleGroup = await window.Store.GroupMetadata.default.models.filter(
