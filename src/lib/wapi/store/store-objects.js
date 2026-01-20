@@ -503,5 +503,10 @@ export const storeObjects = [
     id:"userJidToUserWid",
     conditions: (module) => (module.newsletterJidToWid ? module : null)
   },
+  {
+    id: 'MediaUploadQpl',
+    conditions: (module) =>
+      module.startMediaUploadQpl ? module : null,
+  },
 
 ];

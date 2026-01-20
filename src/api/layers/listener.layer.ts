@@ -179,7 +179,7 @@ export class ListenerLayer extends ProfileLayer {
               window.onAnyMessage(processMessageObj);
 
               // Queue incoming messages for debounced onMessage callback
-              if (!newMessage.isSentByMe) {
+              if (!newMessage.id?.fromMe) {
                 window.WAPI._queueNewMessage(processMessageObj);
               }
             }

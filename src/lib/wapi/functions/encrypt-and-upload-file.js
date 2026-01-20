@@ -6,11 +6,15 @@ export async function encryptAndUploadFile(type, blob) {
     const mediaKey = generateMediaKey(32);
     const controller = new AbortController();
     const signal = controller.signal;
+    const uploadQpl = window.Store.MediaUploadQpl.startMediaUploadQpl({
+      entryPoint: 'MediaUpload'
+    });
     const encrypted = await window.Store.UploadUtils.encryptAndUpload({
       blob,
       type,
       signal,
-      mediaKey
+      mediaKey,
+      uploadQpl
     });
     return {
       ...encrypted,
@@ -21,7 +25,7 @@ export async function encryptAndUploadFile(type, blob) {
       mediaBlob: blob
     };
   } catch (e) {
-    console.error(e);
+    window.onLog(`encryptAndUploadFile error: ${e}`);
     return false;
   }
 }
