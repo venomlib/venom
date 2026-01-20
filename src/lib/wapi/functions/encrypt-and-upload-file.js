@@ -21,7 +21,7 @@ export async function encryptAndUploadFile(type, blob) {
       mediaBlob: blob
     };
   } catch (e) {
-    console.error(e);
+    window.onLog(`encryptAndUploadFile error: ${e}`);
     return false;
   }
 }
