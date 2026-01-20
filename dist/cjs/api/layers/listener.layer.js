@@ -116,7 +116,7 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
                         // Immediate callback for all messages
                         window.onAnyMessage(processMessageObj);
                         // Queue incoming messages for debounced onMessage callback
-                        if (!newMessage.isSentByMe) {
+                        if (!newMessage.id?.fromMe) {
                             window.WAPI._queueNewMessage(processMessageObj);
                         }
                     }
