@@ -7,18 +7,17 @@ import { CreateConfig } from '../config/create-config.js';
 import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
-
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname } from 'path';
 
-// Cross-platform __dirname
+// Cross-platform __dirname for CJS/ESM dual builds
+// eval hides import.meta from the CJS parser to avoid SyntaxError
 const getDirname = () => {
-  try {
+  if (typeof __dirname !== 'undefined') {
     return __dirname;
-  } catch (e) {
-    // @ts-ignore
-    return dirname(fileURLToPath(import.meta.url));
   }
+  // @ts-ignore
+  return dirname(fileURLToPath(eval('import.meta.url')));
 };
 
 async function checkFileExists(filePath: string): Promise<boolean> {
