@@ -144,6 +144,7 @@ export async function sendMessage(
       if (result?.message) {
         res.message = result.message;
       }
+      window.onLog(`Error sending message : ${result}`);
       const obj = WAPI.scope(newMsgId, true, res, 'The message was not sent');
       Object.assign(obj, m);
       return obj;
