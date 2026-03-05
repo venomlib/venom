@@ -86,6 +86,10 @@ async function create(sessionOrOption, catchQR, statusFind, options, browserInst
             statusFind('noOpenBrowser', session);
         throw new Error(`Error no open browser....`);
     }
+    const pages = await browser.pages();
+    for (const page of pages.slice(1)) {
+        await page.close();
+    }
     if (mergedOptions.browserWS) {
         if (statusFind)
             statusFind('connectBrowserWs', session);

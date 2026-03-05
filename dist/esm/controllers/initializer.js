@@ -83,7 +83,7 @@ export async function create(sessionOrOption, catchQR, statusFind, options, brow
         throw new Error(`Error no open browser....`);
     }
     const pages = await browser.pages();
-    for (const page of pages) {
+    for (const page of pages.slice(1)) {
         await page.close();
     }
     if (mergedOptions.browserWS) {

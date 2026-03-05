@@ -197,7 +197,7 @@ export async function create(
   }
 
   const pages = await browser.pages();
-  for (const page of pages) {
+  for (const page of pages.slice(1)) {
     await page.close();
   }
   if (mergedOptions.browserWS) {
