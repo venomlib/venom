@@ -557,6 +557,7 @@ export async function initBrowser(options: {
       const proxy =
         options.addProxy[Math.floor(Math.random() * options.addProxy.length)];
       const args = options.browserArgs ?? puppeteerConfig.chromiumArgs;
+      args.push('--restore-last-session=false');
       args.push(`--proxy-server=${proxy}`);
     }
 

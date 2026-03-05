@@ -433,6 +433,7 @@ async function initBrowser(options) {
         if (Array.isArray(options.addProxy) && options.addProxy.length) {
             const proxy = options.addProxy[Math.floor(Math.random() * options.addProxy.length)];
             const args = options.browserArgs ?? puppeteer_config_js_1.puppeteerConfig.chromiumArgs;
+            args.push('--restore-last-session=false');
             args.push(`--proxy-server=${proxy}`);
         }
         if (Array.isArray(options.addBrowserArgs) &&
