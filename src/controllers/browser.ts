@@ -557,7 +557,6 @@ export async function initBrowser(options: {
       const proxy =
         options.addProxy[Math.floor(Math.random() * options.addProxy.length)];
       const args = options.browserArgs ?? puppeteerConfig.chromiumArgs;
-      args.push('--restore-last-session=false');
       args.push(`--proxy-server=${proxy}`);
     }
 
@@ -571,6 +570,8 @@ export async function initBrowser(options: {
         }
       });
     }
+
+    puppeteerConfig.chromiumArgs.push('--restore-last-session=false');
     // @ts-ignore
     if (options.headless === 'old') {
       puppeteerConfig.chromiumArgs.push(`--headless=old`);

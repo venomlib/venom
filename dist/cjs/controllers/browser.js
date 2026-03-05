@@ -433,7 +433,6 @@ async function initBrowser(options) {
         if (Array.isArray(options.addProxy) && options.addProxy.length) {
             const proxy = options.addProxy[Math.floor(Math.random() * options.addProxy.length)];
             const args = options.browserArgs ?? puppeteer_config_js_1.puppeteerConfig.chromiumArgs;
-            args.push('--restore-last-session=false');
             args.push(`--proxy-server=${proxy}`);
         }
         if (Array.isArray(options.addBrowserArgs) &&
@@ -444,6 +443,7 @@ async function initBrowser(options) {
                 }
             });
         }
+        puppeteer_config_js_1.puppeteerConfig.chromiumArgs.push('--restore-last-session=false');
         // @ts-ignore
         if (options.headless === 'old') {
             puppeteer_config_js_1.puppeteerConfig.chromiumArgs.push(`--headless=old`);
