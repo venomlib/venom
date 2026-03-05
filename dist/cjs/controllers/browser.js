@@ -443,7 +443,6 @@ async function initBrowser(options) {
                 }
             });
         }
-        puppeteer_config_js_1.puppeteerConfig.chromiumArgs.push('--restore-last-session=false');
         // @ts-ignore
         if (options.headless === 'old') {
             puppeteer_config_js_1.puppeteerConfig.chromiumArgs.push(`--headless=old`);

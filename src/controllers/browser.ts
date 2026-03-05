@@ -570,8 +570,6 @@ export async function initBrowser(options: {
         }
       });
     }
-
-    puppeteerConfig.chromiumArgs.push('--restore-last-session=false');
     // @ts-ignore
     if (options.headless === 'old') {
       puppeteerConfig.chromiumArgs.push(`--headless=old`);
