@@ -158,6 +158,7 @@ export async function sendPtt(
                 )
               )[1];
             } catch (e) {
+              window.onLog(`Error sending message : ${e}`);
               return WAPI.scope(chat.id, true, 404, 'The message was not sent');
             }
           } else {
