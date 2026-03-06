@@ -40,13 +40,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateASCIIQR = generateASCIIQR;
 const url_1 = require("url");
 const path_1 = require("path");
-// Cross-platform __dirname
+// Cross-platform __dirname for CJS/ESM dual builds
+// eval hides import.meta from the CJS parser to avoid SyntaxError
 const getDirname = () => {
     if (typeof __dirname !== 'undefined') {
         return __dirname;
     }
     // @ts-ignore
-    return (0, path_1.dirname)((0, url_1.fileURLToPath)(import.meta.url));
+    return (0, path_1.dirname)((0, url_1.fileURLToPath)(eval('import.meta.url')));
 };
 function fill(length, value) {
     const arr = new Array(length);
