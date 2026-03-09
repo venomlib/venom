@@ -29,7 +29,6 @@ export async function sendMessageWithTags(to, body) {
   };
 
   Object.assign(tempMsg, extend);
-  const [msgPromise] = Store.addAndSendMsgToChat(chat, tempMsg);
-  await msgPromise;
+  await WAPI._addAndSendMsgToChat(chat, tempMsg);
   return newId._serialized;
 }

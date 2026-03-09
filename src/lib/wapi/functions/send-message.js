@@ -80,8 +80,7 @@ export async function sendMessage(
         while (true) {
           const connection = Store.State.Socket.state;
           if (connection === 'CONNECTED') {
-            const [, resultPromise] = Store.addAndSendMsgToChat(chat, message);
-            const result = await resultPromise;
+            const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
             await WAPI.sleep(5000);
             const statusMsg = chat.msgs._models.filter(
               (e) => e.id === newMsgId._serialized && e.ack > 0
@@ -101,8 +100,7 @@ export async function sendMessage(
           }
         }
       } else {
-        const [, resultPromise] = Store.addAndSendMsgToChat(chat, message);
-        const result = await resultPromise;
+        const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
         let obj = WAPI.scope(
           newMsgId,
           false,
@@ -115,9 +113,7 @@ export async function sendMessage(
     }
 
     try {
-      const [msgPromise, resultPromise] = Store.addAndSendMsgToChat(chat, message);
-      await msgPromise;
-      const result = await resultPromise;
+      const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
 
       if (
         result === 'success' ||

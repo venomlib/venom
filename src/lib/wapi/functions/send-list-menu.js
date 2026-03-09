@@ -134,9 +134,7 @@ export async function sendListMenu(
       }
     };
 
-    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
-    await msgPromise;
-    var result = await resultPromise;
+    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
     if (
       result === 'success' ||
       result === 'OK' ||

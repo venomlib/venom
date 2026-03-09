@@ -50,6 +50,21 @@ export async function getStore(modules) {
       window.Store.MediaCollection.prototype.processAttachments;
   }
 
+  // Wrapper around addAndSendMsgToChat that handles both return formats:
+  // - Old: returns [msgPromise, sendResultPromise] (tuple)
+  // - New: returns a single Promise
+  // Returns { msgResult, sendResult } after awaiting.
+  window.WAPI._addAndSendMsgToChat = async function (chat, message) {
+    const ret = Store.addAndSendMsgToChat(chat, message);
+    if (Array.isArray(ret)) {
+      const msgResult = await ret[0];
+      const sendResult = await ret[1];
+      return { msgResult, sendResult };
+    }
+    const sendResult = await ret;
+    return { msgResult: undefined, sendResult };
+  };
+
   window.mR = async (find) => {
     return new Promise((resolve) => {
       if (window.__debug) {

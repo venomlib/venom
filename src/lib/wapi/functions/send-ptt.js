@@ -113,11 +113,7 @@ export async function sendPtt(
                 while (true) {
                   const connection = window.Store.State.Socket.state;
                   if (connection === 'CONNECTED') {
-                    const [, resultPromise] = window.Store.addAndSendMsgToChat(
-                      chat,
-                      message
-                    );
-                    const result = await resultPromise;
+                    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
                     await WAPI.sleep(5000);
                     const statusMsg = chat.msgs._models.filter(
                       (e) => e.id === newMsgId._serialized && e.ack > 0
@@ -137,11 +133,7 @@ export async function sendPtt(
                   }
                 }
               } else {
-                const [, resultPromise] = window.Store.addAndSendMsgToChat(
-                  chat,
-                  message
-                );
-                const result = await resultPromise;
+                const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
                 let obj = WAPI.scope(
                   newMsgId,
                   false,
@@ -154,9 +146,8 @@ export async function sendPtt(
             }
 
             try {
-              const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
-              await msgPromise;
-              return await resultPromise;
+              const { sendResult } = await WAPI._addAndSendMsgToChat(chat, message);
+              return sendResult;
             } catch (e) {
               window.onLog(`Error sending message : ${e}`, 'error');
               return WAPI.scope(chat.id, true, 404, 'The message was not sent');
