@@ -4,15 +4,13 @@ import { useragentOverride } from '../config/WAuserAgente.js';
 import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 // Cross-platform __dirname for CJS/ESM dual builds
 const getDirname = () => {
     if (typeof __dirname !== 'undefined') {
         return __dirname;
     }
-    // ESM fallback: use new Function to avoid CJS parser rejecting import.meta
-    return dirname(fileURLToPath(new Function('return import.meta.url')()));
+    // ESM fallback: resolve from package location
+    return path.dirname(require.resolve('../../package.json'));
 };
 async function checkFileExists(filePath) {
     try {

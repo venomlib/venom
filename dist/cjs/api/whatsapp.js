@@ -43,15 +43,13 @@ const WAuserAgente_js_1 = require("../config/WAuserAgente.js");
 const axios_1 = __importDefault(require("axios"));
 const path = __importStar(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
-const url_1 = require("url");
-const path_1 = require("path");
 // Cross-platform __dirname for CJS/ESM dual builds
 const getDirname = () => {
     if (typeof __dirname !== 'undefined') {
         return __dirname;
     }
-    // ESM fallback: use new Function to avoid CJS parser rejecting import.meta
-    return (0, path_1.dirname)((0, url_1.fileURLToPath)(new Function('return import.meta.url')()));
+    // ESM fallback: resolve from package location
+    return path.dirname(require.resolve('../../package.json'));
 };
 async function checkFileExists(filePath) {
     try {
