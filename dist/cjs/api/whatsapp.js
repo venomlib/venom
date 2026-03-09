@@ -46,13 +46,12 @@ const promises_1 = __importDefault(require("fs/promises"));
 const url_1 = require("url");
 const path_1 = require("path");
 // Cross-platform __dirname for CJS/ESM dual builds
-// eval hides import.meta from the CJS parser to avoid SyntaxError
 const getDirname = () => {
     if (typeof __dirname !== 'undefined') {
         return __dirname;
     }
-    // @ts-ignore
-    return (0, path_1.dirname)((0, url_1.fileURLToPath)(eval('import.meta.url')));
+    // ESM fallback: use new Function to avoid CJS parser rejecting import.meta
+    return (0, path_1.dirname)((0, url_1.fileURLToPath)(new Function('return import.meta.url')()));
 };
 async function checkFileExists(filePath) {
     try {
