@@ -43,13 +43,22 @@ const WAuserAgente_js_1 = require("../config/WAuserAgente.js");
 const axios_1 = __importDefault(require("axios"));
 const path = __importStar(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
-// Cross-platform __dirname for CJS/ESM dual builds
+// Resolve this file's directory in both CJS and ESM builds.
+// Cannot use import.meta.url directly — it's a syntax error in CJS at parse time.
+// Instead, extract the file path from an Error stack trace, which works everywhere.
 const getDirname = () => {
     if (typeof __dirname !== 'undefined') {
         return __dirname;
     }
-    // ESM fallback: resolve from package location
-    return path.dirname(require.resolve('../../package.json'));
+    // ESM fallback: parse current file path from stack trace
+    const stack = new Error().stack || '';
+    // Match file:// URLs (ESM) or plain paths (CJS)
+    const match = stack.match(/(?:file:\/\/\/?)?(\/[^\s:]+|[A-Z]:[^\s:]+)[\\/]whatsapp\.[tj]s/i);
+    if (match) {
+        return decodeURIComponent(match[1]);
+    }
+    // Last resort: assume standard package layout
+    return path.join(process.cwd(), 'node_modules', 'venom-bot', 'dist', 'esm', 'api');
 };
 async function checkFileExists(filePath) {
     try {
