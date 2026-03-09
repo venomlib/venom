@@ -125,9 +125,9 @@ export async function sendMessage(to, body, options = {}) {
     );
 
     try {
-      const result = (
-        await Promise.all(Store.addAndSendMsgToChat(chat, message))
-      )[1];
+      const [msgPromise, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+      await msgPromise;
+      const result = await resultPromise;
       if (result === 'OK' || result.messageSendResult === 'OK') {
         return WAPI.scope(newMsgId, false, result, null, options.type, body);
       }

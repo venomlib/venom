@@ -134,12 +134,16 @@ export const storeObjects = [
   {
     id: 'addAndSendMsgToChat',
     conditions: (module) =>
-      module.addAndSendMsgToChat ? module.addAndSendMsgToChat : null,
+      module.addAndSendMsgToChat && module.sendMsgToChat
+        ? module.addAndSendMsgToChat
+        : null,
   },
   {
     id: 'sendMsgToChat',
     conditions: (module) =>
-      module.sendMsgToChat ? module.sendMsgToChat : null,
+      module.sendMsgToChat && module.addAndSendMsgToChat
+        ? module.sendMsgToChat
+        : null,
   },
   {
     id: 'Catalog',

@@ -57,9 +57,9 @@ export async function sendLinkPreview(chatId, url, text, body, thumbnail) {
       matchedText: url,
       title: text
     };
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    const result = await resultPromise;
     let m = { type: 'LinkPreview', url: url, text: text };
     if (
       result === 'success' ||

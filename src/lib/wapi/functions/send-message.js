@@ -80,7 +80,8 @@ export async function sendMessage(
         while (true) {
           const connection = Store.State.Socket.state;
           if (connection === 'CONNECTED') {
-            const result = await Store.addAndSendMsgToChat(chat, message);
+            const [, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+            const result = await resultPromise;
             await WAPI.sleep(5000);
             const statusMsg = chat.msgs._models.filter(
               (e) => e.id === newMsgId._serialized && e.ack > 0
@@ -100,7 +101,8 @@ export async function sendMessage(
           }
         }
       } else {
-        const result = await Store.addAndSendMsgToChat(chat, message);
+        const [, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+        const result = await resultPromise;
         let obj = WAPI.scope(
           newMsgId,
           false,
@@ -113,14 +115,14 @@ export async function sendMessage(
     }
 
     try {
-      const result = (
-        await Promise.all(Store.addAndSendMsgToChat(chat, message))
-      )[1];
+      const [msgPromise, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+      await msgPromise;
+      const result = await resultPromise;
 
       if (
         result === 'success' ||
         result === 'OK' ||
-        result.messageSendResult === 'OK'
+        result?.messageSendResult === 'OK'
       ) {
         const obj = WAPI.scope(newMsgId, false, result, content);
         Object.assign(obj, m);
@@ -144,8 +146,11 @@ export async function sendMessage(
       if (result?.message) {
         res.message = result.message;
       }
-      console.log(result);
-      window.onLog(`Error sending message : ${result}`);
+      window.onLog(`Error sending message : ${result}`, 'error');
+      window.onLog(`Stack: ${result?.stack}`, 'error');
+      window.onLog(`chat.sendQueue: ${chat?.sendQueue}`, 'error');
+      window.onLog(`chat.addQueue: ${chat?.addQueue}`, 'error');
+      window.onLog(`Store.addAndSendMsgToChat type: ${typeof Store.addAndSendMsgToChat}`, 'error');
       const obj = WAPI.scope(newMsgId, true, res, 'The message was not sent');
       Object.assign(obj, m);
       return obj;

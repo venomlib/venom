@@ -34,9 +34,9 @@ export async function sendSticker(sticker, chatId, metadata, type) {
       width: metadata && metadata.width ? metadata.width : 512
     };
 
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    const result = await resultPromise;
 
     const m = { type: type };
     if (

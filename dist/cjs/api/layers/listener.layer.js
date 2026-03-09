@@ -21,8 +21,8 @@ class ListenerLayer extends profile_layer_js_1.ProfileLayer {
             this.cancelAutoClose();
             this.log('Page Closed', 'fail');
         });
-        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onLog, (msg) => {
-            this.log(msg);
+        this.listenerEmitter.on(exposed_enum_js_1.ExposedFn.onLog, (msg, level = 'info') => {
+            this.log(msg, level);
         });
     }
     async initialize() {

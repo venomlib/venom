@@ -72,8 +72,9 @@ export async function sendContactVcardList(chatId, contacts) {
       isNewMsg: !0
     };
 
-    var result =
-      (await Promise.all(Store.addAndSendMsgToChat(chat, message)))[1] || '';
+    const [msgPromise, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    var result = (await resultPromise) || '';
 
     var m = { from: contacts, type: 'multi_vcard' };
 

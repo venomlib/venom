@@ -67,9 +67,9 @@ export async function sendButtons(to, title, subtitle, buttons) {
       dynamicReplyButtons: buttons
     };
     Object.assign(message, obj);
-    var result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    var result = await resultPromise;
     if (
       result === 'success' ||
       result === 'OK' ||

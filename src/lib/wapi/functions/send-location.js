@@ -41,8 +41,9 @@ export async function sendLocation(
       loc: location
     };
 
-    const result =
-      (await Promise.all(Store.addAndSendMsgToChat(chat, message)))[1] || '';
+    const [msgPromise, resultPromise] = Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    const result = (await resultPromise) || '';
 
     let m = {
         latitude: latitude,

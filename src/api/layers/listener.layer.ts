@@ -64,8 +64,8 @@ export class ListenerLayer extends ProfileLayer {
       this.log('Page Closed', 'fail');
     });
 
-    this.listenerEmitter.on(ExposedFn.onLog, (msg: string) => {
-      this.log(msg);
+    this.listenerEmitter.on(ExposedFn.onLog, (msg: string, level = 'info') => {
+      this.log(msg, level);
     });
   }
 

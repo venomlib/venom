@@ -120,7 +120,8 @@ export async function sendMessageOptions(chatId, content, options = {}) {
     ...vcardOptions
   };
 
-  await window.Store.addAndSendMsgToChat(chat, message);
+  const [msgPromise] = window.Store.addAndSendMsgToChat(chat, message);
+  await msgPromise;
 
   return newMsgId._serialized;
 }

@@ -60,9 +60,9 @@ export async function sendContactVcard(chatId, contact, name) {
       type: 'vcard'
     };
 
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    const result = await resultPromise;
 
     var m = { from: contact, type: 'vcard' };
     if (result === 'success' || result || result.messageSendResult === 'OK') {

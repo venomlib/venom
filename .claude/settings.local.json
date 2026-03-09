@@ -7,7 +7,10 @@
       "Bash(find:*)",
       "Bash(xargs ls:*)",
       "Bash(ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git -C D:srcvenom log --oneline -20 -- src/api/layers/listener.layer.ts src/lib/wapi/listeners/init-listeners.js)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }

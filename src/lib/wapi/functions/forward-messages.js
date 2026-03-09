@@ -56,7 +56,8 @@ export async function forwardMessages(chatId, messages, skipMyMessages) {
       Object.assign(tempMsg, toFor);
       Object.assign(tempMsg, extend);
 
-      return await Store.addAndSendMsgToChat(chat, tempMsg);
+      const [msgPromise] = Store.addAndSendMsgToChat(chat, tempMsg);
+      return await msgPromise;
     });
 
     var obj = WAPI.scope(newMsgId, false, 200, null);

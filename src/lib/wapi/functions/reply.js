@@ -77,9 +77,9 @@ export async function reply(chatId, content, quotedMessageId) {
       ...quotedMsgOptions
     };
 
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const [msgPromise, resultPromise] = window.Store.addAndSendMsgToChat(chat, message);
+    await msgPromise;
+    const result = await resultPromise;
 
     if (
       result === 'success' ||
