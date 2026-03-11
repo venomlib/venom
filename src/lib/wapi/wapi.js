@@ -193,6 +193,7 @@ function injectParasite() {
         [parasite],
         {},
         async function (o) {
+          window.__webpackRequire = o;
           let modules = [];
           for (let idx in o.m) {
             modules.push(o(idx));

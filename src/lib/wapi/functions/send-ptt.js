@@ -146,7 +146,10 @@ export async function sendPtt(
             }
 
             try {
-              const { sendResult } = await WAPI._addAndSendMsgToChat(chat, message);
+              const { sendResult } = await WAPI._addAndSendMsgToChat(
+                chat,
+                message
+              );
               return sendResult;
             } catch (e) {
               window.onLog(`Error sending message : ${e}`, 'error');

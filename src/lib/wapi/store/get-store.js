@@ -55,7 +55,21 @@ export async function getStore(modules) {
   // - New: returns a single Promise
   // Returns { msgResult, sendResult } after awaiting.
   window.WAPI._addAndSendMsgToChat = async function (chat, message) {
-    const ret = Store.addAndSendMsgToChat(chat, message);
+    // Prefer the named webpack module (WAWebSendMsgChatAction) used by
+    // newer WhatsApp Web builds, falling back to the store-scanned version.
+    let fn = Store.addAndSendMsgToChat;
+    if (window.__webpackRequire) {
+      try {
+        const mod = window.__webpackRequire('WAWebSendMsgChatAction');
+        if (mod && typeof mod.addAndSendMsgToChat === 'function') {
+          fn = mod.addAndSendMsgToChat;
+        }
+      } catch (e) {
+        // Module not available under this name, keep the fallback
+      }
+    }
+
+    const ret = fn(chat, message);
     if (Array.isArray(ret)) {
       const msgResult = await ret[0];
       const sendResult = await ret[1];
