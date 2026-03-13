@@ -67,9 +67,7 @@ export async function sendButtons(to, title, subtitle, buttons) {
       dynamicReplyButtons: buttons
     };
     Object.assign(message, obj);
-    var result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
     if (
       result === 'success' ||
       result === 'OK' ||

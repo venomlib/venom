@@ -29,6 +29,6 @@ export async function sendMessageWithTags(to, body) {
   };
 
   Object.assign(tempMsg, extend);
-  await Store.addAndSendMsgToChat(chat, tempMsg);
+  await WAPI._addAndSendMsgToChat(chat, tempMsg);
   return newId._serialized;
 }

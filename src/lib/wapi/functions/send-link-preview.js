@@ -57,9 +57,7 @@ export async function sendLinkPreview(chatId, url, text, body, thumbnail) {
       matchedText: url,
       title: text
     };
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
     let m = { type: 'LinkPreview', url: url, text: text };
     if (
       result === 'success' ||

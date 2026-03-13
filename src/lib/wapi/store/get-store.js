@@ -50,6 +50,55 @@ export async function getStore(modules) {
       window.Store.MediaCollection.prototype.processAttachments;
   }
 
+  // Wrapper around addAndSendMsgToChat that handles both return formats:
+  // - Old: returns [msgPromise, sendResultPromise] (tuple)
+  // - New: returns a single Promise
+  // Returns { msgResult, sendResult } after awaiting.
+  window.WAPI._addAndSendMsgToChat = async function (chat, message) {
+    let fn = Store.addAndSendMsgToChat;
+
+    // WhatsApp Web uses Meta's __d / importNamespace module system (not webpack).
+    // Try to load the module directly when __debug is available.
+    if (window.__debug && window.__debug.modulesMap) {
+      try {
+        self.ErrorGuard.skipGuardGlobal(true);
+        const mod = self.importNamespace('WAWebSendMsgChatAction');
+        if (mod && typeof mod.addAndSendMsgToChat === 'function') {
+          fn = mod.addAndSendMsgToChat;
+        }
+      } catch (e) {
+        // Module not available, keep the store-scanned fallback
+      }
+    } else if (window.__webpackRequire) {
+      // Legacy webpack path (older WA Web builds)
+      try {
+        const mod = window.__webpackRequire('WAWebSendMsgChatAction');
+        if (mod && typeof mod.addAndSendMsgToChat === 'function') {
+          fn = mod.addAndSendMsgToChat;
+        }
+      } catch (e) {}
+    }
+
+    // findOrCreateLatestChat returns a plain object, not a ChatModel instance.
+    // The real ChatModel (with msgs, addQueue, sendQueue, etc.) lives in the
+    // ChatStore. Resolve it so addAndSendMsgToChat has a fully initialized model.
+    if (chat && chat.id && !chat.msgs) {
+      const resolved = Store.Chat.get(chat.id);
+      if (resolved) {
+        chat = resolved;
+      }
+    }
+
+    const ret = fn(chat, message);
+    if (Array.isArray(ret)) {
+      const msgResult = await ret[0];
+      const sendResult = await ret[1];
+      return { msgResult, sendResult };
+    }
+    const sendResult = await ret;
+    return { msgResult: undefined, sendResult };
+  };
+
   window.mR = async (find) => {
     return new Promise((resolve) => {
       if (window.__debug) {
