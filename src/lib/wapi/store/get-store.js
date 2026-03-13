@@ -79,25 +79,13 @@ export async function getStore(modules) {
       } catch (e) {}
     }
 
-    // Newer WA Web versions require chat.addQueue and chat.sendQueue
-    // (WAInOrderPromiseQueue instances) which are set in ChatImpl.initialize().
-    // If the chat object is missing these (e.g. after unproxy or incomplete
-    // initialization), create them so addAndSendMsgToChat won't throw
-    // "Cannot read properties of undefined (reading 'enqueue')".
-    if (!chat.addQueue || !chat.sendQueue) {
-      try {
-        let QueueClass = null;
-        if (window.__debug && window.__debug.modulesMap) {
-          self.ErrorGuard.skipGuardGlobal(true);
-          const qmod = self.importNamespace('WAInOrderPromiseQueue');
-          QueueClass = qmod && (qmod.WAInOrderPromiseQueue || qmod.default || qmod);
-        }
-        if (QueueClass && typeof QueueClass === 'function') {
-          if (!chat.addQueue) chat.addQueue = new QueueClass();
-          if (!chat.sendQueue) chat.sendQueue = new QueueClass();
-        }
-      } catch (e) {
-        window.onLog('Failed to initialize chat queues: ' + e.message, 'warn');
+    // findOrCreateLatestChat returns a plain object, not a ChatModel instance.
+    // The real ChatModel (with msgs, addQueue, sendQueue, etc.) lives in the
+    // ChatStore. Resolve it so addAndSendMsgToChat has a fully initialized model.
+    if (chat && chat.id && !chat.msgs) {
+      const resolved = Store.Chat.get(chat.id);
+      if (resolved) {
+        chat = resolved;
       }
     }
 
