@@ -26,5 +26,5 @@ window.WAPI.sendPaymentRequest = async function (
     )
   };
   Object.assign(tempMsg, extend);
-  await Store.addAndSendMsgToChat(chat, tempMsg);
+  await WAPI._addAndSendMsgToChat(chat, tempMsg);
 };

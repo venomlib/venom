@@ -120,7 +120,7 @@ export async function sendMessageOptions(chatId, content, options = {}) {
     ...vcardOptions
   };
 
-  await window.Store.addAndSendMsgToChat(chat, message);
+  await WAPI._addAndSendMsgToChat(chat, message);
 
   return newMsgId._serialized;
 }

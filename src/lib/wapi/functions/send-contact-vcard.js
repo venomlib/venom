@@ -60,9 +60,7 @@ export async function sendContactVcard(chatId, contact, name) {
       type: 'vcard'
     };
 
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
 
     var m = { from: contact, type: 'vcard' };
     if (result === 'success' || result || result.messageSendResult === 'OK') {

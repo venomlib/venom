@@ -154,10 +154,7 @@ export async function sendFile(
                   while (true) {
                     const connection = window.Store.State.Socket.state;
                     if (connection === 'CONNECTED') {
-                      const result = await window.Store.addAndSendMsgToChat(
-                        chat,
-                        message
-                      );
+                      const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
 
                       await WAPI.sleep(5000);
                       const statusMsg = chat.msgs._models.filter(
@@ -181,10 +178,7 @@ export async function sendFile(
                     }
                   }
                 } else {
-                  const result = await window.Store.addAndSendMsgToChat(
-                    chat,
-                    message
-                  );
+                  const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
 
                   let obj = WAPI.scope(
                     newMsgId,
@@ -197,11 +191,8 @@ export async function sendFile(
                 }
               }
               try {
-                return (
-                  await Promise.all(
-                    window.Store.addAndSendMsgToChat(chat, message)
-                  )
-                )[1];
+                const { sendResult } = await WAPI._addAndSendMsgToChat(chat, message);
+                return sendResult;
               } catch (e) {
                 window.onLog(`Error sending message : ${e}`);
                 return WAPI.scope(

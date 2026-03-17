@@ -77,9 +77,7 @@ export async function reply(chatId, content, quotedMessageId) {
       ...quotedMsgOptions
     };
 
-    const result = (
-      await Promise.all(window.Store.addAndSendMsgToChat(chat, message))
-    )[1];
+    const { sendResult: result } = await WAPI._addAndSendMsgToChat(chat, message);
 
     if (
       result === 'success' ||

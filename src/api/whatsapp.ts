@@ -7,17 +7,22 @@ import { CreateConfig } from '../config/create-config.js';
 import axios from 'axios';
 import * as path from 'path';
 import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-// Cross-platform __dirname for CJS/ESM dual builds
-// eval hides import.meta from the CJS parser to avoid SyntaxError
-const getDirname = () => {
+// Resolve this file's directory in both CJS and ESM builds.
+// Cannot use import.meta.url directly — it's a syntax error in CJS at parse time.
+// Instead, extract the file path from an Error stack trace, which works everywhere.
+const getDirname = (): string => {
   if (typeof __dirname !== 'undefined') {
     return __dirname;
   }
-  // @ts-ignore
-  return dirname(fileURLToPath(eval('import.meta.url')));
+  // ESM fallback: parse current file path from stack trace
+  const stack = new Error().stack || '';
+  // Match file:// URLs (ESM) or plain paths (CJS)
+  const match = stack.match(/(?:file:\/\/\/?)?(\/[^\s:]+|[A-Z]:[^\s:]+)[\\/]whatsapp\.[tj]s/i);
+  if (match) {
+    return decodeURIComponent(match[1]);
+  }
+  // Last resort: assume standard package layout
+  return path.join(process.cwd(), 'node_modules', 'venom-bot', 'dist', 'esm', 'api');
 };
 
 async function checkFileExists(filePath: string): Promise<boolean> {

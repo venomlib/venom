@@ -41,8 +41,8 @@ export async function sendLocation(
       loc: location
     };
 
-    const result =
-      (await Promise.all(Store.addAndSendMsgToChat(chat, message)))[1] || '';
+    const { sendResult } = await WAPI._addAndSendMsgToChat(chat, message);
+    const result = sendResult || '';
 
     let m = {
         latitude: latitude,

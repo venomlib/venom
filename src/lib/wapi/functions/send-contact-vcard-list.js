@@ -72,8 +72,8 @@ export async function sendContactVcardList(chatId, contacts) {
       isNewMsg: !0
     };
 
-    var result =
-      (await Promise.all(Store.addAndSendMsgToChat(chat, message)))[1] || '';
+    const { sendResult } = await WAPI._addAndSendMsgToChat(chat, message);
+    var result = sendResult || '';
 
     var m = { from: contacts, type: 'multi_vcard' };
 
