@@ -107,7 +107,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "globals": "^17.0.0",
     "gulp": "^5.0.0",
-    "knip": "^5.63.1",
+    "knip": "^6.0.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "release-it": "^19.0.0",
