@@ -534,7 +534,11 @@ export async function initBrowser(options: {
             options.headless === true || options.headless === false
               ? options.headless
               : 'new',
-          args: ['--no-sandbox', '--disable-setuid-sandbox']
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-web-security'
+          ]
         });
 
         versionTimeout = setTimeout(() => {
