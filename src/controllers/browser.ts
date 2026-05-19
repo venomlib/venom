@@ -537,7 +537,9 @@ export async function initBrowser(options: {
           args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-web-security'
+            '--disable-web-security',
+            '--disable-features=MemorySaverMode',
+            '--memory-pressure-off'
           ]
         });
 

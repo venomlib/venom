@@ -18,7 +18,7 @@ export async function downloadFileToBase64(_path, _mines = []) {
                 if (typeof m === 'string') {
                     return m === mimeType;
                 }
-                return m.exec(mimeType);
+                return m.exec(String(mimeType));
             });
             if (!isValidMime) {
                 console.error(`Content-Type "${mimeType}" of ${_path} is not allowed`);
