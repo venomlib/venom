@@ -92,7 +92,7 @@
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.0",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^10.0.0",
     "@types/mime-types": "^3.0.0",
     "@types/node": "^24.0.0",
     "@types/qrcode": "^1.5.1",
@@ -102,7 +102,7 @@
     "@typescript-eslint/parser": "^8.0.0",
     "concurrently": "^9.0.0",
     "conventional-changelog-cli": "^5.0.0",
-    "eslint": "^9.35.0",
+    "eslint": "^10.0.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "globals": "^17.0.0",
